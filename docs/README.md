@@ -13,6 +13,7 @@ worker does not need the founders' chat history.
 | [DECISIONS](DECISIONS.md) | Accepted choices, proposals and decisions that still need an owner |
 | [Design draft](specs/2026-10-27-unified-health-coach-design.md) | Full unified scope and proposed architecture |
 | [Canny copy](marketing/roadmap/2026-10-27-unified-health-coach.md) | Original bilingual drafts; unpublished |
+| [Cost benchmark](research/2026-10-27-low-cost-architecture-benchmark.md) | Stack, vendor and compliance benchmark for a from-scratch start; its recommendations are proposals until recorded in DECISIONS |
 
 ## Working here
 
