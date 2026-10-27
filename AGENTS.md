@@ -1,0 +1,97 @@
+# Working in Gloups
+
+Read [PRODUCT](docs/PRODUCT.md), [ROADMAP](ROADMAP.md),
+[CONTRIBUTING](CONTRIBUTING.md) and the [documentation index](docs/README.md).
+These instructions apply to people and coding agents. Follow scoped AGENTS.md
+files when entering their application or package.
+
+## Current stage and authority
+
+- This repository contains documentation and metadata only. Do not claim that an
+  app, API, package, Nx target, check or provider connection exists here.
+- Worldwide iOS/Android launch, French/English first, nutrition/fitness/sleep/
+  optional cycle, explainable daily coaching and full workout recording are
+  confirmed. NestJS is the selected backend direction. Other architecture calls
+  remain proposals until recorded as accepted in [DECISIONS](docs/DECISIONS.md).
+- Set up documentation before application work. A specification packet permits
+  specification work only. Scaffolding, dependencies and source imports require
+  an approved implementation packet; do not treat a draft as approval.
+- Follow an assigned task through its relevant checks, commit, push and merged PR
+  into main. This Git workflow is authorized. Routine choices within that scope
+  need no repeated permission. Deployment, distribution, provider purchases and
+  messages to other people require their own authorization.
+
+## Independent work
+
+- Follow [AGENT-WORKFLOW](docs/AGENT-WORKFLOW.md). Each active packet has one owner,
+  one branch/worktree, allowed paths, dependencies, interfaces and acceptance.
+- Confirm the exact repository root and remote before editing. Never run a new
+  repository task from either source application's checkout.
+- A coordinator serializes task assignment and shared-file changes on main.
+  Agents must not independently claim the same packet or edit another lane.
+- Work autonomously after assignment. Raise a contract or ownership conflict
+  before crossing the boundary; continue useful work that does not depend on it.
+- Do not revert another person's changes, reuse another agent's checkout, change
+  its branch, terminate its servers or consume its simulator without coordination.
+- Keep handoffs in the packet with commit/PR links, actual checks, limitations and
+  remaining decisions. Chat history is not a required input to another worker.
+
+## Product and data
+
+- Use Gloups and health coach in public copy. Never name health-app competitors
+  in product copy, documents, screenshots, commits or release notes.
+- Apply the local [Humanizer skill](.agents/skills/humanizer/SKILL.md) to prose.
+- Plan for international users from the first contract: language, locale,
+  timezone, country, units and currency are separate concepts. Follow
+  [I18N](docs/I18N.md); do not infer nationality or data region from language.
+- Keep estimates, observations and derived values distinct. Missing is not zero.
+  Retain provenance, calculation versions, retry identity and account ownership.
+- The model explains approved facts and proposes bounded actions. It cannot be
+  the source of arithmetic, record permissions or silent changes to goals.
+- HIPAA BAA/HDS support is deferred. Assess applicable consumer obligations and
+  prepare future healthcare boundaries without making compliance claims.
+- No real health data, identity tokens, secrets or signing material in Git,
+  fixtures, prompts for debugging, screenshots, logs, issues or public feedback.
+- Existing Gloups data-discard authorization does not cover Mioum by assumption.
+  Confirm usage, ownership and preservation duties before a destructive cutover.
+
+## Code, tools and design
+
+- Follow [ARCHITECTURE](docs/ARCHITECTURE.md) for placement and
+  [CODE-STANDARDS](docs/CODE-STANDARDS.md) for code rules. Keep changes focused.
+  Add shared packages only for actual consumers and an approved contract.
+- Bun 1.4.2 and one root bun.lock are the repository policy when JavaScript setup
+  is implemented. Nx will be the application command surface. There is no
+  package manifest, lockfile or runnable Nx target yet.
+- Once real projects exist, inspect resolved targets with
+  `bun run nx show project <project> --json`; run application tasks from the root
+  with `bun run nx run <project>:<target>`. Use Nx workspace/task/generator guidance
+  before exploration, execution or scaffolding; consult installed help for options.
+- Use Ultracite with Oxlint, Oxfmt and anti-slop when tooling is installed. Run
+  `bunx ultracite fix` before committing relevant JS/TS/config changes, then
+  `bunx ultracite check`. Do not install tooling just to pretend this docs-only
+  repository already has those checks.
+- Before every new UI flow, inspect actual screens through connected Mobbin and
+  record selected flow links with neutral labels in [DESIGN](docs/DESIGN.md).
+  Follow native conventions on each platform. Keep one canonical brand palette.
+
+## Verification and delivery
+
+- Agents must not write, extend or rewrite unit tests or use TDD/red-green work.
+  The owner may write unit tests manually. This overrides skill defaults.
+- Behavioral acceptance uses E2E Army against the running service and real app.
+  Backend work uses isolated PostgreSQL once that service exists. Native work
+  needs a regular iPhone, iPhone Duo and relevant Android journeys with actual
+  device/runtime recorded. Physical devices cover health imports and background
+  behavior. Static checks and exports do not replace that evidence.
+- Documentation checks use the actual Git diff, local links, instructions,
+  scope/status consistency and secret/reference exclusions. Do not run invented
+  build commands. Follow [VERIFICATION](docs/VERIFICATION.md).
+- GitHub Actions usage is exhausted. Use relevant local evidence and do not add
+  paid/automatic workflows, wait for CI or claim a check ran when unavailable.
+- Preserve ignored user-owned state. Never commit databases, generated native
+  projects, caches, credentials or signing material. Deployment and store
+  distribution remain separate from Git integration.
+
+The selected Clerk application is fixed; do not create another. PostHog EU is
+preferred. Existing service facts and unknowns live in [SERVICES](docs/SERVICES.md).
