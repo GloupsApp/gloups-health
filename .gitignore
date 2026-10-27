@@ -1,0 +1,37 @@
+# Dependencies, builds and native output
+node_modules/
+dist/
+build/
+target/
+coverage/
+test-output/
+*.tsbuildinfo
+__pycache__/
+*.py[cod]
+apps/mobile/ios/
+apps/mobile/android/
+
+# Local workspaces, state and editor files
+.local/
+.nx/
+.expo/
+.superpowers/
+.worktrees/
+.idea/
+.DS_Store
+
+# Secrets, health data and signing material
+.env*
+!.env.example
+*.sqlite
+*.sqlite-*
+*.db
+*.db-*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+credentials.json
+google-service-account*.json
+apps/api/data/
