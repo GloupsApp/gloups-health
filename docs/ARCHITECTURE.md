@@ -1,4 +1,4 @@
-# Architecture proposal
+# Architecture
 
 This repository has engineering documents, workspace tooling, a local Blume
 documentation site and a minimal Expo SDK 58 mobile shell. API and product web
@@ -9,14 +9,19 @@ approved for product implementation.
 
 ## Runtime direction
 
-NestJS, the Expo/React Native mobile foundation and Better Auth using official
-integrations/plugins are confirmed. Google, Apple and email/password are selected
-under D015. The [authentication design](specs/2026-10-28-authentication-design.md)
-proposes the official Node handler on NestJS's Express adapter, database-backed
-sessions and the official Expo client; detailed implementation is pending approval.
-The proposed service runtime is one feature-organized NestJS service, PostgreSQL and protected
-media. Native product controls remain subject to their design packets. Prisma is
-a reuse candidate. Do not create microservices, a second
+NestJS with its official Fastify adapter, Drizzle ORM and DDD with Onion
+architecture are confirmed under D016. The Expo/React Native foundation and
+official Better Auth integration are confirmed under D014/D015. Google, Apple and
+email/password are selected. The
+[authentication design](specs/2026-10-28-authentication-design.md) describes the
+Fastify request/response bridge, official Drizzle adapter, account boundaries and
+Expo client; detailed behavior remains pending design approval.
+
+The proposed service runtime is one feature-organized NestJS service, PostgreSQL
+and protected media. Drizzle is the selected ORM for new persistence. Database
+hosting/version and the underlying driver remain implementation-packet choices.
+Native product controls remain subject to their design packets. Do not create
+microservices, a second
 permanent backend, a generic shared domain framework or speculative packages.
 
 Bun 1.4.4 workspaces, one root `bun.lock`, Turborepo and Ultracite/Oxlint/Oxfmt
@@ -51,6 +56,47 @@ Within the API keep identity, goals, food/catalog, nutrition/hydration, training
 sleep, cycle, ingestion, coaching, privacy/audit and billing/notifications as
 responsibilities inside the service. Keep feature rules beside the feature;
 transport and persistence details must not define its public domain vocabulary.
+
+## DDD and Onion architecture
+
+This is the owner's confirmed dependency rule for future API implementation,
+based on the supplied
+[NestJS/DDD/Onion reference](https://medium.com/@patrick.cunha336/structuring-a-nestjs-project-with-ddd-and-onion-architecture-65b04b7f2754)
+and the [original Onion dependency principle](https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/).
+Group code by bounded context, with domain, application, infrastructure and
+presentation responsibilities inside each context. The initial auth slice owns
+identity/access and the internal Gloups account boundary; other domains still
+need their approved contracts before implementation.
+
+| Layer          | Owns                                                                                             | Dependency rule                                                                                        |
+| -------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| Domain         | Aggregates/entities, value objects, invariants and repository contracts                          | Plain TypeScript; no framework, transport, ORM or provider imports                                     |
+| Application    | Use cases, plain input/output types and outbound service/unit-of-work ports                      | Depends on domain/inner contracts; no infrastructure, Fastify, NestJS, Drizzle or Better Auth imports  |
+| Infrastructure | Drizzle repositories/schema/mappers, Better Auth session adapter, email/provider implementations | Implements inner ports; maps external models into core values                                          |
+| Presentation   | Nest controllers/guards, Fastify protocol bridge, HTTP DTO validation and response mapping       | Calls application use cases; keeps business/transaction rules in the core                              |
+| Composition    | Feature Nest modules and bootstrap wiring                                                        | Binds ports to adapters through tokens/factories; framework decorators stay outside domain/application |
+
+Dependency arrows point inward. A repository implementation depends on its core
+contract, while the core never imports that implementation. Application use
+cases define transaction and retry intent through a unit-of-work port; Drizzle
+transactions and row types stay in infrastructure. An ORM row is not a domain
+entity, and Better Auth's provider-account model is not a Gloups account.
+
+The proposed first context lives under `apps/api/src/modules/identity-access/`
+with `domain/`, `application/`, `infrastructure/`, `presentation/` and an outer
+`identity-access.module.ts`. These are planned paths, not existing code or
+scaffolding authorization. Health contexts consume approved application contracts
+rather than reaching into identity tables or concrete repositories. Keep only
+the abstractions required by real use cases; no generic base framework is implied.
+
+Fastify transport/parsing/CORS and the Better Auth protocol live at the outer
+edge. Persistence uses the official Better Auth Drizzle adapter and Drizzle
+repositories, with one reviewed SQL migration history owned by Drizzle Kit.
+Authentication provider records remain separate from immutable Gloups account
+identity and lifecycle rules. No application or domain type exposes an HTTP
+request, SDK session, database row or transaction client.
+
+## Mobile and coaching boundaries
 
 The mobile app owns native interaction, platform permissions, durable local
 commands and device adapters. HealthKit/Health Connect remain device-side

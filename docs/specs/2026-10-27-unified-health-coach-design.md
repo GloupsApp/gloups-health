@@ -105,6 +105,10 @@ Gloups' accepted behavior deliberately. Maintaining two permanent backend
 implementations would add contracts, access paths and operating work for the same
 product. Rebuilding every domain from scratch would discard useful behavior and
 verification knowledge. These technical choices are recommendations for review.
+The owner separately confirms NestJS's official Fastify adapter, Drizzle ORM
+and DDD with Onion architecture under D016. Apply the inward dependency rules in
+[ARCHITECTURE](../ARCHITECTURE.md#ddd-and-onion-architecture); the broader draft
+does not override those accepted choices.
 
 ## Launch scope by domain
 
@@ -170,10 +174,12 @@ Recommended boundaries within one NestJS service:
 | Privacy/audit         | Consent versions, exports, deletion, retention and security audit events                                       |
 | Billing/notifications | Entitlements and delivery preferences without health payloads                                                  |
 
-Use PostgreSQL with migrations for authoritative records. Prisma is a reuse
-candidate, not an API contract. Do not return database entities directly to
+Use the selected Drizzle ORM with reviewed SQL migrations for authoritative
+records. PostgreSQL remains the proposed database; source persistence code does
+not select the new ORM or define an API contract. Do not return database entities
+directly to
 clients. Keep validated request/response schemas, versioned HTTP contracts and
-bounded streaming replies. Continue using Bun/Nx for repository tasks; pin a
+bounded streaming replies. Continue using Bun/Turborepo for repository tasks; pin a
 supported server runtime and compatible NestJS version during implementation.
 
 Health records need a stable internal ID, owning account UUID, original source
