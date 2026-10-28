@@ -37,6 +37,12 @@ records retain the original filename. Active scripts discover the config
 automatically. No dependency, compiler-option or hook-script change was needed.
 The diff was reviewed for scope, task status, secrets and excluded references.
 
+After integrating main revision `c011fbb0c3907c72b7db5a32f851a97296f82638`,
+Ultracite fix/check/doctor and `bun run typecheck` passed again. The implementation
+commit and the integration merge commit both passed Husky's pre-commit and
+commit-message hooks using the TypeScript config. The registry retains the other
+task's completed status.
+
 ## Limits and cleanup
 
 Cached docs/mobile logs are earlier evidence reused by Turbo; they are not new

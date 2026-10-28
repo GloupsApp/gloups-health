@@ -1,6 +1,7 @@
 # TOOL-004: TypeScript commitlint configuration
 
-Status: Review. Owner and integration coordinator: Codex, current commitlint
+Status: Done on merge of [PR #14](https://github.com/GloupsApp/gloups-health/pull/14);
+Review until then. Owner and integration coordinator: Codex, current commitlint
 TypeScript chat. The owner's 28 October 2026 request approves replacing
 `commitlint.config.mjs` with `commitlint.config.ts`.
 
@@ -62,7 +63,14 @@ the root compiler ran directly. The actual Husky commit-message hook returned
 removed. Exact commands and limitations are in the
 [verification record](../verification/2026-10-28-commitlint-typescript.md).
 
-Implementation commit and PR links will be recorded before integration. No
-server, database or device was allocated. The task worktree contains only its
+Implementation:
+[b25cf74](https://github.com/GloupsApp/gloups-health/commit/b25cf74735fdaaf37fa528755df4c22d2418453a).
+Integration: [PR #14](https://github.com/GloupsApp/gloups-health/pull/14), including
+this handoff. Its merge commit is the integrated main revision. The latest main
+revision `c011fbb0c3907c72b7db5a32f851a97296f82638` was integrated before review;
+Ultracite fix/check/doctor and typechecking passed again. The implementation and
+integration commits passed both Husky hooks using the TypeScript config.
+
+No server, database or device was allocated. The task worktree contains only its
 committed changes and generated dependencies/build output and can be archived
 after merge. Deployment and distribution remain outside this task.
