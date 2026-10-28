@@ -5,7 +5,9 @@ tooling and a minimal local Blume documentation workspace. The assignment merged
 in [PR #4](https://github.com/GloupsApp/gloups-health/pull/4), base revision
 `473452055e55dcd2aa3d1084e58b5d7dfde87ab3`. Implementation branch:
 `codex/tool-001-workspace-tooling`. The packet records the implementation commit
-and merged PR at handoff.
+and merged PR at handoff. Implementation:
+[PR #5](https://github.com/GloupsApp/gloups-health/pull/5), code commit
+[0c6a811](https://github.com/GloupsApp/gloups-health/commit/0c6a8117c82217c7914226d465e6aaf5cdadc8c4).
 
 ## Versions and environment
 
@@ -66,6 +68,8 @@ Astro 7.4.2 through its own dependency range; no product Astro app was created.
 - `.husky/_/pre-commit` ran lint-staged on 37 staged files, completed
   `ultracite fix`, staged its fixes and removed its temporary backup. Existing
   Git stashes were absent before/after; no user state was removed.
+  The actual implementation commit subsequently ran both hooks successfully,
+  checking 39 matched staged files before validating its Conventional Commit.
 - `.husky/_/commit-msg <temporary-message-file>` accepted
   `chore: configure workspace tooling` with exit 0 and rejected
   `update workspace tooling` with exit 1 (`subject-empty` and `type-empty`).

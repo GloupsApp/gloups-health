@@ -6,9 +6,9 @@ tooling implementation has one assigned owner. A coordinator records assignments
 on main before workers start. Follow
 [AGENT-WORKFLOW](../AGENT-WORKFLOW.md) and use the [template](TEMPLATE.md).
 
-| Implementation packet                     | Owner                                           | Status | Approved scope                                                 |
-| ----------------------------------------- | ----------------------------------------------- | ------ | -------------------------------------------------------------- |
-| [TOOL-001](TOOL-001-workspace-tooling.md) | Codex chat 01a18275-5307-7d93-98f7-10ca191559f3 | Review | Bun/Turborepo tooling, Blume docs, Changesets and commit hooks |
+| Implementation packet                     | Owner                                           | Status              | Approved scope                                                 |
+| ----------------------------------------- | ----------------------------------------------- | ------------------- | -------------------------------------------------------------- |
+| [TOOL-001](TOOL-001-workspace-tooling.md) | Codex chat 01a18275-5307-7d93-98f7-10ca191559f3 | Done on PR #5 merge | Bun/Turborepo tooling, Blume docs, Changesets and commit hooks |
 
 | Packet                             | Specification output                                                 | Dependency before code                                             |
 | ---------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------ |

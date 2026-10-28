@@ -2,8 +2,8 @@
 
 ## Current repository
 
-Workspace tooling and a local documentation site exist. Check Git diffs, local Markdown targets
-and anchors, instruction consistency, task ownership, confirmed/proposed choices,
+Workspace tooling and a local documentation site exist. Check Git diffs, local
+Markdown targets and anchors, instruction consistency, task ownership, confirmed/proposed choices,
 reference-name exclusions and secret/data hygiene. Record actual commands/results
 under [verification](verification/README.md). TOOL-001 adds frozen Bun installs,
 Ultracite checks, Turborepo documentation builds, Changesets status and real hook
