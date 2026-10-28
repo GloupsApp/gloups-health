@@ -18,8 +18,8 @@ Declaration checking stays enabled in the shared base with `skipLibCheck: false`
 See the [TypeScript compiler reference](https://www.typescriptlang.org/tsconfig/).
 
 The base uses ES2022 output semantics, ES2023 libraries, ES modules and bundler
-resolution with no emit. It adds no browser or Node globals. A consuming project
-sets its own source scope, runtime types, libraries, JSX and emission settings.
+resolution with no emit. Each consuming project sets its own source scope,
+runtime types, libraries, JSX and emission settings.
 An approved NestJS packet must review module resolution, decorators and emitted
 imports for its actual runtime. These tooling defaults do not select a product
 framework. Keep safety checks inherited; document and review any exception.

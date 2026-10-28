@@ -93,12 +93,18 @@ this override after compatible published declarations pass the command above.
 - `bun run changeset:status` passed. The existing private docs patch remains
   pending; the new empty record adds no package bump. No versioning or publishing
   command ran.
-- `python3 /tmp/gloups-strict-typescript-check-docs.py` passed 187 local Markdown
+- `python3 /tmp/gloups-strict-typescript-check-docs.py` passed 188 local Markdown
   link/anchor checks across 50 files. The checker uses the current worktree and
   excludes the vendored local skill. `git diff --check` passed. The actual diff
   was reviewed for scope/status consistency, credentials, health data and
   excluded references; no generated artifacts or reserved product files changed.
 
-Independent review and Git integration remain pending. No unit tests or TDD,
-GitHub Actions, product acceptance, deployment or distribution are part of
-these tooling checks.
+The actual implementation commit
+[3a9c584](https://github.com/GloupsApp/gloups-health/commit/3a9c5847dea000ebf159e96b0affc980080a6f5b)
+passed both Husky hooks, with 19 staged files checked and the Conventional Commit
+message accepted. An independent Superpowers review found no critical, important
+or minor issues and confirmed the declaration exception is isolated to docs.
+Integration is [PR #8](https://github.com/GloupsApp/gloups-health/pull/8), including
+the packet's final handoff; its merge commit is the integrated main revision.
+No unit tests or TDD, GitHub Actions, product acceptance, deployment or
+distribution are part of these tooling checks.
