@@ -23,6 +23,11 @@ files when entering their application or package.
   need no repeated permission. Deployment, distribution, provider purchases and
   messages to other people require their own authorization.
 
+For current authentication execution under D018/AUTH-003, open PRs for owner
+review and leave them unmerged. Do not merge or enable auto-merge unless the owner
+explicitly authorizes it later. This supersedes automatic Git integration for
+this work; the main-assignment prerequisite still applies.
+
 ## Independent work
 
 - Follow [AGENT-WORKFLOW](docs/AGENT-WORKFLOW.md). Each active packet has one owner,

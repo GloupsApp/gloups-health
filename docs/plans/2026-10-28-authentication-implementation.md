@@ -19,13 +19,17 @@ approved by the owner on 28 October 2026 at revision
 `0b55294aa375078fc43550d66647e220896e9eb0` (PR #22); D015–D017.
 Planning owner: [AUTH-002](../tasks/AUTH-002-authentication-plan.md).
 
-**Status:** Plan for review; no implementation step has run. The owner requested
-planning, not execution. The file lists and bindings below are the proposed scope
-for a later `AUTH-003` implementation packet. Before code, record its approval,
-owner, branch/worktree, allowed paths and reservations on main and read it back.
-Writing this plan does not configure providers, send email, deploy or distribute.
+**Status:** Approved by the owner for native execution under D018, with PRs
+opened for owner review and no agent merge/auto-merge. [AUTH-003](../tasks/AUTH-003-authentication-implementation.md)
+records the execution assignment. Task 0 is in progress; source Tasks 1–7 have
+not started. The main-assignment prerequisite remains: read the owner-merged
+packet on main before code, unless the owner explicitly changes that requirement.
+No provider setup, external email, deployment or distribution is authorized.
 
 ## Global constraints
+
+- D018: native execution in this chat; create PRs for owner review and do not
+  merge or enable auto-merge. The owner controls integration.
 
 - Official `@nestjs/platform-fastify`, Better Auth and Expo integrations only;
   no community NestJS auth wrapper or community Google React Native auth plugin.
@@ -558,7 +562,7 @@ the feature service; screens never manufacture actor IDs or store provider token
 new actual facts exist, and dated implementation verification evidence. Product
 fixes remain within the files/interfaces owned by Tasks 1–6.
 
-**Interfaces:** consumes all accepted task outputs; produces a merged, evidenced
+**Interfaces:** consumes all accepted task outputs; produces a reviewable, evidenced
 authentication slice or an explicit incomplete status with missing journeys.
 
 - [ ] Perform the end-to-end cross-device flow once the integrated code exists:
@@ -579,8 +583,9 @@ authentication slice or an explicit incomplete status with missing journeys.
       server/port/volume ownership and cleanup. Stop only this lane's processes;
       preserve user-owned/needed ignored state. Remove disposable synthetic data
       only after its evidence is captured and cleanup ownership is clear.
-- [ ] Commit/push/PR/merge under the authorized Git workflow, attach created PRs,
-      and update the packet to Done only when its required acceptance is complete.
+- [ ] Commit/push/open PRs for owner review, attach created PRs,
+      and keep integration in Review until the owner merges it. Do not merge or
+      enable auto-merge; mark Done only after required acceptance and owner integration.
       Keep deployment/store distribution and worldwide availability as separate
       decisions. A local auth slice is not the full Gloups health coach release.
 
@@ -595,11 +600,10 @@ Task 5; mobile social/lifecycle → Task 6; complete device/evidence/Git matrix 
 Task 7. Task 0 owns every external/ownership prerequisite. Each Review Focus item
 has named real-boundary cases; no unit-test/TDD step is included.
 
-Before execution, review this plan's new implementation bindings and choose
-native sequential execution or subagent-driven execution. Recommend native
-sequential execution for the shared auth/migration/session changes. The coordinator
-then records the approved `AUTH-003` packet described above; any parallel split
-needs separately assigned paths/interfaces and isolated resources first.
+The owner has selected native execution. Continue under AUTH-003 after its
+main-assignment gate; no renewed design/stack approval is needed. Follow the
+selected executing-plans workflow with repository E2E/no-TDD policy taking
+precedence. Assignment and source PRs stay open for owner review and integration.
 
 ## Primary references checked for planning
 

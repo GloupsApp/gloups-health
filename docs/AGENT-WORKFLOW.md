@@ -37,6 +37,15 @@ packet is Ready merely because its specification packet can start.
 
 These states are internal. They do not update Canny statuses or announce releases.
 
+## Authentication review-first delivery
+
+For AUTH-003 and its authentication PRs, D018 records the owner's latest instruction:
+create PRs for owner review; agents must not merge them or enable auto-merge. This
+applies to the assignment PR as well as source changes and supersedes the default
+merge instruction for this work. Step 2 still requires the assignment on main
+before source work. Read the owner-merged assignment back, or obtain an explicit
+owner change to that prerequisite; a pending branch claim is not a merged claim.
+
 ## Shared changes and integration
 
 The integration owner controls root AGENTS, decisions/registry, manifests and

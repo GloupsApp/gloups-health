@@ -7,20 +7,21 @@ A coordinator records assignments
 on main before workers start. Follow
 [AGENT-WORKFLOW](../AGENT-WORKFLOW.md) and use the [template](TEMPLATE.md).
 
-| Specification packet                        | Owner                              | Status                                              | Assigned scope                                                                                        |
-| ------------------------------------------- | ---------------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| [AUTH-001](AUTH-001-better-auth.md)         | Codex, current authentication chat | Done; design approved under D017                    | Official Better Auth with NestJS Fastify, Drizzle ORM and DDD/Onion; Google, Apple and email/password |
-| [AUTH-002](AUTH-002-authentication-plan.md) | Codex, current authentication chat | Done on PR #24 merge; plan review/execution pending | Record the owner's design/PostgreSQL approval and write the implementation plan; no product execution |
+| Specification packet                        | Owner                              | Status                                           | Assigned scope                                                                                        |
+| ------------------------------------------- | ---------------------------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| [AUTH-001](AUTH-001-better-auth.md)         | Codex, current authentication chat | Done; design approved under D017                 | Official Better Auth with NestJS Fastify, Drizzle ORM and DDD/Onion; Google, Apple and email/password |
+| [AUTH-002](AUTH-002-authentication-plan.md) | Codex, current authentication chat | Done; native execution assigned through AUTH-003 | Record the owner's design/PostgreSQL approval and write the implementation plan; no product execution |
 
-| Implementation packet                          | Owner                                           | Status               | Approved scope                                                                      |
-| ---------------------------------------------- | ----------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------- |
-| [TOOL-001](TOOL-001-workspace-tooling.md)      | Codex chat 01a18275-5307-7d93-98f7-10ca191559f3 | Done on PR #6 merge  | Bun/Turborepo tooling, Blume docs, Changesets and commit hooks                      |
-| [TOOL-002](TOOL-002-strict-typescript.md)      | Codex, current strict TypeScript chat           | Done on PR #8 merge  | Strict shared TypeScript configuration and current-workspace compiler checks        |
-| [TOOL-003](TOOL-003-expo-foundation.md)        | Codex, current Expo setup chat                  | Done on PR #10 merge | Expo SDK 58 bootstrap, inherited strict TypeScript and mobile Ultracite integration |
-| [TOOL-004](TOOL-004-commitlint-typescript.md)  | Codex, current commitlint TypeScript chat       | Done on PR #14 merge | TypeScript commitlint config and existing commit-hook verification                  |
-| [TOOL-005](TOOL-005-git-text-normalization.md) | Codex, current Git attributes chat              | Done on PR #16 merge | Root Git attributes with the owner's exact text normalization rule                  |
-| [DOC-001](DOC-001-remove-humanizer.md)         | Codex, current skill-removal chat               | Done on PR #13 merge | Remove the local Humanizer skill and its active documentation/tooling references    |
-| [REPO-001](REPO-001-gitignore.md)              | Codex, current gitignore chat                   | Done on PR #18 merge | Ignore local logs, caches, editor files, native output and signing material         |
+| Implementation packet                                 | Owner                                           | Status                                               | Approved scope                                                                             |
+| ----------------------------------------------------- | ----------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| [AUTH-003](AUTH-003-authentication-implementation.md) | Codex, current authentication chat              | Review of execution assignment; owner merge required | Native execution of the approved auth plan; official Fastify/Drizzle/Expo, no agent merges |
+| [TOOL-001](TOOL-001-workspace-tooling.md)             | Codex chat 01a18275-5307-7d93-98f7-10ca191559f3 | Done on PR #6 merge                                  | Bun/Turborepo tooling, Blume docs, Changesets and commit hooks                             |
+| [TOOL-002](TOOL-002-strict-typescript.md)             | Codex, current strict TypeScript chat           | Done on PR #8 merge                                  | Strict shared TypeScript configuration and current-workspace compiler checks               |
+| [TOOL-003](TOOL-003-expo-foundation.md)               | Codex, current Expo setup chat                  | Done on PR #10 merge                                 | Expo SDK 58 bootstrap, inherited strict TypeScript and mobile Ultracite integration        |
+| [TOOL-004](TOOL-004-commitlint-typescript.md)         | Codex, current commitlint TypeScript chat       | Done on PR #14 merge                                 | TypeScript commitlint config and existing commit-hook verification                         |
+| [TOOL-005](TOOL-005-git-text-normalization.md)        | Codex, current Git attributes chat              | Done on PR #16 merge                                 | Root Git attributes with the owner's exact text normalization rule                         |
+| [DOC-001](DOC-001-remove-humanizer.md)                | Codex, current skill-removal chat               | Done on PR #13 merge                                 | Remove the local Humanizer skill and its active documentation/tooling references           |
+| [REPO-001](REPO-001-gitignore.md)                     | Codex, current gitignore chat                   | Done on PR #18 merge                                 | Ignore local logs, caches, editor files, native output and signing material                |
 
 | Packet                             | Specification output                                                 | Dependency before code                                             |
 | ---------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------ |

@@ -1,7 +1,8 @@
 # AUTH-002: Approved authentication implementation plan
 
-Status: Done on merge of [PR #24](https://github.com/GloupsApp/gloups-health/pull/24);
-Review until then. This completes plan delivery; product execution is not assigned.
+Status: Done; [PR #24](https://github.com/GloupsApp/gloups-health/pull/24) merged.
+Plan delivery is complete. Native execution now proceeds through
+[AUTH-003](AUTH-003-authentication-implementation.md) under D018 and its main-assignment gate.
 Owner and integration coordinator: Codex, current authentication chat.
 
 ## Intent and inputs
@@ -92,3 +93,11 @@ Integration: [PR #24](https://github.com/GloupsApp/gloups-health/pull/24), inclu
 this handoff. Its merged revision is the main delivery record; merging the plan
 does not execute it. Husky staged formatting and Conventional Commit hooks
 passed. The existing worktree remains attached with the plan available for review.
+
+### Native execution selected
+
+The owner selects native execution of the delivered plan and review-first PRs
+under D018. [AUTH-003](AUTH-003-authentication-implementation.md) records the
+source scope/owner and main-assignment prerequisite. Planning is complete; do not
+ask for design or execution-method approval again. No agent merge or auto-merge
+is authorized. Earlier pending-execution statements describe the planning stage.

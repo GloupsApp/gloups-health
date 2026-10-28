@@ -22,6 +22,7 @@ A merged draft document is not approval of all its proposals.
 | D015 | Better Auth in NestJS/Expo SDK 58; official integrations/plugins only; Google, Apple and email/password; native iOS Apple, browser Google/Android Apple | Confirmed by owner, 28 October 2026; supersedes the earlier Clerk selection for new implementation; AUTH-001 specifies details and does not authorize product code              |
 | D016 | NestJS official Fastify adapter, Drizzle ORM and DDD with Onion architecture                                                                            | Confirmed by owner, 28 October 2026; supersedes AUTH-001's initial Express/direct-pool proposal and the Prisma candidate for new persistence; implementation remains unapproved |
 | D017 | Authentication design at PR #22 approved for planning; PostgreSQL selected with NestJS/Fastify, Drizzle and DDD/Onion                                   | Confirmed by owner, 28 October 2026; AUTH-002 writes the implementation plan; execution assignment and external setup remain separate                                           |
+| D018 | Native authentication execution; owner reviews PRs before merge; no agent merges or auto-merge                                                          | Confirmed by owner, 28 October 2026; AUTH-003 executes the approved plan after the main-assignment gate; supersedes automatic Git integration for this work                     |
 | P001 | Database hosting/version and detailed modular-service composition                                                                                       | PostgreSQL selected under D017; exact runtime/driver/module bindings are implementation-plan choices, hosting remains separate                                                  |
 | P002 | Adults only; phone strength execution with imported/manual other activities                                                                             | Proposed                                                                                                                                                                        |
 | P003 | Exact locale, temporal, sync and action wire schemas                                                                                                    | Requires domain contract review                                                                                                                                                 |
@@ -98,3 +99,18 @@ real HTTP/native acceptance and execution prerequisites. This is approval to
 write the plan, not permission to execute it, configure providers, deploy,
 distribute, message people or discard source data. Before product code, record
 the reviewed implementation packet/owner on main under AGENT-WORKFLOW.
+
+## D018: Native execution and owner PR review
+
+Owner: product owner, 28 October 2026. The owner selects native execution of the
+approved authentication plan and requires PRs for review before merge. The
+authentication worker may commit, push and create/update PRs, but must not merge
+them or enable auto-merge. This applies to assignment and feature PRs in this
+work and supersedes the earlier automatic-integration instruction for them.
+
+[AUTH-003](tasks/AUTH-003-authentication-implementation.md) records one owner,
+worktree, exact planned files and acceptance. The main-assignment rule in
+AGENT-WORKFLOW remains in effect: owner review/merge precedes source work unless
+the owner explicitly changes that prerequisite. No new design/stack approval is
+needed. No provider setup, deployment, distribution or external messages are
+authorized by this execution choice. No agent-written unit tests or TDD.
