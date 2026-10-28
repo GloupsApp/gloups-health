@@ -156,3 +156,10 @@ No unit tests, E2E Army, API/database, native or live-provider/email acceptance
 was added or claimed. No server, database, port or device was reserved. Ignored
 user state and existing provider resources were preserved. The correction is
 documentation only; it does not approve the rest of the design or implementation.
+
+Correction commit:
+[abfd2ff](https://github.com/GloupsApp/gloups-health/commit/abfd2ff35346955965a86f64b18379081a13adf3).
+Integration [PR #22](https://github.com/GloupsApp/gloups-health/pull/22) includes
+the corrected documentation and handoff; its merged revision is the corrected
+main record. The commit passed Husky staged formatting and Conventional Commit
+hooks. The worktree remains attached for the owner's review and subsequent plan.

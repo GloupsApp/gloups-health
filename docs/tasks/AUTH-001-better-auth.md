@@ -1,8 +1,10 @@
 # AUTH-001: Official Better Auth authentication specification
 
-Status: Review for the owner's architecture correction. The initial specification was delivered
-in [PR #20](https://github.com/GloupsApp/gloups-health/pull/20). Owner design
-approval and product implementation remain pending.
+Status: Done on merge of the architecture correction in
+[PR #22](https://github.com/GloupsApp/gloups-health/pull/22); Review until then.
+The initial specification was delivered in
+[PR #20](https://github.com/GloupsApp/gloups-health/pull/20). Owner approval of the
+remaining design and product implementation remain pending.
 Owner and integration coordinator: Codex, current authentication chat.
 
 ## Intent and inputs
@@ -152,5 +154,11 @@ installation, scoped formatting, repository Ultracite checks, local links/anchor
 and diff/scope checks passed. The existing docs build/typecheck succeeded through
 Turborepo cache hits; this is not new API, database or native acceptance.
 The verification record includes the correction's sources and exact checks.
-No new resources were allocated. Record the correction commit/PR before
-integration; the detailed design remains pending owner approval.
+No new resources were allocated. The detailed design remains pending owner approval.
+
+Correction commit:
+[abfd2ff](https://github.com/GloupsApp/gloups-health/commit/abfd2ff35346955965a86f64b18379081a13adf3).
+Integration: [PR #22](https://github.com/GloupsApp/gloups-health/pull/22), including
+this handoff; its merge revision is the corrected main delivery record. Staged
+formatting and Conventional Commit hooks passed. The worktree and revised design
+remain available for review; no implementation plan or product code was added.
