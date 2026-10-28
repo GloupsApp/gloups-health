@@ -7,10 +7,10 @@ A coordinator records assignments
 on main before workers start. Follow
 [AGENT-WORKFLOW](../AGENT-WORKFLOW.md) and use the [template](TEMPLATE.md).
 
-| Specification packet                        | Owner                              | Status                           | Assigned scope                                                                                        |
-| ------------------------------------------- | ---------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| [AUTH-001](AUTH-001-better-auth.md)         | Codex, current authentication chat | Done; design approved under D017 | Official Better Auth with NestJS Fastify, Drizzle ORM and DDD/Onion; Google, Apple and email/password |
-| [AUTH-002](AUTH-002-authentication-plan.md) | Codex, current authentication chat | Review of implementation plan    | Record the owner's design/PostgreSQL approval and write the implementation plan; no product execution |
+| Specification packet                        | Owner                              | Status                                              | Assigned scope                                                                                        |
+| ------------------------------------------- | ---------------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [AUTH-001](AUTH-001-better-auth.md)         | Codex, current authentication chat | Done; design approved under D017                    | Official Better Auth with NestJS Fastify, Drizzle ORM and DDD/Onion; Google, Apple and email/password |
+| [AUTH-002](AUTH-002-authentication-plan.md) | Codex, current authentication chat | Done on PR #24 merge; plan review/execution pending | Record the owner's design/PostgreSQL approval and write the implementation plan; no product execution |
 
 | Implementation packet                          | Owner                                           | Status               | Approved scope                                                                      |
 | ---------------------------------------------- | ----------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------- |

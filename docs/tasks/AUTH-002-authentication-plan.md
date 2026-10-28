@@ -1,6 +1,7 @@
 # AUTH-002: Approved authentication implementation plan
 
-Status: Review of the implementation plan; product execution is not assigned.
+Status: Done on merge of [PR #24](https://github.com/GloupsApp/gloups-health/pull/24);
+Review until then. This completes plan delivery; product execution is not assigned.
 Owner and integration coordinator: Codex, current authentication chat.
 
 ## Intent and inputs
@@ -83,5 +84,11 @@ proportion; no subagent was dispatched. Frozen install, Ultracite formatting/che
 local links/anchors and diff/scope checks passed; the existing docs typecheck/build
 returned cache hits. Details and limitations are in the
 [verification record](../verification/2026-10-28-authentication-plan.md).
-Record the plan commit/PR before delivery.
 Plan review/execution assignment is the next step, not renewed design approval.
+
+Plan commit:
+[8a76ca0](https://github.com/GloupsApp/gloups-health/commit/8a76ca0b061fbdef06ad5a84d6e8aa9fee01cd54).
+Integration: [PR #24](https://github.com/GloupsApp/gloups-health/pull/24), including
+this handoff. Its merged revision is the main delivery record; merging the plan
+does not execute it. Husky staged formatting and Conventional Commit hooks
+passed. The existing worktree remains attached with the plan available for review.

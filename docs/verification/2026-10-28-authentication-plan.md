@@ -103,3 +103,13 @@ live acceptance, and record the retention/re-registration policy before real-dat
 deletion/release acceptance. Independent planning is complete without pretending
 those external inputs exist. Existing provider resources and ignored user state
 were preserved; only documentation changes are delivered.
+
+## Git delivery
+
+Plan commit:
+[8a76ca0](https://github.com/GloupsApp/gloups-health/commit/8a76ca0b061fbdef06ad5a84d6e8aa9fee01cd54).
+Integration: [PR #24](https://github.com/GloupsApp/gloups-health/pull/24), including
+the plan and handoff; its merged revision is the main delivery record. The commit
+passed Husky staged formatting and Conventional Commit hooks. The worktree is
+preserved for review/execution assignment, with no implementation resources to
+transfer or stop. Merging this planning document does not approve execution.
