@@ -3,25 +3,26 @@
 Updated 28 October 2026. Confirmed decisions come from the owners' instructions.
 A merged draft document is not approval of all its proposals.
 
-| ID   | Decision                                                                                                                                    | State                                                                                                             |
-| ---- | ------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| D001 | One consumer Gloups health coach for sportspeople: nutrition, fitness, sleep and optional cycle                                             | Confirmed                                                                                                         |
-| D002 | Daily food/training/rest recommendations with clear explanations                                                                            | Confirmed                                                                                                         |
-| D003 | Full workout creation/execution, sets/reps/weights/timers/progression at first unified release                                              | Confirmed                                                                                                         |
-| D004 | Worldwide launch target; iOS and Android; French and English first                                                                          | Confirmed                                                                                                         |
-| D005 | NestJS backend direction                                                                                                                    | Confirmed                                                                                                         |
-| D006 | HIPAA BAA/HDS support deferred; assess applicable consumer obligations                                                                      | Confirmed                                                                                                         |
-| D007 | New private GloupsApp/gloups-health; documentation before application work                                                                  | Confirmed                                                                                                         |
-| D008 | Canny Free public roadmap; original French/English copy; no competitor references                                                           | Confirmed                                                                                                         |
-| D009 | No agent-written/modified unit tests or TDD; real-boundary E2E evidence                                                                     | Repository policy                                                                                                 |
-| D010 | Local checks then commit/push/PR/merge; deployment/distribution separate; no reliance on Actions                                            | Repository policy                                                                                                 |
-| D011 | Bun workspaces, Turborepo, Oxlint, Oxfmt, Ultracite, Changesets and Husky with Conventional Commits; latest stable versions pinned at setup | Confirmed by owner, 28 October 2026; supersedes Nx and Bun 1.4.2 tooling policy                                   |
-| D012 | Blume documentation site in apps/docs; apps/web remains reserved pending the web-app decision                                               | Confirmed for tooling setup, 28 October 2026; product web framework remains open                                  |
-| D013 | Shared strict TypeScript configuration based on Blume, consumed by approved TypeScript projects                                             | Confirmed by owner, 28 October 2026; see TOOL-002 for scope and limitations                                       |
-| D014 | Expo SDK 58 / React Native mobile foundation with inherited strict TypeScript and Ultracite                                                 | Confirmed by owner, 28 October 2026; TOOL-003 approves the minimal bootstrap, not product flows or provider setup |
-| P001 | PostgreSQL/Prisma and NestJS modular monolith                                                                                               | Proposed; Expo mobile foundation separately accepted under D014                                                   |
-| P002 | Adults only; phone strength execution with imported/manual other activities                                                                 | Proposed                                                                                                          |
-| P003 | Exact locale, temporal, sync and action wire schemas                                                                                        | Requires domain contract review                                                                                   |
+| ID   | Decision                                                                                                                                                | State                                                                                                                                                              |
+| ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| D001 | One consumer Gloups health coach for sportspeople: nutrition, fitness, sleep and optional cycle                                                         | Confirmed                                                                                                                                                          |
+| D002 | Daily food/training/rest recommendations with clear explanations                                                                                        | Confirmed                                                                                                                                                          |
+| D003 | Full workout creation/execution, sets/reps/weights/timers/progression at first unified release                                                          | Confirmed                                                                                                                                                          |
+| D004 | Worldwide launch target; iOS and Android; French and English first                                                                                      | Confirmed                                                                                                                                                          |
+| D005 | NestJS backend direction                                                                                                                                | Confirmed                                                                                                                                                          |
+| D006 | HIPAA BAA/HDS support deferred; assess applicable consumer obligations                                                                                  | Confirmed                                                                                                                                                          |
+| D007 | New private GloupsApp/gloups-health; documentation before application work                                                                              | Confirmed                                                                                                                                                          |
+| D008 | Canny Free public roadmap; original French/English copy; no competitor references                                                                       | Confirmed                                                                                                                                                          |
+| D009 | No agent-written/modified unit tests or TDD; real-boundary E2E evidence                                                                                 | Repository policy                                                                                                                                                  |
+| D010 | Local checks then commit/push/PR/merge; deployment/distribution separate; no reliance on Actions                                                        | Repository policy                                                                                                                                                  |
+| D011 | Bun workspaces, Turborepo, Oxlint, Oxfmt, Ultracite, Changesets and Husky with Conventional Commits; latest stable versions pinned at setup             | Confirmed by owner, 28 October 2026; supersedes Nx and Bun 1.4.2 tooling policy                                                                                    |
+| D012 | Blume documentation site in apps/docs; apps/web remains reserved pending the web-app decision                                                           | Confirmed for tooling setup, 28 October 2026; product web framework remains open                                                                                   |
+| D013 | Shared strict TypeScript configuration based on Blume, consumed by approved TypeScript projects                                                         | Confirmed by owner, 28 October 2026; see TOOL-002 for scope and limitations                                                                                        |
+| D014 | Expo SDK 58 / React Native mobile foundation with inherited strict TypeScript and Ultracite                                                             | Confirmed by owner, 28 October 2026; TOOL-003 approves the minimal bootstrap, not product flows or provider setup                                                  |
+| D015 | Better Auth in NestJS/Expo SDK 58; official integrations/plugins only; Google, Apple and email/password; native iOS Apple, browser Google/Android Apple | Confirmed by owner, 28 October 2026; supersedes the earlier Clerk selection for new implementation; AUTH-001 specifies details and does not authorize product code |
+| P001 | PostgreSQL/Prisma and NestJS modular monolith                                                                                                           | Proposed; Expo mobile foundation separately accepted under D014                                                                                                    |
+| P002 | Adults only; phone strength execution with imported/manual other activities                                                                             | Proposed                                                                                                                                                           |
+| P003 | Exact locale, temporal, sync and action wire schemas                                                                                                    | Requires domain contract review                                                                                                                                    |
 
 ## Open owner decisions
 
@@ -38,3 +39,21 @@ Record the owner, date, decision, reason, affected contract/task and superseded
 choice when resolving an item. A worker may settle routine implementation detail
 inside an approved task. Product scope, provider purchases, public claims and
 weaker controls cannot be approved by an agent marking its own assumption agreed.
+
+## D015: Authentication direction
+
+Owner: product owner, 28 October 2026. The owner selects Better Auth with NestJS
+and the accepted Expo SDK 58 foundation and explicitly excludes the community
+NestJS wrapper. Google, Apple and email/password are confirmed. The owner chooses
+Expo's native Apple flow on iOS, browser Google on both platforms and browser
+Apple on Android from the official-only alternatives.
+
+This replaces the prior Clerk selection in active instructions and future
+account-mapping contracts. Preserve existing Clerk resources and any source data;
+this is not migration or deletion authorization. The rest of
+[SERVICES](SERVICES.md) remains in effect. [AUTH-001](tasks/AUTH-001-better-auth.md)
+owns the [authentication design](specs/2026-10-28-authentication-design.md).
+Stable version proposals, database/session defaults and lifecycle behavior in
+that design remain proposals until approved. FND-001 retains broader common
+contracts. No implementation, provider change, deployment or distribution is
+approved by this decision alone.

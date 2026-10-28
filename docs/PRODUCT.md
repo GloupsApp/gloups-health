@@ -21,6 +21,12 @@ NestJS is the selected backend direction. The first consumer release will not
 provide HIPAA BAA/HDS support. Its consumer privacy/security obligations must be
 assessed. Prepare for future healthcare requirements without claiming coverage.
 
+Better Auth in NestJS and Expo SDK 58 is the confirmed authentication direction,
+using official integrations/plugins only. Initial sign-in methods are Google,
+Apple and email/password. Apple uses the native iOS sheet; Google and Android
+Apple use browser OAuth. See D015 in [DECISIONS](DECISIONS.md). Detailed contracts
+and implementation remain subject to the authentication specification review.
+
 The new private repository is GloupsApp/gloups-health. Existing Gloups and Mioum
 are source references. Public roadmap/feedback remains on Canny Free; public
 copy uses Gloups and health coach, with no health-app competitor references.

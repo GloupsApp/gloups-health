@@ -9,8 +9,12 @@ approved for product implementation.
 
 ## Runtime direction
 
-NestJS and the Expo/React Native mobile foundation are confirmed. The proposed
-service runtime is one feature-organized NestJS service, PostgreSQL and protected
+NestJS, the Expo/React Native mobile foundation and Better Auth using official
+integrations/plugins are confirmed. Google, Apple and email/password are selected
+under D015. The [authentication design](specs/2026-10-28-authentication-design.md)
+proposes the official Node handler on NestJS's Express adapter, database-backed
+sessions and the official Expo client; detailed implementation is pending approval.
+The proposed service runtime is one feature-organized NestJS service, PostgreSQL and protected
 media. Native product controls remain subject to their design packets. Prisma is
 a reuse candidate. Do not create microservices, a second
 permanent backend, a generic shared domain framework or speculative packages.

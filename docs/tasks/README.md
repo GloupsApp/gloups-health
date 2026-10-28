@@ -1,14 +1,15 @@
 # Engineering task registry
 
-The domain packets below are ready for assignment to write specifications, not
-to implement features. Their owners remain unassigned. The separately approved
-tooling implementations have assigned owners. A coordinator records assignments
+The foundation and health-domain packets below are ready for assignment to write
+specifications, not to implement features. Their owners remain unassigned.
+Authentication specification and approved tooling work have separate assignments.
+A coordinator records assignments
 on main before workers start. Follow
 [AGENT-WORKFLOW](../AGENT-WORKFLOW.md) and use the [template](TEMPLATE.md).
 
 | Specification packet                | Owner                              | Status                                        | Assigned scope                                                                                                                   |
 | ----------------------------------- | ---------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| [AUTH-001](AUTH-001-better-auth.md) | Codex, current authentication chat | Assigned; starts after this assignment merges | Reconcile the owner's Better Auth decision and specify official NestJS/Expo authentication with Google, Apple and email/password |
+| [AUTH-001](AUTH-001-better-auth.md) | Codex, current authentication chat | Done on PR #20 merge; design approval pending | Reconcile the owner's Better Auth decision and specify official NestJS/Expo authentication with Google, Apple and email/password |
 
 | Implementation packet                          | Owner                                           | Status               | Approved scope                                                                      |
 | ---------------------------------------------- | ----------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------- |
