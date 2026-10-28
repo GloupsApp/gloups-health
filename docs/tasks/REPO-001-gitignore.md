@@ -1,6 +1,7 @@
 # REPO-001: Complete repository ignore rules
 
-Status: Review. Owner and integration coordinator: Codex, current gitignore
+Status: Done on merge of [PR #18](https://github.com/GloupsApp/gloups-health/pull/18);
+Review until then. Owner and integration coordinator: Codex, current gitignore
 chat. The owner's 28 October 2026 request authorizes adding repository ignore
 rules. A root `.gitignore` already exists; extend it for missing local artifacts.
 
@@ -80,4 +81,8 @@ user-owned state was preserved. The assignment and implementation use this
 existing worktree, with only generated dependencies added locally. No application
 decisions or downstream dependencies remain; deployment is outside this task.
 
-Implementation commit and PR links will be recorded before integration.
+Implementation:
+[74cdc21](https://github.com/GloupsApp/gloups-health/commit/74cdc21527cf8f6186d5bfc5afc7ac7519251847).
+Integration: [PR #18](https://github.com/GloupsApp/gloups-health/pull/18), including
+this handoff. Its merge commit is the integrated main revision. The implementation
+commit passed Husky's staged-file formatting and Conventional Commit hooks.
