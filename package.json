@@ -7,12 +7,13 @@
   ],
   "type": "module",
   "scripts": {
-    "build": "turbo run build",
+    "build": "bun run typecheck && turbo run build",
     "dev": "turbo run dev --",
     "docs:build": "turbo run build --filter=@gloups/docs",
     "docs:dev": "turbo run dev --filter=@gloups/docs --",
     "docs:preview": "turbo run preview --filter=@gloups/docs --",
     "check": "ultracite check",
+    "typecheck": "tsc --project tsconfig.json && turbo run typecheck",
     "fix": "ultracite fix",
     "lint": "oxlint --deny-warnings",
     "format": "oxfmt --write .",
@@ -27,11 +28,13 @@
     "@changesets/cli": "3.0.3",
     "@commitlint/cli": "21.2.4",
     "@commitlint/config-conventional": "21.2.4",
+    "@types/node": "24.19.2",
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
     "oxfmt": "0.75.0",
     "oxlint": "1.90.0",
     "turbo": "2.11.10",
+    "typescript": "6.0.3",
     "ultracite": "8.1.0"
   },
   "lint-staged": {

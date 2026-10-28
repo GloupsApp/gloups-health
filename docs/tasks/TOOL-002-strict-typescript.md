@@ -1,6 +1,6 @@
 # TOOL-002: Strict TypeScript configuration
 
-Status: Assigned. Owner and integration coordinator: Codex, current strict
+Status: Review. Owner and integration coordinator: Codex, current strict
 TypeScript chat. The owner's 28 October 2026 request approves adding Blume's
 base configuration and strengthening it for production application work.
 
@@ -57,4 +57,23 @@ by this task. Read back the assignment merged on main before implementation.
 
 ## Handoff
 
-Assignment is pending integration. Implementation has not started.
+Assignment merged in [PR #7](https://github.com/GloupsApp/gloups-health/pull/7)
+at `4f1df4c81768a704803ab0c6d6cc38cffa6498a6`. The assigned scope was read back
+from `origin/main` before creating the implementation branch.
+
+The shared base preserves Blume's settings and strengthens nine additional
+checks, with declaration checking enabled. Root and docs projects inherit it;
+`bun run typecheck` and both build entry points enforce the relevant compiler
+checks. The root tooling configs handle optional preset arrays explicitly.
+
+TypeScript 6.0.3 is the latest compatible stable compiler for the existing docs
+dependencies. The docs project alone skips declaration diagnostics from its
+dependencies, which produce 122 errors with declaration checking enabled. All
+authored code remains strict. This documented docs exception does not permit a
+future product application to weaken the shared baseline.
+
+Frozen installation, Ultracite fix/check/doctor, effective compiler settings,
+typechecking, Turborepo graph discovery, an uncached docs build and Changesets
+status passed. The [verification record](../verification/2026-10-28-strict-typescript.md)
+contains exact commands, scope and the declaration limitation. Git integration
+and independent review are pending. No server, database or device was allocated.

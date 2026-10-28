@@ -4,6 +4,43 @@ Workspace tooling and a Blume documentation site are installed. Product code
 still needs an approved task. The root agent policy takes precedence over
 skill defaults, including any unit-test/TDD instructions.
 
+## TypeScript configuration
+
+Extend the root [tsconfig.base.json](../tsconfig.base.json) in each approved
+TypeScript project. It starts from the
+[Blume base](https://github.com/haydenbleasel/blume/blob/main/tsconfig.base.json)
+and enables every `strict` family check through `strict: true`.
+Additional checks require exact optional properties, checked indexed access,
+bracket access for index signatures, explicit overrides, complete returns and
+valid side-effect imports. Unused locals/parameters, switch fallthrough,
+unreachable code, unused labels and inconsistent import casing are errors.
+Declaration checking stays enabled in the shared base with `skipLibCheck: false`.
+See the [TypeScript compiler reference](https://www.typescriptlang.org/tsconfig/).
+
+The base uses ES2022 output semantics, ES2023 libraries, ES modules and bundler
+resolution with no emit. It adds no browser or Node globals. A consuming project
+sets its own source scope, runtime types, libraries, JSX and emission settings.
+An approved NestJS packet must review module resolution, decorators and emitted
+imports for its actual runtime. These tooling defaults do not select a product
+framework. Keep safety checks inherited; document and review any exception.
+
+`bun run typecheck` checks root tooling and the docs configuration. Both build
+entry points require the relevant compiler checks. Turborepo includes the shared
+base in its global dependencies so a baseline change invalidates cached tasks.
+TypeScript 6.0.3 is pinned for compatibility with the current Blume/Astro compiler
+API dependencies. Node types follow the workspace's minimum supported Node major.
+
+The existing documentation project alone overrides `skipLibCheck` to `true`.
+Blume 2.2.6 and its dependencies currently fail declaration checking with missing
+optional adapter types and invalid published declarations. All authored docs
+configuration still receives the inherited strict checks. This exception does
+not authorize a product application to skip declaration checking. Recheck and
+remove it when compatible dependency declarations are available; the exact
+diagnostics and reproduction command are in the
+[verification record](verification/2026-10-28-strict-typescript.md).
+
+## Implementation rules
+
 Use strict TypeScript and validated boundary schemas. Prefer unknown to any,
 explicit units and narrow domain values. Keep functions/features focused; avoid
 single-use abstractions, speculative shared packages and unrelated refactors.

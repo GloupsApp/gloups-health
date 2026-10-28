@@ -4,5 +4,5 @@ import core from "ultracite/oxlint/core";
 
 export default defineConfig({
   extends: [core, antiSlop],
-  ignorePatterns: [...core.ignorePatterns, "**/.blume", "**/.agents"],
+  ignorePatterns: [...(core.ignorePatterns ?? []), "**/.blume", "**/.agents"],
 });

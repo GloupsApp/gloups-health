@@ -16,7 +16,11 @@ permanent backend, a generic shared domain framework or speculative packages.
 Bun 1.4.4 workspaces, one root `bun.lock`, Turborepo and Ultracite/Oxlint/Oxfmt
 are configured by TOOL-001. D011 supersedes the earlier Nx convention. The only
 executable workspace is `@gloups/docs`; `build`, `dev` and `preview` run through
-Turborepo. Pin reviewed framework versions in each future implementation packet.
+Turborepo. TOOL-002 adds the shared strict TypeScript baseline and compiler checks
+for root tooling and the docs project. See
+[CODE-STANDARDS](CODE-STANDARDS.md#typescript-configuration) for inheritance,
+runtime settings and the docs dependency-declaration exception. Pin reviewed
+framework versions in each future implementation packet.
 
 ## Placement and ownership
 

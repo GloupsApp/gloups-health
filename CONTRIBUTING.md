@@ -46,6 +46,7 @@ For tooling and supported source/config changes, run from the root:
 bun run fix
 bun run check
 bunx ultracite doctor
+bun run typecheck
 bun run build
 bun run changeset:status
 ```
@@ -57,10 +58,16 @@ without an extra dependency. Turborepo uses `"ui": "tui"` for interactive termin
 tools. Generated Blume/Astro/build output and the vendored local skill are ignored
 by the formatter. Existing planning Markdown follows the initial Oxfmt baseline.
 
-`build` currently builds only `@gloups/docs`. Inspect the graph with
-`bun run turbo run build --dry=json`; preview with `bun run docs:dev` or
-`bun run docs:preview` after building. No product app, API, typecheck or E2E task
-exists yet. Tooling and docs checks do not establish product behavior.
+`typecheck` checks the root TypeScript tooling configs and then runs workspace
+typechecks through Turborepo. Both projects extend `tsconfig.base.json`.
+The docs project has a documented dependency-declaration exception in
+[CODE-STANDARDS](docs/CODE-STANDARDS.md#typescript-configuration).
+
+`build` runs typechecking before building `@gloups/docs`. Its Turborepo build
+also depends on the docs typecheck, including through `bun run docs:build`.
+Inspect the graph with `bun run turbo run build --dry=json`; preview with
+`bun run docs:dev` or `bun run docs:preview` after building. No product app,
+API or E2E task exists yet. Tooling checks do not establish product behavior.
 
 ## Future application work
 
