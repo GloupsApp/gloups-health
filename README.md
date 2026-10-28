@@ -12,9 +12,10 @@ sets, repetitions, weights, rest timers and progression.
 ## Repository status
 
 This is the new private planning and implementation home for the unified product.
-It currently contains documentation and repository metadata only. There is no
-application, package manifest, dependency lockfile, Nx project, runnable API,
-mobile build or automated build workflow in this repository yet.
+It contains engineering documentation, Bun/Turborepo workspace tooling and a
+local Blume documentation site in `apps/docs`. The API, mobile and product web
+folders reserve future work. No runnable product API, mobile build or automatic
+build workflow exists yet.
 
 The existing applications remain source references. No application code, customer
 data, credentials, native projects or deployment configuration has been migrated.
@@ -36,3 +37,19 @@ engineering work; they do not set public feature availability. The bilingual
 Product scaffolding and code imports start only after the relevant design,
 contracts and task scope are approved. Assigned agents can prepare separate
 specifications now; an unassigned packet is not a claim or permission to build.
+
+## Workspace commands
+
+Use Bun 1.4.4 and Node.js 24.15.0 or newer. Direct dependency versions are pinned
+to the latest stable releases verified during the 28 October 2026 setup.
+
+```sh
+bun install --frozen-lockfile
+bun run check
+bun run docs:dev
+bun run docs:build
+```
+
+`bun run build` builds the current documentation workspace through Turborepo.
+Husky checks staged files before commits and validates Conventional Commit
+messages. See [CONTRIBUTING](CONTRIBUTING.md) for formatting and Changesets.

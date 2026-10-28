@@ -1,7 +1,8 @@
 # Architecture proposal
 
-This repository has documents and metadata only. The paths below reserve
-ownership for future code; AGENTS files do not make them executable projects.
+This repository has engineering documents, workspace tooling and a local Blume
+documentation site. The remaining application paths reserve future work;
+AGENTS files and empty directories do not make them executable projects.
 The full [design draft](specs/2026-10-27-unified-health-coach-design.md) is not yet
 approved for product implementation.
 
@@ -12,25 +13,28 @@ PostgreSQL, protected media and one Expo/React Native app with native platform
 controls. Prisma is a reuse candidate. Do not create microservices, a second
 permanent backend, a generic shared domain framework or speculative packages.
 
-Bun 1.4.2, one root lockfile, Nx and Ultracite/Oxlint/Oxfmt are future repository
-tooling conventions. Pin compatible runtime/framework versions and define actual
-Nx targets in an approved bootstrap task. None is installed/configured here.
+Bun 1.4.4 workspaces, one root `bun.lock`, Turborepo and Ultracite/Oxlint/Oxfmt
+are configured by TOOL-001. D011 supersedes the earlier Nx convention. The only
+executable workspace is `@gloups/docs`; `build`, `dev` and `preview` run through
+Turborepo. Pin reviewed framework versions in each future implementation packet.
 
 ## Placement and ownership
 
-| Planned path | Responsibility | Current state |
-| --- | --- | --- |
-| apps/api | NestJS composition, HTTP, application use cases, domain rules and persistence adapters by feature | Scoped instructions only |
-| apps/mobile | Expo routes, feature screens, native adapters and account-scoped offline state | Scoped instructions only |
-| packages/contracts | Approved wire schemas, explicit units and identifiers consumed by API/mobile | Scoped instructions only; no package |
-| design | Canonical brand tokens/assets | Scope reserved; no assets imported |
-| e2e/api | Real HTTP acceptance with isolated PostgreSQL | Scope reserved; no harness |
-| e2e/mobile | Real app/device journeys | Scope reserved; no harness |
-| tools | Proven build/verification utilities required by real workflows | Scope reserved; no utilities |
-| docs | Product/architecture guides, domain specs/contracts, work packets and evidence | Present |
+| Planned path       | Responsibility                                                                                    | Current state                                         |
+| ------------------ | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| apps/api           | NestJS composition, HTTP, application use cases, domain rules and persistence adapters by feature | Scoped instructions only                              |
+| apps/mobile        | Expo routes, feature screens, native adapters and account-scoped offline state                    | Scoped instructions only                              |
+| apps/web           | Possible product web app                                                                          | Empty reserved folders; framework undecided           |
+| apps/docs          | Blume documentation site                                                                          | Runnable local workspace; static build; no deployment |
+| packages/contracts | Approved wire schemas, explicit units and identifiers consumed by API/mobile                      | Scoped instructions only; no package                  |
+| design             | Canonical brand tokens/assets                                                                     | Scope reserved; no assets imported                    |
+| e2e/api            | Real HTTP acceptance with isolated PostgreSQL                                                     | Scope reserved; no harness                            |
+| e2e/mobile         | Real app/device journeys                                                                          | Scope reserved; no harness                            |
+| tools              | Proven build/verification utilities required by real workflows                                    | Scope reserved; no utilities                          |
+| docs               | Product/architecture guides, domain specs/contracts, work packets and evidence                    | Present                                               |
 
 Existing web/email services remain in the source repository. Migration of those
-workloads needs a separate task; this bootstrap does not create replacement apps.
+workloads needs a separate task; the documentation site does not replace them.
 
 Within the API keep identity, goals, food/catalog, nutrition/hydration, training,
 sleep, cycle, ingestion, coaching, privacy/audit and billing/notifications as

@@ -4,11 +4,11 @@ The new repository starts with fresh history and documentation only. Keep the
 existing applications available as source references; do not rename, delete,
 archive or reset their repositories or user-owned ignored state as part of setup.
 
-| Reference | Reviewed scope |
-| --- | --- |
+| Reference                                                                                          | Reviewed scope                                                                          |
+| -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
 | [Gloups source](https://github.com/GloupsApp/gloups/tree/5b708f6e378f2aea6cbfc164718110da4f625ae4) | Existing Expo/Rust behavior, contracts, verification and the prior unified design draft |
-| [Mioum source](https://github.com/Alexays/Mioum/tree/95ff002a0637da8f7c940de9a3286d662c6a8c20) | Existing NestJS/Prisma/Expo domains; source reuse candidates, not accepted new features |
-| [Repository documentation reference](https://github.com/Alexays/Lilo) | Short root rules, separate contributor/architecture guides and a documentation index |
+| [Mioum source](https://github.com/Alexays/Mioum/tree/95ff002a0637da8f7c940de9a3286d662c6a8c20)     | Existing NestJS/Prisma/Expo domains; source reuse candidates, not accepted new features |
+| [Repository documentation reference](https://github.com/Alexays/Lilo)                              | Short root rules, separate contributor/architecture guides and a documentation index    |
 
 Transferred content is limited to planning drafts and the existing Humanizer
 skill with its MIT notice/provenance. The repository itself has not been given an

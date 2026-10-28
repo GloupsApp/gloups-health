@@ -1,7 +1,7 @@
 # Code standards for future implementation
 
-No runtime/tooling is installed in this repository yet. These rules apply when
-an approved task introduces code. The root agent policy takes precedence over
+Workspace tooling and a Blume documentation site are installed. Product code
+still needs an approved task. The root agent policy takes precedence over
 skill defaults, including any unit-test/TDD instructions.
 
 Use strict TypeScript and validated boundary schemas. Prefer unknown to any,
@@ -16,9 +16,9 @@ Do not expose ORM entities directly. Keep retries, concurrency and transactional
 writes inside the use-case boundary rather than patching values in the UI.
 
 Use Ultracite with Oxlint, Oxfmt and anti-slop for JS/TS/config. The approved
-bootstrap pins compatible versions and commits one Bun lockfile. Match the
+tooling setup pins compatible versions and commits one Bun lockfile. Match the
 configured formatting; do not carry unrelated formatter changes in a feature PR.
-Use the applicable installed Ultracite/Nx/Expo guidance and inspect actual help
+Use the applicable Ultracite/Turborepo/Expo guidance and inspect installed help
 rather than guessing commands or importing another repository's build rules.
 
 Use native platform components, accessible labels, keyboard/font behavior,

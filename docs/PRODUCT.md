@@ -28,8 +28,10 @@ copy uses Gloups and health coach, with no health-app competitor references.
 ## Proposals requiring review
 
 Expo/React Native, PostgreSQL, the exact shared-contract approach, provider
-products and the detailed release design remain proposals. Bun 1.4.2, Nx and
-Ultracite are retained repository conventions for the future tooling setup.
+products and the detailed release design remain proposals. Bun workspaces,
+Turborepo and Ultracite/Oxlint/Oxfmt are accepted repository tooling under D011.
+Blume serves the documentation workspace under D012. The product web framework
+remains open.
 
 The proposed first population is adults using the product for sports/wellness.
 Minimum age and population exclusions need confirmation. Phone strength

@@ -25,15 +25,15 @@ packet is Ready merely because its specification packet can start.
 
 ## Internal task states
 
-| State | Meaning |
-| --- | --- |
+| State                   | Meaning                                                                |
+| ----------------------- | ---------------------------------------------------------------------- |
 | Ready for specification | A worker may be assigned to write its bounded design/contract proposal |
-| Draft implementation | Product task depends on unapproved specifications or tooling |
-| Assigned | One owner and workspace are recorded on main |
-| Working | The assigned worker has begun its permitted work |
-| Blocked | A concrete dependency/decision prevents the remaining assigned work |
-| Review | Deliverable and local evidence are ready for the assigned review |
-| Done | Required evidence exists, PR merged and handoff recorded |
+| Draft implementation    | Product task depends on unapproved specifications or tooling           |
+| Assigned                | One owner and workspace are recorded on main                           |
+| Working                 | The assigned worker has begun its permitted work                       |
+| Blocked                 | A concrete dependency/decision prevents the remaining assigned work    |
+| Review                  | Deliverable and local evidence are ready for the assigned review       |
+| Done                    | Required evidence exists, PR merged and handoff recorded               |
 
 These states are internal. They do not update Canny statuses or announce releases.
 

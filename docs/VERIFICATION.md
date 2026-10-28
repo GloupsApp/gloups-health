@@ -2,22 +2,23 @@
 
 ## Current repository
 
-Only documentation and metadata exist. Check Git diffs, local Markdown targets
-and anchors, instruction consistency, task ownership, confirmed/proposed choices,
+Workspace tooling and a local documentation site exist. Check Git diffs, local
+Markdown targets and anchors, instruction consistency, task ownership, confirmed/proposed choices,
 reference-name exclusions and secret/data hygiene. Record actual commands/results
-under [verification](verification/README.md). No app check can pass before an app
-or target exists; do not install runtimes to manufacture a passing status.
+under [verification](verification/README.md). TOOL-001 adds frozen Bun installs,
+Ultracite checks, Turborepo documentation builds, Changesets status and real hook
+checks. No product app check can pass before its app or task exists.
 
 ## Future behavior
 
-| Slice | Required boundary |
-| --- | --- |
-| API | Running NestJS HTTP service with isolated PostgreSQL; accepted values, auth/isolation, retries, concurrency, persistence, restart and failure paths |
-| Native UI | Actual app on a regular iPhone, iPhone Duo and relevant Android device/emulator; actual runtimes and journey limits recorded |
-| Native health/background | Physical-device health imports, source edits/deletions, permissions, lock/background/process death, timers and sync |
-| Coaching | Real authorized context/action boundaries, numeric consistency, missing/stale context, adversarial record text, provider failures and reviewed quality cases |
-| International | French/English, regional formats, units, zones/DST/travel, overnight dates, decimal input, store/currency/market coverage |
-| Data/security | Export/deletion across new domains/media/chat/queues, audit access and a protected isolated restore |
+| Slice                    | Required boundary                                                                                                                                            |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| API                      | Running NestJS HTTP service with isolated PostgreSQL; accepted values, auth/isolation, retries, concurrency, persistence, restart and failure paths          |
+| Native UI                | Actual app on a regular iPhone, iPhone Duo and relevant Android device/emulator; actual runtimes and journey limits recorded                                 |
+| Native health/background | Physical-device health imports, source edits/deletions, permissions, lock/background/process death, timers and sync                                          |
+| Coaching                 | Real authorized context/action boundaries, numeric consistency, missing/stale context, adversarial record text, provider failures and reviewed quality cases |
+| International            | French/English, regional formats, units, zones/DST/travel, overnight dates, decimal input, store/currency/market coverage                                    |
+| Data/security            | Export/deletion across new domains/media/chat/queues, audit access and a protected isolated restore                                                          |
 
 Use E2E Army (Tester Army). Agents do not write, extend or rewrite unit tests and
 do not use TDD. Exact expected numeric and persistence behavior belong in the

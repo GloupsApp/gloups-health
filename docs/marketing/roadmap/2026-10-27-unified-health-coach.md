@@ -175,15 +175,15 @@ de l'interface et la région de formatage peuvent être différentes.
 
 These are Under Review candidates, not additional launch promises:
 
-| English | Français |
-| --- | --- |
-| Meal planning, shopping lists and batch cooking | Menus, listes de courses et cuisine en lots |
-| Watch workout execution and home/lock-screen widgets | Séances sur montre et widgets d'accueil ou d'écran verrouillé |
-| More direct wearable and service connections | Connexions directes à d'autres appareils et services |
-| More detailed cardio, interval and outdoor recording | Enregistrement détaillé du cardio, des intervalles et des sorties |
-| Habit, caffeine and supplement tracking | Suivi des habitudes, de la caféine et des compléments |
-| Longer-term trends and annual reviews | Tendances et bilans annuels |
-| Additional recovery and training-load metrics | Mesures complémentaires de récupération et de charge d'entraînement |
+| English                                              | Français                                                            |
+| ---------------------------------------------------- | ------------------------------------------------------------------- |
+| Meal planning, shopping lists and batch cooking      | Menus, listes de courses et cuisine en lots                         |
+| Watch workout execution and home/lock-screen widgets | Séances sur montre et widgets d'accueil ou d'écran verrouillé       |
+| More direct wearable and service connections         | Connexions directes à d'autres appareils et services                |
+| More detailed cardio, interval and outdoor recording | Enregistrement détaillé du cardio, des intervalles et des sorties   |
+| Habit, caffeine and supplement tracking              | Suivi des habitudes, de la caféine et des compléments               |
+| Longer-term trends and annual reviews                | Tendances et bilans annuels                                         |
+| Additional recovery and training-load metrics        | Mesures complémentaires de récupération et de charge d'entraînement |
 
 Medical records, illness prediction, medication advice and fertility decisions
 need their own intended-use and evidence review. They are not launch commitments
