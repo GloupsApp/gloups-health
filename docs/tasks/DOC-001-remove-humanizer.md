@@ -1,6 +1,7 @@
 # DOC-001: Remove the local Humanizer skill
 
-Status: Review. Owner and integration coordinator: Codex, current skill-removal
+Status: Done on merge of [PR #13](https://github.com/GloupsApp/gloups-health/pull/13);
+Review until then. Owner and integration coordinator: Codex, current skill-removal
 chat. The owner's 28 October 2026 request approves removing the repository's
 Humanizer skill and updating references that depend on it.
 
@@ -74,6 +75,17 @@ Checks ran on macOS arm64 with Node.js `26.12.1` and Bun `1.4.4` from
   active references, unchanged dated evidence and no matching secret patterns
   in additions. Prose, task status and reference exclusions were reviewed.
 
+The concurrent TOOL-004 assignment was integrated from main without changing its
+packet or registry entry. Final Markdown validation passed 207 local links across
+57 files; the only registry difference from that main revision is DOC-001's status.
+The implementation commit passed the Husky formatting and Conventional Commit
+hooks.
+
+Implementation:
+[089613d](https://github.com/GloupsApp/gloups-health/commit/089613d28f7d689a75cd76a8d40aafa28cae0e61).
+Integration: [PR #13](https://github.com/GloupsApp/gloups-health/pull/13), including
+this handoff. Its merge commit is the integrated main revision.
+
 No unit tests or E2E/device checks were added or run for this removal. No server,
-device, database or additional worktree was allocated. Implementation integration
-and its commit/PR links remain to be recorded.
+device, database or additional worktree was allocated. No product decisions or
+dependent tasks remain for this removal.
