@@ -80,3 +80,74 @@ The owner was asked whether to review/merge the concrete assignment first or
 explicitly permit isolated source work before it merges. That question changes
 neither the approved authentication design nor the requirement to leave PRs for
 owner review. No answer or waiver is assumed; source work has not begun.
+
+## 29 October: authorized merge and native execution
+
+The owner explicitly authorized merging PR #25 and starting native execution.
+It merged at `fbe808edcf8c8ce18b2083b0fab5c5af8ee7eac6`; the assignment and
+registry were read back from `origin/main` before source work. Execution branch:
+`codex/auth-003-official-auth`. All subsequent PRs remain for owner review; this
+one authorized merge is not permission to merge implementation PRs.
+
+The approved stable API pins were rechecked against npm metadata. TypeScript's
+latest tag is now `7.0.2`; the reviewed shared `6.0.3` compiler remains for the
+existing compiler-API compatibility requirement. Node `26.13.0` Lithium LTS was
+downloaded from the official Node distribution and its SHA-256 verified before
+use. It lives only in task-specific `/tmp` tooling; the system Node is untouched.
+OrbStack was started from Stopped; its Docker server is `29.8.2`. The four lane
+ports were free. No existing AUTH-003 container or volume was found. Only the
+lane's isolated Postgres/volume is being created, with ignored mode-0600 local
+configuration; no secret values were printed.
+
+### Declaration-checking prerequisite
+
+`bun run api:build` fails at API typecheck. A direct repeat with
+`bun run --filter @gloups/api typecheck` reports 99 dependency declaration errors:
+three in Better Auth core, 22 in Better Call, 73 in Drizzle ORM and one in
+thread-stream. They include missing optional `bun:sqlite`/Gel/MySQL types,
+HTTP/Web Crypto ambient types, inconsistent published query-builder declarations,
+and the removed Node `worker_threads.TransferListItem` type. There are no authored
+API source diagnostics at this revision.
+
+Diagnostic-only `bun run --filter @gloups/api typecheck --skipLibCheck true`
+passes. The committed API config still inherits `skipLibCheck: false`. No dummy
+ambient shims, unused database drivers or altered library declarations were
+introduced. The proposed exception is API-local `skipLibCheck: true`, retaining
+all strict checks on authored code, with this evidence and a removal condition in
+CODE-STANDARDS. The owner must approve it because the existing docs/mobile
+exceptions explicitly do not authorize another project to skip declarations.
+Full diagnostic output is in this plan's ignored workspace; it contains no
+credentials or health data. This is a compile diagnosis, not unit/E2E evidence.
+
+### Owner rulings and first API evidence
+
+The owner approved the API-only declaration exception on 29 October (D019),
+removed Mobbin and authorized E2E Army installation for Expo testing. The local
+runner is official `e2e` 0.21.3 with `@e2e-dev/mobile` 0.12.4; installed help and
+upstream setup/writing guidance were read. No model login or paid cloud session
+was used. CODE-STANDARDS now records the API exception and removal condition;
+root declaration checking remains enabled.
+
+Drizzle generated and applied two ordered migrations to the empty lane database.
+Actual server: PostgreSQL 18.6; data directory `/var/lib/postgresql/18/docker`,
+matching the image volume mount. The API and local sink run as emitted Node ESM
+on 4340/4341. Schema regeneration after the explicit registry change reports no
+schema changes. Root/API/docs/mobile typechecks passed with no cached workspace
+tasks; Ultracite check passed and doctor reported 8 passed, 0 warnings/failures.
+
+E2E run `01a184af-1d33-7bd9-b55e-b767c7f54977` passed all 12 initial API cases
+in 4.90 seconds against actual HTTP/Postgres. See the
+[case record](../../e2e/api/authentication.md) for exact coverage and remaining
+journeys. Earlier failed runs revealed real signup callback transaction/ledger
+visibility and Retry-After issues; the fixes flush the email handoff after SDK
+commit and preserve/alias its rate-limit header. Formatter changes also exposed
+Nest constructor metadata loss; explicit injection decorators preserve runtime
+class tokens. No agent-written unit tests or TDD were used.
+
+Final initial-slice checkpoint: run `01a184bd-041c-75df-963c-2a37201b87fc`
+passed 12/12 in 5.12 seconds after restarting the API and sink with the final
+boundary/parser/metadata fixes. Root build passed all six tasks (three cached);
+API's final changed build/typecheck ran uncached. Changesets status passed and
+reports the existing documentation patch only. Graph dry-run includes API, docs
+and mobile. Migration reapplication is idempotent; isolated URL validation and
+postgres.js migration pool max 1 are configured. No source PR has been merged.

@@ -19,8 +19,9 @@ worker does not need the founders' chat history.
 ## Working here
 
 The [authentication implementation plan](plans/2026-10-28-authentication-implementation.md)
-follows the owner-approved design under D017. It is ready for plan review before
-product execution; the repository still has no running authentication service.
+follows the owner-approved design under D017. AUTH-003 is executing natively
+after assignment PR #25. A local Fastify/Drizzle credential API has E2E evidence;
+social/native lifecycle work and its complete acceptance remain in progress.
 
 | Document                                | Covers                                                                             |
 | --------------------------------------- | ---------------------------------------------------------------------------------- |

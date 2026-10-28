@@ -1,7 +1,7 @@
 # AUTH-003: Native execution of the approved authentication plan
 
-Status: Review of execution assignment. Source work starts after this assignment
-is merged on main and read back. Owner and integration coordinator: Codex, current
+Status: Working. Assignment PR #25 merged and read back at
+`fbe808edcf8c8ce18b2083b0fab5c5af8ee7eac6` on 29 October 2026. Owner and integration coordinator: Codex, current
 authentication chat `01a1842f-75ee-7d31-a619-daeedf78f882`.
 
 ## Intent and approved inputs
@@ -95,14 +95,15 @@ the stack. Local secrets go only into ignored state, never terminal output/Git.
 
 ## Acceptance and ordered gates
 
-1. Assignment is owner-reviewed, merged on main and read back before source work,
-   as required by AGENT-WORKFLOW and plan Task 0. The agent does not merge it.
+1. The owner explicitly authorized merging assignment PR #25 on 29 October.
+   It is merged and read back; that main-assignment gate is satisfied. Every
+   source PR remains open for owner review and merge.
 2. Record runtime/database/port/tool availability and Task 0 prerequisites.
    Missing Army/provider/device evidence is not a reason to invent a passing check.
 3. Execute Tasks 1–4 in order, including Fastify raw bodies/cookies, Drizzle-owned
    migrations, unique ownership, email lifecycle, native Apple credentials and
    durable deletion. Follow each named API/mail/social/lifecycle/deletion case.
-4. Before Task 5 flow source, inspect actual Mobbin references and verify/import
+4. D019 removes the Mobbin prerequisite. Before Task 5 flow source, verify/import
    the canonical palette. Before live providers, inventory authorized credentials,
    callback environment, sender/test recipients, native identifiers and devices.
 5. Execute Tasks 5–6 with real regular iPhone, iPhone Duo and Android acceptance;
@@ -147,3 +148,36 @@ Husky staged formatting and Conventional Commit hooks passed. The PR contains
 documentation only. Source remains unstarted pending the owner-merged assignment
 or an explicit owner change to the main-assignment prerequisite. Native execution
 and the approved stack are already settled.
+
+## 29 October execution amendments
+
+Execution base: `fbe808edcf8c8ce18b2083b0fab5c5af8ee7eac6`, branch
+`codex/auth-003-official-auth`. The owner explicitly authorized the assignment
+merge only, removed Mobbin and approved the API-local declaration exception
+(D019). Corresponding owned paths include `docs/CODE-STANDARDS.md`,
+`apps/mobile/AGENTS.md`, `.gitignore`, root `tsconfig.json`, `oxlint.config.ts`,
+`e2e.config.ts` and
+actual HTTP/device E2E cases/helpers under `e2e/api/` and `e2e/mobile/`. The owner
+authorizes installing the official TesterArmy runner/mobile engine, not a unit
+harness or paid cloud resource. Root scripts/dependencies/lock changes serve
+those actual test consumers. The coordinator may update the current-state
+paragraphs in `docs/README.md` and `docs/ARCHITECTURE.md` to match implemented work.
+
+Task 1/2 source is underway. Node 26.13.0 is checksum-verified in isolated temp
+tooling; this lane owns API 4340, Postgres 25440, sink 4341 and future Metro 8085.
+Only the local synthetic Postgres service/volume is created. The official `e2e`
+0.21.3 and `@e2e-dev/mobile` 0.12.4 are installed; their CLI/docs were inspected.
+No model-provider login or paid device session was started. Provider credentials,
+physical-device identity and release retention remain unverified dependencies.
+Earlier preflight/review paragraphs are the dated assignment history.
+
+### Initial backend checkpoint
+
+Tasks 1/2 have a runnable local API, reviewed/generated Drizzle history, account
+ports/use cases, verified session guard, bilingual synthetic email handoff and
+credential lifecycle. Initial API E2E passes 12/12 at run
+`01a184bd-041c-75df-963c-2a37201b87fc`; see the case/evidence records. Root build,
+typechecks, frozen install, Ultracite check/doctor, graph and Changesets status
+passed. This is a checkpoint: remaining transport/restart/failure acceptance and
+Tasks 3–7 are not Done. The API and sink are running on this lane's 4340/4341 and
+Postgres on 25440. No physical device or provider success is claimed.

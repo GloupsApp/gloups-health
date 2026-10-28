@@ -26,20 +26,33 @@
     "commitlint": "commitlint",
     "changeset": "changeset",
     "changeset:status": "changeset status",
-    "version-packages": "changeset version"
+    "version-packages": "changeset version",
+    "api:build": "turbo run build --filter=@gloups/api",
+    "api:start": "bun run --filter @gloups/api start",
+    "api:watch": "bun run --filter @gloups/api watch",
+    "api:mail-sink": "bun run --filter @gloups/api mail-sink",
+    "api:worker": "bun run --filter @gloups/api worker",
+    "api:auth:generate": "bun run --filter @gloups/api auth:generate",
+    "api:db:generate": "bun run --filter @gloups/api db:generate",
+    "api:db:migrate": "bun run --filter @gloups/api db:migrate",
+    "e2e:api": "e2e run --target api",
+    "e2e:mobile": "e2e run --target ios --target android"
   },
   "devDependencies": {
     "@changesets/cli": "3.0.3",
     "@commitlint/cli": "21.2.4",
     "@commitlint/config-conventional": "21.2.4",
+    "@e2e-dev/mobile": "0.12.4",
     "@types/node": "24.19.2",
+    "e2e": "0.21.3",
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
     "oxfmt": "0.75.0",
     "oxlint": "1.90.0",
     "turbo": "2.11.10",
     "typescript": "6.0.3",
-    "ultracite": "8.1.0"
+    "ultracite": "8.1.0",
+    "zod": "4.6.7"
   },
   "lint-staged": {
     "*": "ultracite fix"

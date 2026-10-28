@@ -7,8 +7,8 @@ This directory contains the minimal Expo SDK 58 shell approved in
 native root; product screens, generated native projects and provider connections
 are absent. See [README](README.md) for actual root commands and compiler limits.
 
-Expo/React Native is accepted for this foundation. Before UI
-integration inspect actual Mobbin screens and record neutral flow links. Reuse
+Expo/React Native is accepted for this foundation. D019 removes the Mobbin
+prerequisite by owner instruction. Follow native platform conventions and reuse
 canonical brand tokens. Routes hold routing; feature components, services and
 native adapters live outside the route tree. Do not put secrets in client code.
 
