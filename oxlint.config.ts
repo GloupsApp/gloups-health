@@ -5,5 +5,5 @@ import react from "ultracite/oxlint/react";
 
 export default defineConfig({
   extends: [core, react, antiSlop],
-  ignorePatterns: [...(core.ignorePatterns ?? []), "**/.blume", "**/.agents"],
+  ignorePatterns: [...(core.ignorePatterns ?? []), "**/.blume"],
 });
