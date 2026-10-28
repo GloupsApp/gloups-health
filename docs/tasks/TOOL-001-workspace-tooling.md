@@ -1,6 +1,7 @@
 # TOOL-001: Workspace tooling and Blume documentation
 
-Status: Review for the owner-requested anti-slop/TUI follow-up. Initial setup
+Status: Done on merge of [PR #6](https://github.com/GloupsApp/gloups-health/pull/6);
+Review until then. Initial setup
 merged in [PR #5](https://github.com/GloupsApp/gloups-health/pull/5).
 Owner and integration coordinator: Codex chat
 `01a18275-5307-7d93-98f7-10ca191559f3`. The owner approved implementation in the
@@ -20,7 +21,7 @@ The preceding folder-only work is merged in [PR #3](https://github.com/GloupsApp
 placement. API/mobile implementation, product contracts and the main web framework
 remain outside this approval.
 
-Versions verified against the npm registry on 28 October 2026: Bun 1.4.4,
+Initial setup versions verified against the npm registry on 28 October 2026: Bun 1.4.4,
 Turborepo 2.11.10, Oxlint 1.90.0, Oxfmt 0.75.0, Ultracite 8.1.0, Blume 2.2.6,
 Changesets CLI 3.0.3, Husky 9.1.7, commitlint CLI/config-conventional 21.2.4,
 lint-staged 17.6.0 and eslint-plugin-anti-slop 0.5.0. Check actual package exports,
@@ -127,3 +128,10 @@ Task discovery and the Blume build passed; a terminal run with `--ui=tui`
 displayed task panels and replayed the cached successful build. Details are in
 the [verification follow-up](../verification/2026-10-28-workspace-tooling.md#anti-slop-and-terminal-ui-follow-up).
 No persistent server or other shared resource was started.
+
+Correction commit:
+[033e75b](https://github.com/GloupsApp/gloups-health/commit/033e75b36bc39271564b5315fd997bddc9c2c597).
+Integration: [PR #6](https://github.com/GloupsApp/gloups-health/pull/6), including
+this handoff. The commit passed both Husky hooks, with eight staged files checked.
+Local link/anchor checks passed for 178 references across 47 Markdown files.
+The remaining product decisions and downstream boundaries above still apply.

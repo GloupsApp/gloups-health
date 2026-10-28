@@ -128,3 +128,10 @@ the plugin and needs no separate installation.
 
 The follow-up changes no product application behavior. No unit tests, persistent
 server, provider resources, deployment or publication were introduced.
+
+Correction commit:
+[033e75b](https://github.com/GloupsApp/gloups-health/commit/033e75b36bc39271564b5315fd997bddc9c2c597),
+integrated through [PR #6](https://github.com/GloupsApp/gloups-health/pull/6).
+Both Husky hooks passed on the actual commit, checking eight staged files and
+its Conventional Commit message. Local Markdown checks passed for 178 file/anchor
+references across 47 files; the Git diff passed whitespace and scope review.
