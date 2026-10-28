@@ -1,6 +1,6 @@
 # Decision register
 
-Updated 27 October 2026. Confirmed decisions come from the owners' instructions.
+Updated 28 October 2026. Confirmed decisions come from the owners' instructions.
 A merged draft document is not approval of all its proposals.
 
 | ID | Decision | State |
@@ -15,6 +15,8 @@ A merged draft document is not approval of all its proposals.
 | D008 | Canny Free public roadmap; original French/English copy; no competitor references | Confirmed |
 | D009 | No agent-written/modified unit tests or TDD; real-boundary E2E evidence | Repository policy |
 | D010 | Local checks then commit/push/PR/merge; deployment/distribution separate; no reliance on Actions | Repository policy |
+| D011 | Bun workspaces, Turborepo, Oxlint, Oxfmt, Ultracite, Changesets and Husky with Conventional Commits; latest stable versions pinned at setup | Confirmed by owner, 28 October 2026; supersedes Nx and Bun 1.4.2 tooling policy |
+| D012 | Blume documentation site in apps/docs; apps/web remains reserved pending the web-app decision | Confirmed for tooling setup, 28 October 2026; product web framework remains open |
 | P001 | Expo client, PostgreSQL/Prisma and NestJS modular monolith | Proposed |
 | P002 | Adults only; phone strength execution with imported/manual other activities | Proposed |
 | P003 | Exact locale, temporal, sync and action wire schemas | Requires domain contract review |
