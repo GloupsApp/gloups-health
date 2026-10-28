@@ -1,10 +1,8 @@
-import antiSlop from "eslint-plugin-anti-slop";
 import { defineConfig } from "oxlint";
+import antiSlop from "ultracite/oxlint/anti-slop";
 import core from "ultracite/oxlint/core";
 
 export default defineConfig({
-  extends: [core],
+  extends: [core, antiSlop],
   ignorePatterns: [...core.ignorePatterns, "**/.blume", "**/.agents"],
-  jsPlugins: [{ name: "anti-slop", specifier: "eslint-plugin-anti-slop" }],
-  rules: antiSlop.configs.recommended.rules,
 });

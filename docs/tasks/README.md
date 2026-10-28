@@ -8,7 +8,7 @@ on main before workers start. Follow
 
 | Implementation packet                     | Owner                                           | Status              | Approved scope                                                 |
 | ----------------------------------------- | ----------------------------------------------- | ------------------- | -------------------------------------------------------------- |
-| [TOOL-001](TOOL-001-workspace-tooling.md) | Codex chat 01a18275-5307-7d93-98f7-10ca191559f3 | Done on PR #5 merge | Bun/Turborepo tooling, Blume docs, Changesets and commit hooks |
+| [TOOL-001](TOOL-001-workspace-tooling.md) | Codex chat 01a18275-5307-7d93-98f7-10ca191559f3 | Done on PR #6 merge | Bun/Turborepo tooling, Blume docs, Changesets and commit hooks |
 
 | Packet                             | Specification output                                                 | Dependency before code                                             |
 | ---------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------ |
