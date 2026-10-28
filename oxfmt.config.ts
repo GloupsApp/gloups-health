@@ -6,7 +6,6 @@ export default defineConfig({
   ignorePatterns: [
     ...(ultracite.ignorePatterns ?? []),
     "**/.blume",
-    "**/.agents",
     "**/.husky/_",
   ],
   proseWrap: "preserve",

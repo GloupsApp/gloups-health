@@ -12,7 +12,7 @@ on main before workers start. Follow
 | [TOOL-002](TOOL-002-strict-typescript.md)     | Codex, current strict TypeScript chat           | Done on PR #8 merge  | Strict shared TypeScript configuration and current-workspace compiler checks        |
 | [TOOL-003](TOOL-003-expo-foundation.md)       | Codex, current Expo setup chat                  | Done on PR #10 merge | Expo SDK 58 bootstrap, inherited strict TypeScript and mobile Ultracite integration |
 | [TOOL-004](TOOL-004-commitlint-typescript.md) | Codex, current commitlint TypeScript chat       | Review               | TypeScript commitlint config and existing commit-hook verification                  |
-| [DOC-001](DOC-001-remove-humanizer.md)        | Codex, current skill-removal chat               | Assigned             | Remove the local Humanizer skill and its active documentation/tooling references    |
+| [DOC-001](DOC-001-remove-humanizer.md)        | Codex, current skill-removal chat               | Done on PR #13 merge | Remove the local Humanizer skill and its active documentation/tooling references    |
 
 | Packet                             | Specification output                                                 | Dependency before code                                             |
 | ---------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------ |
