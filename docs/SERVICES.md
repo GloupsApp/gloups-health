@@ -4,15 +4,23 @@ This new repository has no provisioned runtime, configured credentials, provider
 project or verified deployment. Existing selections below are constraints/source
 facts, not proof of a working connection here.
 
-| Service          | Existing direction                                            | New-repository boundary                                                                                                             |
-| ---------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Identity         | Clerk application app_3KwzqkCOQWPOAd2BWpaMhzQ0hci is selected | Do not create/select another application; review setup and new account-ID mapping without copying secrets                           |
-| Analytics/config | PostHog EU preferred                                          | Approve exact products, event payloads, native crash behavior and separation from health/marketing data                             |
-| Purchases        | Existing RevenueCat foundation                                | Reverify app records, user mapping, products, localized offers and sandbox journeys before reuse                                    |
-| Inference        | Prior apps use different provider paths                       | Select exact products, regions, retention and allowed data use; do not transfer personal subscription tokens                        |
-| Hosting          | Existing workloads use Coolify; EU locations preferred        | New NestJS/PostgreSQL/media deployment needs a separate design and authorization; do not reuse the unrelated preconfigured instance |
-| Mobile delivery  | Existing EAS/store foundation                                 | Native IDs/signing/project connections need explicit migration evidence; no new app/build is configured here                        |
-| Public roadmap   | Existing Canny Free portal                                    | Keep Free, bilingual copy and no health records; cards remain unpublished drafts                                                    |
+| Service          | Existing direction                                                           | New-repository boundary                                                                                                             |
+| ---------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Identity         | Better Auth in NestJS/Expo SDK 58, official integrations/plugins only (D015) | Google, Apple and email/password; authentication design review and an implementation packet precede code/provider setup             |
+| Analytics/config | PostHog EU preferred                                                         | Approve exact products, event payloads, native crash behavior and separation from health/marketing data                             |
+| Purchases        | Existing RevenueCat foundation                                               | Reverify app records, user mapping, products, localized offers and sandbox journeys before reuse                                    |
+| Inference        | Prior apps use different provider paths                                      | Select exact products, regions, retention and allowed data use; do not transfer personal subscription tokens                        |
+| Hosting          | Existing workloads use Coolify; EU locations preferred                       | New NestJS/PostgreSQL/media deployment needs a separate design and authorization; do not reuse the unrelated preconfigured instance |
+| Mobile delivery  | Existing EAS/store foundation                                                | Native IDs/signing/project connections need explicit migration evidence; no new app/build is configured here                        |
+| Public roadmap   | Existing Canny Free portal                                                   | Keep Free, bilingual copy and no health records; cards remain unpublished drafts                                                    |
+
+The earlier selected Clerk application `app_3KwzqkCOQWPOAd2BWpaMhzQ0hci` is
+historical source information after D015. Preserve it and its data; do not create
+a replacement Clerk application or perform a migration/deletion without its own
+authorization. Better Auth is a library hosted by the future NestJS service, not
+proof of a new managed provider connection. Google OAuth records, Apple App ID,
+Service ID/key/capability and an email sender still need an authorized inventory
+and environment-specific configuration. No connection has been verified here.
 
 The permanent existing mobile identity app.gloups.health is source information,
 not a second app to register automatically. Source configuration must be

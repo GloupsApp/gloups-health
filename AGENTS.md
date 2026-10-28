@@ -95,5 +95,8 @@ files when entering their application or package.
   projects, caches, credentials or signing material. Deployment and store
   distribution remain separate from Git integration.
 
-The selected Clerk application is fixed; do not create another. PostHog EU is
-preferred. Existing service facts and unknowns live in [SERVICES](docs/SERVICES.md).
+Better Auth in NestJS with Expo SDK 58 is selected under D015, with Google, Apple
+and email/password. Use official authentication and Expo integrations/plugins
+only. Preserve existing identity resources; migration or deletion requires its
+own authorization. PostHog EU is preferred. Existing service facts and unknowns
+live in [SERVICES](docs/SERVICES.md).

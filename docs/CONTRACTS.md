@@ -7,8 +7,10 @@ work consumes them.
 
 Every domain contract must define:
 
-- Authenticated owner identity from the selected Clerk application mapped to an
-  internal Gloups account ID. A caller cannot select a different record owner.
+- Authenticated owner identity from server-verified Better Auth sessions (D015)
+  mapped to an internal Gloups account ID. A caller cannot select a different
+  record owner. Exact mapping/lifecycle behavior is proposed in the
+  [authentication design](specs/2026-10-28-authentication-design.md), pending approval.
 - Stable identifiers, revision/conflict rules, request retry identity and atomic
   persistence boundaries. Define repeat, concurrent and interrupted commands.
 - Exact inputs/outputs, units, ranges, finite numeric handling, rounding and

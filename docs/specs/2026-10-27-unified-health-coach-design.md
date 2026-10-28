@@ -72,16 +72,16 @@ Source review used Gloups revision 83b57c99 and Mioum revision 95ff002a on 27 Oc
 performed for this design. Existing verification records retain their own dates,
 devices and limitations.
 
-| Area        | Gloups                                                                               | Mioum                                                                                | Unification work                                                                             |
-| ----------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
-| Mobile      | Expo 58, native platform controls, component catalog, existing iPhone acceptance     | Expo 57, native tabs, cooking/progress screens and widget source                     | Keep the newer working shell; adapt selected flows to its native components and brand        |
-| Nutrition   | Photo/barcode/manual meals, water, USDA-backed calculations and provenance contracts | CIQUAL/Open Food Facts, corrections, favorites, planning, shopping and batch cooking | Agree one food/quantity/nutrient contract and evaluate each pipeline through real boundaries |
-| Coach       | Saved streaming chat, optional local generation; no diary tools                      | Diary-aware context, meal tools, weekly levers and stored conversations              | Establish one context, recommendation and action contract before reusing tools               |
-| Fitness     | Historical exercise API; no current workout recorder                                 | Activity/weight imports and adaptive nutrition targets                               | Build routines, live sessions, set history, rest timers and progression                      |
-| Sleep/cycle | Planned context, without current domain implementations                              | No sleep/cycle implementation found in reviewed domain code                          | New recording, import, consent and interpretation domains                                    |
-| Health sync | No current HealthKit integration                                                     | Apple Health adapter; the bridge returns unavailable outside iOS                     | Build and verify Android Health Connect; extend selected iOS record types                    |
-| Identity    | Selected Clerk application, internal account UUID                                    | Installation identity, custom access/refresh tokens and recovery                     | Retain the selected Clerk identity boundary; replace Mioum's anonymous-auth assumptions      |
-| Storage     | SQLite and protected image records                                                   | PostgreSQL/Prisma, local photo files, mobile upload queue/catalog                    | Define the new schema, protected media and encrypted device persistence                      |
+| Area        | Gloups                                                                               | Mioum                                                                                | Unification work                                                                                                    |
+| ----------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| Mobile      | Expo 58, native platform controls, component catalog, existing iPhone acceptance     | Expo 57, native tabs, cooking/progress screens and widget source                     | Keep the newer working shell; adapt selected flows to its native components and brand                               |
+| Nutrition   | Photo/barcode/manual meals, water, USDA-backed calculations and provenance contracts | CIQUAL/Open Food Facts, corrections, favorites, planning, shopping and batch cooking | Agree one food/quantity/nutrient contract and evaluate each pipeline through real boundaries                        |
+| Coach       | Saved streaming chat, optional local generation; no diary tools                      | Diary-aware context, meal tools, weekly levers and stored conversations              | Establish one context, recommendation and action contract before reusing tools                                      |
+| Fitness     | Historical exercise API; no current workout recorder                                 | Activity/weight imports and adaptive nutrition targets                               | Build routines, live sessions, set history, rest timers and progression                                             |
+| Sleep/cycle | Planned context, without current domain implementations                              | No sleep/cycle implementation found in reviewed domain code                          | New recording, import, consent and interpretation domains                                                           |
+| Health sync | No current HealthKit integration                                                     | Apple Health adapter; the bridge returns unavailable outside iOS                     | Build and verify Android Health Connect; extend selected iOS record types                                           |
+| Identity    | Earlier selected Clerk application, internal account UUID                            | Installation identity, custom access/refresh tokens and recovery                     | D015 selects Better Auth for the new service; preserve source identities pending a separately authorized transition |
+| Storage     | SQLite and protected image records                                                   | PostgreSQL/Prisma, local photo files, mobile upload queue/catalog                    | Define the new schema, protected media and encrypted device persistence                                             |
 
 The current [source architecture](https://github.com/GloupsApp/gloups/blob/5b708f6e378f2aea6cbfc164718110da4f625ae4/docs/ARCHITECTURE.md), [source API boundaries](https://github.com/GloupsApp/gloups/blob/5b708f6e378f2aea6cbfc164718110da4f625ae4/docs/API-DOMAIN.md),
 [source nutrition contracts](https://github.com/GloupsApp/gloups/blob/5b708f6e378f2aea6cbfc164718110da4f625ae4/docs/contracts/core-nutrition.md) and [source chat contract](https://github.com/GloupsApp/gloups/blob/5b708f6e378f2aea6cbfc164718110da4f625ae4/docs/contracts/gloop-chat.md)
@@ -156,19 +156,19 @@ service or watch. Show the remaining limits imposed by the operating system.
 
 Recommended boundaries within one NestJS service:
 
-| Module                | Owns                                                                                      |
-| --------------------- | ----------------------------------------------------------------------------------------- |
-| Identity/access       | Clerk verification, internal UUID mapping, account ownership and privileged access policy |
-| Profile/goals         | Preferences, goal versions, schedules and explicit target application                     |
-| Food/catalog          | Food sources, licenses, nutrient units, matching and provenance                           |
-| Nutrition/hydration   | Accepted meals, photos, quantities, water and derived daily totals                        |
-| Training              | Exercises, templates, sessions, sets, history and progression rules                       |
-| Sleep                 | Sleep intervals, naps, user corrections and derived summaries                             |
-| Cycle                 | Consented observations, symptoms, import permissions and permitted context                |
-| Health ingestion      | Platform adapters, source records, cursors, duplicates and reconciliation                 |
-| Coaching              | Permitted context snapshots, recommendations, explanations and proposed actions           |
-| Privacy/audit         | Consent versions, exports, deletion, retention and security audit events                  |
-| Billing/notifications | Entitlements and delivery preferences without health payloads                             |
+| Module                | Owns                                                                                                           |
+| --------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Identity/access       | Better Auth session verification (D015), internal UUID mapping, account ownership and privileged access policy |
+| Profile/goals         | Preferences, goal versions, schedules and explicit target application                                          |
+| Food/catalog          | Food sources, licenses, nutrient units, matching and provenance                                                |
+| Nutrition/hydration   | Accepted meals, photos, quantities, water and derived daily totals                                             |
+| Training              | Exercises, templates, sessions, sets, history and progression rules                                            |
+| Sleep                 | Sleep intervals, naps, user corrections and derived summaries                                                  |
+| Cycle                 | Consented observations, symptoms, import permissions and permitted context                                     |
+| Health ingestion      | Platform adapters, source records, cursors, duplicates and reconciliation                                      |
+| Coaching              | Permitted context snapshots, recommendations, explanations and proposed actions                                |
+| Privacy/audit         | Consent versions, exports, deletion, retention and security audit events                                       |
+| Billing/notifications | Entitlements and delivery preferences without health payloads                                                  |
 
 Use PostgreSQL with migrations for authoritative records. Prisma is a reuse
 candidate, not an API contract. Do not return database entities directly to
@@ -276,7 +276,10 @@ certificate or a provider's marketing statement cannot establish compliance.
 | Operating program              | Named security responsibility, policies, workforce training/access records, vulnerability treatment, incident exercises and evidence of closure                                                                 |
 | Delivery                       | Locked dependencies, provenance/SBOM, secret scanning, reviewed migrations, rollback and evidence tied to the delivered revision                                                                                |
 
-Keep the selected Clerk application. Retain PostHog EU as the preferred service
+Use Better Auth for the new service under D015 and the pending
+[authentication design](2026-10-28-authentication-design.md). Preserve earlier
+identity resources and data until a separate transition is authorized.
+Retain PostHog EU as the preferred service
 where its actual products and agreements fit the approved data boundary. Neither
 existing configuration nor an analytics opt-in establishes PHI coverage. Review
 billing identifiers and data destinations; pseudonymous IDs are still linkable.
@@ -305,7 +308,7 @@ by this document, and no delivery date is promised.
 | Milestone                      | Deliverable                                                                                                                                                                        | Dependency / exit evidence                                                                                                        |
 | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | M0: scope and controls         | Approved consumer scope, launch population/markets, data inventory, threat model, applicability review, provider and budget decisions; future healthcare responsibilities recorded | Founders accept the release boundary; applicable consumer contract and security blockers have owners                              |
-| M1: unified service            | NestJS/PostgreSQL foundation, Clerk mapping, validated contracts, audit/privacy plumbing, media and nutrition/hydration parity                                                     | HTTP acceptance with isolated PostgreSQL, correct values, account isolation, retry/restart behavior and restore evidence          |
+| M1: unified service            | NestJS/PostgreSQL foundation, Better Auth account mapping, validated contracts, audit/privacy plumbing, media and nutrition/hydration parity                                       | HTTP acceptance with isolated PostgreSQL, correct values, account isolation, retry/restart behavior and restore evidence          |
 | M2: workout recorder           | Programs, live sessions, sets, timers, offline durability and progression                                                                                                          | Real iPhone and Android journeys include locked/background use, process death, permission denial and recovery                     |
 | M3: sleep, cycle and ingestion | Both platform adapters, sleep/naps/manual correction, cycle/symptoms/consent and duplicate handling                                                                                | Device imports, edits, deletions, denied permissions, irregular/empty records, timezones and account changes                      |
 | M4: connected coach            | Daily food/training/rest guidance, permitted context, explanations, accepted actions and weekly review                                                                             | Cross-domain journeys, stale-context invalidation, numeric checks, failure fallback, quality/cost/latency review                  |

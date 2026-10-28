@@ -1,6 +1,6 @@
 # AUTH-001: Official Better Auth authentication specification
 
-Status: Assigned; specification work starts after this assignment merges.
+Status: Review; specification delivered for review. Product implementation is unapproved.
 Owner and integration coordinator: Codex, current authentication chat.
 
 ## Intent and inputs
@@ -75,7 +75,36 @@ deleted. This specification assignment is not an implementation packet.
 
 ## Handoff
 
-Assignment pending merge. No specification edits, application work, dependency
-installation or provider changes have started. Record the merged assignment,
-specification commit/PR, actual checks, proposed interfaces, remaining decisions
-and resource state here before handoff.
+Assignment merged in [PR #19](https://github.com/GloupsApp/gloups-health/pull/19)
+at `73d48e473fb07704d38592f4b2225adba4ff169c`. The packet was read back from
+`origin/main` at that revision before creating the specification branch.
+The owner also selects native Apple on iOS, browser Google on both platforms and
+browser Apple on Android. No product code, new dependency or provider resource
+has changed. A frozen install of existing dependencies supplies the documentation
+formatter/hooks.
+
+The [authentication design](../specs/2026-10-28-authentication-design.md) proposes
+official handler/client composition, candidate stable versions, account/session
+boundaries, recovery/linking/deletion and real HTTP/native/provider acceptance.
+Active guides/instructions now reflect D015; source history remains historical.
+FND-001 and the other lanes were not reassigned or changed. No shared contract
+package/type, source import, manifest, lockfile or migration changed.
+
+A fresh Superpowers builder review, including a follow-up on Apple revocation
+and deletion behavior, returned `nothing important left`. This is a planning
+review, not behavioral acceptance or owner approval. Actual checks and limits are
+in the [verification record](../verification/2026-10-28-authentication-design.md):
+frozen Bun 1.4.4 install, formatting/checks, local Markdown targets/anchors,
+owned-path/diff review, and the existing docs typecheck/build passed. The actual
+Turborepo graph still contains only docs/mobile; no API task exists.
+
+No server, port, database, simulator or physical device was allocated. Existing
+provider resources/data and ignored user-owned state were preserved; dependency
+and docs-build outputs remain ignored. No live email/provider/native check ran.
+
+Next: owner approval of the design, followed by an exact implementation packet
+and Superpowers plan. Runtime/database pins, native Apple exchange/cookie
+propagation and deletion retention/re-registration must be settled in that
+packet; email/provider inventory and Mobbin references precede the corresponding
+live-provider/UI work. Auth product implementation remains unapproved and
+unstarted. Specification commit/PR will be recorded before Git integration.
