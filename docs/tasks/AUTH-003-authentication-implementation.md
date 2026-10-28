@@ -133,3 +133,17 @@ The selected skill's ignored execution ledger is scoped to this plan. It records
 the no-TDD policy override, review-first Git delivery and pending main-assignment
 gate. Record assignment PR/checks and actual merged execution base before
 continuing; preserve this worktree and all user-owned ignored state.
+
+## Assignment review handoff
+
+[PR #25](https://github.com/GloupsApp/gloups-health/pull/25) is open for owner
+review; no agent merge or auto-merge is authorized. Initial assignment commit:
+[`7425b13155979ca9404a2ce4e8201ccd8488cc39`](https://github.com/GloupsApp/gloups-health/commit/7425b13155979ca9404a2ce4e8201ccd8488cc39).
+
+Pinned frozen install, existing-workspace typecheck, Ultracite, diff and local
+link/scope checks passed; details are in the
+[execution evidence](../verification/2026-10-28-authentication-execution.md).
+Husky staged formatting and Conventional Commit hooks passed. The PR contains
+documentation only. Source remains unstarted pending the owner-merged assignment
+or an explicit owner change to the main-assignment prerequisite. Native execution
+and the approved stack are already settled.

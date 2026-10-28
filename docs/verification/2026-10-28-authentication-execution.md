@@ -52,7 +52,7 @@ the native-execution choice. No renewed design or stack approval is required.
 - `bunx ultracite check` passed across the existing workspace;
   `git diff --check` passed.
 - `python3 /tmp/gloups-auth-execution-assignment-doccheck.py` passed: exactly
-  nine owned Markdown files, 63 local targets and two anchors. Tasks 0–7 remain
+  nine owned Markdown files, 64 local targets and two anchors. Tasks 0–7 remain
   unchecked and the main-assignment, owner-review and no-TDD gates are preserved.
 - Manual diff/status review found documentation only, no application scaffolding,
   excluded public references, credentials, health records or signing material.
@@ -67,3 +67,16 @@ red/green examples. The latest owner PR-review requirement overrides earlier
 automatic Git integration. Neither exception supplies main-assignment approval
 or makes unperformed checks pass. Preserve the worktree and ignored user state
 while awaiting the owner's review; resume Task 0/1 at the actual merged base.
+
+## Review delivery
+
+[PR #25](https://github.com/GloupsApp/gloups-health/pull/25), initial commit
+[`7425b13155979ca9404a2ce4e8201ccd8488cc39`](https://github.com/GloupsApp/gloups-health/commit/7425b13155979ca9404a2ce4e8201ccd8488cc39),
+is open and attached to this chat. Staged Ultracite and commitlint hooks passed.
+No merge or auto-merge action was invoked. Main was fetched and still pointed to
+`c8be0f671c1cfe88c362dda78f9873f08b3859cc` before this assignment push.
+
+The owner was asked whether to review/merge the concrete assignment first or
+explicitly permit isolated source work before it merges. That question changes
+neither the approved authentication design nor the requirement to leave PRs for
+owner review. No answer or waiver is assumed; source work has not begun.
