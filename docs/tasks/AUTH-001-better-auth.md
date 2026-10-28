@@ -1,6 +1,8 @@
 # AUTH-001: Official Better Auth authentication specification
 
-Status: Review; specification delivered for review. Product implementation is unapproved.
+Status: Done on merge of [PR #20](https://github.com/GloupsApp/gloups-health/pull/20);
+Review until then. This completes specification delivery only; owner design
+approval and product implementation are pending.
 Owner and integration coordinator: Codex, current authentication chat.
 
 ## Intent and inputs
@@ -107,4 +109,11 @@ and Superpowers plan. Runtime/database pins, native Apple exchange/cookie
 propagation and deletion retention/re-registration must be settled in that
 packet; email/provider inventory and Mobbin references precede the corresponding
 live-provider/UI work. Auth product implementation remains unapproved and
-unstarted. Specification commit/PR will be recorded before Git integration.
+unstarted.
+
+Specification commit:
+[2678c24](https://github.com/GloupsApp/gloups-health/commit/2678c2480e29a39303c8fb91ca204c83ae19a354).
+Integration: [PR #20](https://github.com/GloupsApp/gloups-health/pull/20), including
+this handoff. The merge revision is the integrated main record. Husky's staged
+formatting and Conventional Commit hooks passed on the specification commit.
+The existing worktree remains attached with the design available for review.

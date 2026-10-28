@@ -85,3 +85,13 @@ the native Apple exchange/cookie boundary, deletion retention/re-registration,
 email/provider inventory and UI reference access at the relevant stage. Real
 HTTP/database, native-device and authorized provider/email evidence remains
 required; documentation/metadata checks do not substitute for it.
+
+## Git delivery
+
+Specification commit:
+[2678c24](https://github.com/GloupsApp/gloups-health/commit/2678c2480e29a39303c8fb91ca204c83ae19a354).
+The specification and this handoff integrate through
+[PR #20](https://github.com/GloupsApp/gloups-health/pull/20). Its merged revision
+is the main delivery record; merging the draft does not approve its proposals.
+The commit passed staged formatting and Conventional Commit hooks. The task
+worktree is preserved for the owner's design review and the subsequent plan.
