@@ -13,6 +13,7 @@ on main before workers start. Follow
 | [TOOL-003](TOOL-003-expo-foundation.md)       | Codex, current Expo setup chat                  | Done on PR #10 merge | Expo SDK 58 bootstrap, inherited strict TypeScript and mobile Ultracite integration |
 | [TOOL-004](TOOL-004-commitlint-typescript.md) | Codex, current commitlint TypeScript chat       | Done on PR #14 merge | TypeScript commitlint config and existing commit-hook verification                  |
 | [DOC-001](DOC-001-remove-humanizer.md)        | Codex, current skill-removal chat               | Done on PR #13 merge | Remove the local Humanizer skill and its active documentation/tooling references    |
+| [REPO-001](REPO-001-gitignore.md)             | Codex, current gitignore chat                   | Assigned             | Ignore local logs, caches, editor files, native output and signing material         |
 
 | Packet                             | Specification output                                                 | Dependency before code                                             |
 | ---------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------ |
