@@ -10,10 +10,10 @@ archive or reset their repositories or user-owned ignored state as part of setup
 | [Mioum source](https://github.com/Alexays/Mioum/tree/95ff002a0637da8f7c940de9a3286d662c6a8c20)     | Existing NestJS/Prisma/Expo domains; source reuse candidates, not accepted new features |
 | [Repository documentation reference](https://github.com/Alexays/Lilo)                              | Short root rules, separate contributor/architecture guides and a documentation index    |
 
-Transferred content is limited to planning drafts and the existing Humanizer
-skill with its MIT notice/provenance. The repository itself has not been given an
-open-source license. Confirm ownership/transfer rights for other assets before
-importing them; a referenced project's license does not license this product.
+Transferred planning content is limited to drafts. The repository itself has not
+been given an open-source license. Confirm ownership/transfer rights for other
+assets before importing them; a referenced project's license does not license this
+product.
 
 For each approved source import: record source revision/path/rights, accepted
 behavior and any intentional differences; adapt it to the agreed contract;

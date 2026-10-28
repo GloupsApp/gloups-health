@@ -42,7 +42,6 @@ files when entering their application or package.
 
 - Use Gloups and health coach in public copy. Never name health-app competitors
   in product copy, documents, screenshots, commits or release notes.
-- Apply the local [Humanizer skill](.agents/skills/humanizer/SKILL.md) to prose.
 - Plan for international users from the first contract: language, locale,
   timezone, country, units and currency are separate concepts. Follow
   [I18N](docs/I18N.md); do not infer nationality or data region from language.
