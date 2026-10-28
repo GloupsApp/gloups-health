@@ -1,6 +1,7 @@
 # REPO-001: Complete repository ignore rules
 
-Status: Assigned. Owner and integration coordinator: Codex, current gitignore
+Status: Done on merge of [PR #18](https://github.com/GloupsApp/gloups-health/pull/18);
+Review until then. Owner and integration coordinator: Codex, current gitignore
 chat. The owner's 28 October 2026 request authorizes adding repository ignore
 rules. A root `.gitignore` already exists; extend it for missing local artifacts.
 
@@ -44,5 +45,44 @@ before implementation.
 
 ## Handoff
 
-Assignment only. Implementation and verification follow its merge on main.
-This maintenance task introduces no application behavior or deployment.
+Assignment merged in [PR #17](https://github.com/GloupsApp/gloups-health/pull/17)
+at `a454ce1634c7506883c6795e5b9b24577081e4df`. The assignment was read back from
+`origin/main` before implementation at
+`c6ca676e881e53424486d98283fe2b0c652088f3`, including the concurrent Git attributes
+work. No other packet was changed.
+
+The root ignore file now also covers Android/iOS archives, runtime/rotated logs,
+tool and Metro caches, Windows metadata, editor swap/backup files and additional
+native signing formats. Existing rules and the `.env.example` exception remain
+in place. No dependency, source or contract changed.
+
+Checks ran on macOS arm64, Node.js `26.12.1` and Bun `1.4.4` from
+`/tmp/gloups-tooling-20261028/bun-1.4.4`, first on PATH:
+
+- `bun install --frozen-lockfile` passed in this worktree and prepared Husky.
+- `bunx ultracite fix .gitignore docs/tasks/README.md docs/tasks/REPO-001-gitignore.md`
+  passed for the two supported Markdown files; `.gitignore` is not a supported
+  formatter input.
+- `bunx ultracite check` passed repository formatting and lint checks.
+- Inline Python supplied synthetic names and tracked paths to
+  `git -c core.excludesFile=/dev/null check-ignore --no-index -z --stdin`.
+  All 147 expected artifact paths were ignored. All 184 retained paths, including
+  all 176 tracked files, root/workspace `.env.example` paths and representative
+  source files, stayed trackable. No fixture files were created.
+- `git ls-files --cached --ignored --exclude-standard` returned no paths.
+- Inline Python validated all 17 local Markdown targets in the two changed
+  documents and confirmed that only the three allowed files changed.
+- `git diff --check` passed. The actual diff, existing ignore-rule preservation,
+  scope/status consistency and secret/reference exclusions were reviewed.
+
+No unit tests, application builds or E2E/device checks were added or run for this
+Git metadata change. No server, port, device or database was allocated. Ignored
+user-owned state was preserved. The assignment and implementation use this
+existing worktree, with only generated dependencies added locally. No application
+decisions or downstream dependencies remain; deployment is outside this task.
+
+Implementation:
+[74cdc21](https://github.com/GloupsApp/gloups-health/commit/74cdc21527cf8f6186d5bfc5afc7ac7519251847).
+Integration: [PR #18](https://github.com/GloupsApp/gloups-health/pull/18), including
+this handoff. Its merge commit is the integrated main revision. The implementation
+commit passed Husky's staged-file formatting and Conventional Commit hooks.
