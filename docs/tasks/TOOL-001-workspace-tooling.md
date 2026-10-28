@@ -1,7 +1,8 @@
 # TOOL-001: Workspace tooling and Blume documentation
 
-Status: Done on merge of [PR #5](https://github.com/GloupsApp/gloups-health/pull/5);
-Review until that merge. Owner and integration coordinator: Codex chat
+Status: Review for the owner-requested anti-slop/TUI follow-up. Initial setup
+merged in [PR #5](https://github.com/GloupsApp/gloups-health/pull/5).
+Owner and integration coordinator: Codex chat
 `01a18275-5307-7d93-98f7-10ca191559f3`. The owner approved implementation in the
 28 October 2026 request to add the named tools and Conventional Commit hooks.
 This packet authorizes repository tooling and a minimal Blume documentation site.
@@ -100,3 +101,29 @@ Product web framework, API/mobile scaffolding, shared domain contracts and
 provider decisions remain with their separately approved packets. Future workers
 can use the tooling now, but domain specification assignments still authorize
 specifications only. No shared server, database or simulator remains allocated.
+
+## Anti-slop and terminal UI follow-up, 28 October 2026
+
+The owner requested Ultracite's bundled anti-slop plugin and Turborepo's `tui` UI.
+The existing owner and allowed paths cover this correction. Branch:
+`codex/tool-001-ultracite-anti-slop-tui`; base:
+`c3863e6e6ee03b3b422871dc160f8f3effa7a854`. The primary checkout is clean at
+assignment; no other worker or shared resource is involved.
+
+Extend `ultracite/oxlint/anti-slop` after core, remove the separate plugin
+dependency and update the root lockfile. Set `"ui": "tui"` in `turbo.json`.
+Verify a frozen install, Ultracite fix/check/doctor, a rejection from a bundled
+anti-slop rule, the actual Turborepo graph/build and an interactive TUI run.
+Check the diff and local links, then commit/push/merge and record the handoff.
+
+The correction extends `ultracite/oxlint/anti-slop` after core and removes
+`eslint-plugin-anti-slop` from both manifest and lockfile. No package version was
+added or upgraded in the lockfile; 70 unused resolved versions were removed.
+Turborepo now has `"ui": "tui"`.
+
+The frozen install, Ultracite fix/check and all eight doctor diagnostics passed.
+The bundled plugin rejected a temporary input with `anti-slop(no-reflect-get)`.
+Task discovery and the Blume build passed; a terminal run with `--ui=tui`
+displayed task panels and replayed the cached successful build. Details are in
+the [verification follow-up](../verification/2026-10-28-workspace-tooling.md#anti-slop-and-terminal-ui-follow-up).
+No persistent server or other shared resource was started.

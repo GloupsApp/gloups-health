@@ -13,6 +13,8 @@ and merged PR at handoff. Implementation:
 
 Direct versions were checked against the npm registry's `latest` tags on
 28 October 2026. Exact versions are in the manifests and root `bun.lock`.
+The table records the initial setup. The follow-up below replaces the separate
+anti-slop package with Ultracite's bundled preset.
 
 | Tool                                   | Version |
 | -------------------------------------- | ------- |
@@ -95,3 +97,34 @@ added. No package was published and no site was deployed.
 Future product work needs its approved implementation packets and real-boundary
 acceptance. The product web framework remains open. The Blume site currently has
 one introductory page; the repository's engineering guides remain under `docs`.
+
+## Anti-slop and terminal UI follow-up
+
+Owner-requested correction on 28 October 2026, based on
+`c3863e6e6ee03b3b422871dc160f8f3effa7a854`, branch
+`codex/tool-001-ultracite-anti-slop-tui`. The same owner and tooling packet apply.
+The installed Ultracite preset and its
+[official setup](https://www.ultracite.ai/docs/presets#anti-slop-rules) specify
+`extends: [core, antiSlop]` with `ultracite/oxlint/anti-slop`. The preset bundles
+the plugin and needs no separate installation.
+
+- `bun remove eslint-plugin-anti-slop` updated the manifest and root lockfile.
+  A comparison of resolved package identifiers found 70 removed versions and no
+  added versions. No unrelated dependency upgrades were introduced.
+- `bun install --frozen-lockfile` passed without dependency changes.
+- `bunx ultracite fix` and `bunx ultracite check` passed.
+  `bunx ultracite doctor` reported eight passed checks, zero warnings/failures.
+- A temporary TypeScript input outside the repository used `Reflect.get`.
+  Oxlint with the repository config rejected it with exit 1 and
+  `anti-slop(no-reflect-get)`, confirming the bundled rule runs. The manifest
+  and lockfile contain no `eslint-plugin-anti-slop` entry.
+- The installed Turborepo schema accepts `"ui": "tui"`, now set in `turbo.json`.
+  `bun run turbo run build --dry=json` discovered `@gloups/docs#build`, and
+  `bun run build` completed the actual static documentation build.
+- `CI=false TERM=xterm-256color node_modules/.bin/turbo run build --ui=tui`
+  ran in a terminal with Bun 1.4.4 first on PATH, displayed task panels and
+  replayed the cached successful build. `CI=false` applies to this local terminal
+  check; no CI workflow was created or run.
+
+The follow-up changes no product application behavior. No unit tests, persistent
+server, provider resources, deployment or publication were introduced.

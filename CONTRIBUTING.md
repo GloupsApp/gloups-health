@@ -51,6 +51,8 @@ bun run changeset:status
 ```
 
 `fix` and `check` use Ultracite's Oxlint/Oxfmt backend with anti-slop rules.
+`oxlint.config.ts` extends `ultracite/oxlint/anti-slop`, which bundles its plugin
+without an extra dependency. Turborepo uses `"ui": "tui"` for interactive terminals.
 `bun run lint`, `bun run format` and `bun run format:check` expose the individual
 tools. Generated Blume/Astro/build output and the vendored local skill are ignored
 by the formatter. Existing planning Markdown follows the initial Oxfmt baseline.
