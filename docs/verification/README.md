@@ -25,3 +25,5 @@ Records:
 - [28 October authentication design](2026-10-28-authentication-design.md).
 
 - [28 October authentication implementation plan](2026-10-28-authentication-plan.md).
+
+- [28 October authentication execution](2026-10-28-authentication-execution.md).
