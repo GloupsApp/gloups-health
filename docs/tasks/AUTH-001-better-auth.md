@@ -4,7 +4,8 @@ Status: Done on merge of the architecture correction in
 [PR #22](https://github.com/GloupsApp/gloups-health/pull/22); Review until then.
 The initial specification was delivered in
 [PR #20](https://github.com/GloupsApp/gloups-health/pull/20). Owner approval of the
-remaining design and product implementation remain pending.
+remaining design was received on 28 October 2026 under D017. Implementation
+planning proceeds in AUTH-002; product execution remains separately assigned.
 Owner and integration coordinator: Codex, current authentication chat.
 
 ## Intent and inputs
@@ -162,3 +163,14 @@ Integration: [PR #22](https://github.com/GloupsApp/gloups-health/pull/22), inclu
 this handoff; its merge revision is the corrected main delivery record. Staged
 formatting and Conventional Commit hooks passed. The worktree and revised design
 remain available for review; no implementation plan or product code was added.
+
+### Owner design approval
+
+On 28 October 2026 the owner approved the revised design delivered at PR #22,
+revision `0b55294aa375078fc43550d66647e220896e9eb0`, explicitly selected PostgreSQL,
+and requested the implementation plan. D017 records this approval.
+[AUTH-002](AUTH-002-authentication-plan.md) owns the
+[plan](../plans/2026-10-28-authentication-implementation.md). Earlier handoff
+statements about pending design approval describe those earlier delivery stages;
+the design approval must not be requested again. Execution is not started by
+this planning request.

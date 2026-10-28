@@ -7,8 +7,10 @@ in [DECISIONS](../DECISIONS.md). The design remains a draft.
 The [authentication design](2026-10-28-authentication-design.md) specifies the
 owner's Better Auth/NestJS/Expo direction under AUTH-001. Fastify, Drizzle ORM and
 DDD/Onion are confirmed under D016. Google, Apple,
-email/password and the native/browser split are confirmed; detailed contracts
-and implementation defaults remain pending owner approval of the design.
+email/password and the native/browser split are confirmed. The owner approved
+the design at PR #22 and selected PostgreSQL under D017. The
+[implementation plan](../plans/2026-10-28-authentication-implementation.md) is
+the next review artifact; execution remains separately assigned.
 
 Assigned domain packets create separate specs in the paths named by the
 [task registry](../tasks/README.md). Each spec must define behavior, inputs/outputs,

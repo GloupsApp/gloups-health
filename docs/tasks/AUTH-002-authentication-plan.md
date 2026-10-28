@@ -1,6 +1,7 @@
 # AUTH-002: Approved authentication implementation plan
 
-Status: Assigned for planning; work starts after this assignment merges.
+Status: Done on merge of [PR #24](https://github.com/GloupsApp/gloups-health/pull/24);
+Review until then. This completes plan delivery; product execution is not assigned.
 Owner and integration coordinator: Codex, current authentication chat.
 
 ## Intent and inputs
@@ -71,7 +72,23 @@ migrations, provider configuration or UI flow may be changed in this assignment.
 
 ## Handoff
 
-Assignment pending merge. The owner has approved the design and requested planning
-only. No plan, implementation, provider change or resource allocation has started.
-Record assignment/plan PRs, actual checks, self-review and execution prerequisites
-before handoff. Plan review/execution assignment is the next step, not deployment.
+Assignment merged in [PR #23](https://github.com/GloupsApp/gloups-health/pull/23)
+at `90bc804578dd45921b5070727d8f28f35d720628`; the packet was read back from
+`origin/main` before creating `codex/auth-002-authentication-plan` at that base.
+The owner-approved PR #22 design and explicit PostgreSQL choice are recorded in
+D017. The plan contains execution prerequisites and Tasks 0–7 with exact future
+paths, interfaces, reviewed targets/scripts, real-boundary cases and handoff.
+No product code, provider change or runtime resource was created. The writing-plans
+self-review checked coverage, interface consistency, review-focus cases and
+proportion; no subagent was dispatched. Frozen install, Ultracite formatting/checks,
+local links/anchors and diff/scope checks passed; the existing docs typecheck/build
+returned cache hits. Details and limitations are in the
+[verification record](../verification/2026-10-28-authentication-plan.md).
+Plan review/execution assignment is the next step, not renewed design approval.
+
+Plan commit:
+[8a76ca0](https://github.com/GloupsApp/gloups-health/commit/8a76ca0b061fbdef06ad5a84d6e8aa9fee01cd54).
+Integration: [PR #24](https://github.com/GloupsApp/gloups-health/pull/24), including
+this handoff. Its merged revision is the main delivery record; merging the plan
+does not execute it. Husky staged formatting and Conventional Commit hooks
+passed. The existing worktree remains attached with the plan available for review.

@@ -1,7 +1,8 @@
 # Authentication design: Better Auth, NestJS and Expo SDK 58
 
-Date: 28 October 2026. Status: Draft for owner approval. Owner/integration
-coordinator: Codex, current authentication chat. Scope:
+Date: 28 October 2026. Status: Approved by owner for implementation planning.
+Approved design revision: `0b55294aa375078fc43550d66647e220896e9eb0` (PR #22).
+Owner/integration coordinator: Codex, current authentication chat. Scope:
 [AUTH-001](../tasks/AUTH-001-better-auth.md).
 
 ## Intent and authority
@@ -16,10 +17,14 @@ platforms and browser Apple on Android.
 confirms NestJS's official Fastify adapter, Drizzle ORM, and DDD with Onion
 architecture. These replace the initial Express/direct-database proposal.
 
-The remaining technical and lifecycle choices below are this document's
-proposals, not previous owner approvals. Approval of this design must be recorded
-against a revision; an exact implementation packet/plan follows. Merging this
-draft does not approve code, dependencies, provider changes or distribution.
+The owner approved this revised design on 28 October 2026 and explicitly selected
+PostgreSQL under [D017](../DECISIONS.md#d017-authentication-design-approval-and-postgresql).
+The approval covers the documented behavior/defaults; choices explicitly left
+to the implementation plan or owner remain open. The
+[implementation plan](../plans/2026-10-28-authentication-implementation.md) records
+those implementation choices and execution prerequisites for review. Design
+approval does not by itself assign product execution, configure providers or
+authorize deployment/distribution.
 
 ## Existing foundation and boundaries
 
@@ -87,7 +92,7 @@ and React 19; this is metadata compatibility only. Native verification remains
 required. Keep Metro package exports enabled. Do not copy SDK 55 or beta-specific
 setup into SDK 58 without checking the installed stable APIs.
 
-## Proposed server composition and persistence
+## Server composition and persistence
 
 - Use one NestJS service and one Better Auth instance, with `expo()` from
   `@better-auth/expo` on the server. Enable built-in Google/Apple providers and
@@ -112,7 +117,7 @@ setup into SDK 58 without checking the installed stable APIs.
   a valid database-backed session and verified email. Public routes are explicitly
   allowlisted; auth routes retain Better Auth's own protocol checks. Database or
   provider failure yields unavailable and no domain access.
-- Drizzle ORM is confirmed. PostgreSQL remains the proposed database. Configure
+- Drizzle ORM and PostgreSQL are confirmed. Configure
   the official `drizzleAdapter(db, { provider: "pg", schema })` in infrastructure;
   `"pg"` is the adapter's dialect identifier, not a direct-pool architecture.
   Both auth tables and Gloups repositories use the Drizzle database boundary.
@@ -171,7 +176,7 @@ one transaction without exposing Drizzle transaction types. Cross-context
 consumers use approved application contracts, never another context's tables or
 concrete repositories. Add only the abstractions needed by these actual use cases.
 
-## Proposed mobile and session boundary
+## Mobile and session boundary
 
 Use `createAuthClient` from `better-auth/react` with `expoClient` from
 `@better-auth/expo/client` and one SecureStore adapter instance. Store cookies in
@@ -180,7 +185,7 @@ prefix configuration. Do not use AsyncStorage, logs or URL parameters to persist
 session credentials. Disable the optional client session-data cache initially
 so persisted display data cannot masquerade as current authorization.
 
-Propose official Expo Router for authentication navigation and callback routing;
+Use official Expo Router for authentication navigation and callback routing;
 the later packet must enumerate its SDK 58 dependencies/configuration and replace
 the empty shell entry deliberately. Until references/tokens are approved, no
 screen/component/navigation source is authorized by this document.
@@ -190,7 +195,7 @@ as the `Cookie` header and use `credentials: "omit"`. The Expo plugin handles it
 own auth requests. Use reachable device URLs: a phone's `localhost` is not the
 developer's API. No secret or private provider credential is `EXPO_PUBLIC_*`.
 
-Proposed session policy: database-backed sessions, seven-day sliding expiry,
+Approved session policy: database-backed sessions, seven-day sliding expiry,
 24-hour refresh interval and five-minute freshness for destructive/linking
 operations. Keep server cookie caching disabled so revocation applies to the next
 request. Use HTTPS/Secure cookies in release, explicit trusted origins, CSRF and
@@ -271,7 +276,7 @@ for credential-state checks; simulator-only behavior is insufficient.
 
 ## Email/password and identity lifecycle
 
-| Journey                | Proposed behavior                                                                                                                                                                                                                                                                                                                                             |
+| Journey                | Approved behavior                                                                                                                                                                                                                                                                                                                                             |
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Registration           | Collect email, password and an optional display name; map absent name to the provider-required empty string. Require email verification before protected access and disable automatic credential sign-in before verification. Passwords: minimum 15, maximum 128 characters; allow password managers/paste and preserve user input. Better Auth owns hashing. |
 | Verification           | Use the built-in verification flow and one-hour link lifetime. Allow resend with throttling. The HTTPS server link validates the token, then returns to an allowlisted app route. Recheck the session; a link alone does not grant UI access. Expired/used/malformed links offer a resend path.                                                               |
@@ -361,8 +366,8 @@ checks. Inspect Turborepo's actual graph before adding tasks. Exports do not pro
 native/provider behavior. Git integration follows local checks; exhausted Actions
 usage is not a gate. Deployment, purchases and distribution require separate scope.
 
-Before code: owner approves this design; the coordinator records accepted auth
-interfaces and an implementation packet with exact allowed/shared paths, runtime
+Design approval is recorded above. Before code, the coordinator records accepted
+auth interfaces and an implementation packet with exact allowed/shared paths, runtime
 pins, migration ordering, native Apple exchange and deletion retention decisions.
 Resolve the email/provider inventory and Mobbin access/reference dependency before
 the corresponding live-provider/UI work. The implementation plan can split

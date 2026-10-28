@@ -2,8 +2,13 @@
 
 The [Expo foundation plan](2026-10-28-expo-foundation.md) implements the owner's
 approved SDK 58, TypeScript and Ultracite setup under TOOL-003. It covers an empty
-native root and workspace tooling. Product feature implementation plans remain
-pending their specifications and contracts. Documentation/specification work is
+native root and workspace tooling. The
+[authentication implementation plan](2026-10-28-authentication-implementation.md)
+follows the owner's approved PR #22 design and D017 PostgreSQL selection. It
+defines future files/interfaces, dependency pins, E2E Army/device cases and
+execution prerequisites; no step has run, and plan review/implementation assignment
+remain separate from design approval. Other product plans remain pending their
+specifications and contracts. Documentation/specification work is
 available through the [task packets](../tasks/README.md).
 
 After a relevant spec/contract is approved, write an implementation plan with

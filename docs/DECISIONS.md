@@ -21,7 +21,8 @@ A merged draft document is not approval of all its proposals.
 | D014 | Expo SDK 58 / React Native mobile foundation with inherited strict TypeScript and Ultracite                                                             | Confirmed by owner, 28 October 2026; TOOL-003 approves the minimal bootstrap, not product flows or provider setup                                                               |
 | D015 | Better Auth in NestJS/Expo SDK 58; official integrations/plugins only; Google, Apple and email/password; native iOS Apple, browser Google/Android Apple | Confirmed by owner, 28 October 2026; supersedes the earlier Clerk selection for new implementation; AUTH-001 specifies details and does not authorize product code              |
 | D016 | NestJS official Fastify adapter, Drizzle ORM and DDD with Onion architecture                                                                            | Confirmed by owner, 28 October 2026; supersedes AUTH-001's initial Express/direct-pool proposal and the Prisma candidate for new persistence; implementation remains unapproved |
-| P001 | PostgreSQL hosting/version and detailed modular-service composition                                                                                     | Proposed; ORM and API dependency direction accepted separately under D016                                                                                                       |
+| D017 | Authentication design at PR #22 approved for planning; PostgreSQL selected with NestJS/Fastify, Drizzle and DDD/Onion                                   | Confirmed by owner, 28 October 2026; AUTH-002 writes the implementation plan; execution assignment and external setup remain separate                                           |
+| P001 | Database hosting/version and detailed modular-service composition                                                                                       | PostgreSQL selected under D017; exact runtime/driver/module bindings are implementation-plan choices, hosting remains separate                                                  |
 | P002 | Adults only; phone strength execution with imported/manual other activities                                                                             | Proposed                                                                                                                                                                        |
 | P003 | Exact locale, temporal, sync and action wire schemas                                                                                                    | Requires domain contract review                                                                                                                                                 |
 
@@ -78,3 +79,22 @@ scope still require the later packet. [ARCHITECTURE](ARCHITECTURE.md#ddd-and-oni
 layer placement. D015's sign-in methods and official-only constraint remain in
 effect. This decision authorizes documentation correction, not product scaffolding,
 dependency installation, provider configuration, deployment or distribution.
+
+## D017: Authentication design approval and PostgreSQL
+
+Owner: product owner, 28 October 2026. The owner approves the revised
+[authentication design](specs/2026-10-28-authentication-design.md) as delivered in
+[PR #22](https://github.com/GloupsApp/gloups-health/pull/22), revision
+`0b55294aa375078fc43550d66647e220896e9eb0`, and requests its implementation plan
+with NestJS/Fastify, Drizzle ORM/PostgreSQL, DDD/Onion and official Better Auth/Expo
+integrations. The documented authentication behavior/defaults are approved;
+items the design explicitly leaves to planning, provider inventory or retention
+review remain those later decisions. PostgreSQL is selected, superseding its
+earlier proposed-only status; hosting/provider purchase is not selected here.
+
+[AUTH-002](tasks/AUTH-002-authentication-plan.md) owns planning. The plan must
+define exact future files, interfaces, versions, migration/deletion boundaries,
+real HTTP/native acceptance and execution prerequisites. This is approval to
+write the plan, not permission to execute it, configure providers, deploy,
+distribute, message people or discard source data. Before product code, record
+the reviewed implementation packet/owner on main under AGENT-WORKFLOW.
