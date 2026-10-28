@@ -9,6 +9,16 @@ under [verification](verification/README.md). TOOL-001 adds frozen Bun installs,
 Ultracite checks, Turborepo documentation builds, Changesets status and real hook
 checks. No product app check can pass before its app or task exists.
 
+TOOL-002 adds `bun run typecheck` for the root tooling configs and the docs
+configuration. Builds require the relevant compiler checks, and both projects
+inherit `tsconfig.base.json`. Verify effective settings with
+`bun run tsc --project tsconfig.json --showConfig` and
+`bun run tsc --project apps/docs/tsconfig.json --showConfig`.
+The shared base checks declarations. The docs project has an explicit exception
+for published dependency declaration errors; see
+[CODE-STANDARDS](CODE-STANDARDS.md#typescript-configuration) and the
+[TypeScript evidence](verification/2026-10-28-strict-typescript.md).
+
 ## Future behavior
 
 | Slice                    | Required boundary                                                                                                                                            |

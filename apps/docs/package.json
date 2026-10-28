@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "typecheck": "tsc --project tsconfig.json",
     "build": "blume build",
     "dev": "blume dev",
     "preview": "blume preview"
