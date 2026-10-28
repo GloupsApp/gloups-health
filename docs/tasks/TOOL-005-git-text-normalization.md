@@ -1,6 +1,7 @@
 # TOOL-005: Git text normalization
 
-Status: Assigned. Owner and integration coordinator: Codex, current Git
+Status: Done on [PR #16](https://github.com/GloupsApp/gloups-health/pull/16) merge.
+Owner and integration coordinator: Codex, current Git
 attributes chat. The owner's 28 October 2026 request approves the exact root
 `.gitattributes` contents below.
 
@@ -44,5 +45,34 @@ assignment on main before implementation.
 
 ## Handoff
 
-Implementation begins after the assignment is merged and read back from main.
-Record exact checks, commit/PR links, limitations and cleanup here.
+Assignment [PR #15](https://github.com/GloupsApp/gloups-health/pull/15) merged at
+`7047682ae228c705f2710ca97c0c269bda07e0bd` and was read back from main before
+implementation. The exact two-line file was added in
+[commit 6e34277](https://github.com/GloupsApp/gloups-health/commit/6e34277794bf3460f50961707a289830c7602516).
+The delivery PR above contains the final change and this handoff.
+
+Checks used Bun 1.4.4 from `/tmp/gloups-tooling-20261028/bun-1.4.4` on PATH:
+
+- `bun install --frozen-lockfile` passed without manifest/lockfile changes.
+- `bunx ultracite fix .gitattributes docs/tasks/README.md docs/tasks/TOOL-005-git-text-normalization.md` and the equivalent
+  `bunx ultracite check` passed for both supported Markdown files. Git-specific
+  checks below verify `.gitattributes` itself.
+- An exact byte comparison confirmed the requested file with LF line endings.
+- `git check-attr text -- .gitattributes README.md package.json bun.lock`
+  reported `auto` for every path.
+- `git hash-object --stdin --path=README.md`, supplied synthetic LF and CRLF
+  text through standard input, returned the same object ID
+  `1c35acce6eccb6f2f6971816e50c65c5e7bfac75` for both. No object was written.
+- Local Markdown link targets, the actual staged diff, task status/scope and
+  secret/reference exclusions were reviewed. `git diff --check` and
+  `git diff --cached --check` passed.
+- The real Husky pre-commit and commit-message hooks passed for the assignment
+  and file implementation commits.
+
+No existing tracked files were renormalized. Application builds, E2E Army,
+devices and CI were not needed or claimed for this Git metadata change. No unit
+tests were added or changed. There are no remaining product decisions or
+downstream blockers for the accepted Git attributes interface.
+No servers, ports, databases or devices were created. Only ignored dependencies
+were installed in the isolated worktree; archive it after integration. Deployment
+and distribution remain outside this task.
