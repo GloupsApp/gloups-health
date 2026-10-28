@@ -12,10 +12,11 @@ sets, repetitions, weights, rest timers and progression.
 ## Repository status
 
 This is the new private planning and implementation home for the unified product.
-It contains engineering documentation, Bun/Turborepo workspace tooling and a
-local Blume documentation site in `apps/docs`. The API, mobile and product web
-folders reserve future work. No runnable product API, mobile build or automatic
-build workflow exists yet.
+It contains engineering documentation, Bun/Turborepo workspace tooling, a
+local Blume documentation site in `apps/docs` and a minimal Expo SDK 58 shell in
+`apps/mobile`. The API and product web folders reserve future work. Mobile has an
+empty native root with local development and bundle-export commands. Product
+features, a native release build and automatic build workflows are still absent.
 
 The existing applications remain source references. No application code, customer
 data, credentials, native projects or deployment configuration has been migrated.
@@ -48,8 +49,12 @@ bun install --frozen-lockfile
 bun run check
 bun run docs:dev
 bun run docs:build
+bun run mobile:dev
+bun run mobile:build
 ```
 
-`bun run build` builds the current documentation workspace through Turborepo.
+`bun run build` checks types, builds the documentation site and exports iOS/Android
+JavaScript bundles through Turborepo. See the [mobile setup](apps/mobile/README.md)
+for local device commands and current verification limits.
 Husky checks staged files before commits and validates Conventional Commit
 messages. See [CONTRIBUTING](CONTRIBUTING.md) for formatting and Changesets.

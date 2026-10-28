@@ -7,12 +7,13 @@ files when entering their application or package.
 
 ## Current stage and authority
 
-- This repository contains documentation, workspace tooling and a local Blume
-  documentation site. API, mobile and product web folders remain reservations.
-  Do not claim product apps, services or provider connections exist here.
+- This repository contains documentation, workspace tooling, a local Blume
+  documentation site and a minimal Expo SDK 58 mobile shell. API and product web
+  folders remain reservations. Product flows and provider connections are absent.
 - Worldwide iOS/Android launch, French/English first, nutrition/fitness/sleep/
   optional cycle, explainable daily coaching and full workout recording are
-  confirmed. NestJS is the selected backend direction. Other architecture calls
+  confirmed. NestJS is the selected backend direction; Expo/React Native is
+  accepted for the mobile foundation under D014. Other architecture calls
   remain proposals until recorded as accepted in [DECISIONS](docs/DECISIONS.md).
 - Set up documentation before application work. A specification packet permits
   specification work only. Scaffolding, dependencies and source imports require
@@ -65,8 +66,8 @@ files when entering their application or package.
   and one root `bun.lock`. Install with `bun install --frozen-lockfile`.
   Turborepo replaces the earlier Nx policy under decision D011.
 - Run workspace tasks from the root. Inspect the actual graph with
-  `bun run turbo run build --dry=json`; use `bun run build` or
-  `bun run docs:dev` for the current documentation workspace. Consult installed
+  `bun run turbo run build --dry=json`; use `bun run build`, `bun run docs:dev`
+  or `bun run mobile:dev` for the current workspaces. Consult installed
   help before adding task options. New product projects still need approval.
 - Use Ultracite with Oxlint, Oxfmt and anti-slop when tooling is installed. Run
   `bunx ultracite fix` before committing relevant JS/TS/config changes, then

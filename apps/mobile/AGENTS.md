@@ -2,9 +2,12 @@
 
 Read root [AGENTS](../../AGENTS.md), [DESIGN](../../docs/DESIGN.md),
 [I18N](../../docs/I18N.md), [CONTRACTS](../../docs/CONTRACTS.md) and the assigned packet.
-This directory contains instructions only; no Expo app, native project or target exists.
+This directory contains the minimal Expo SDK 58 shell approved in
+[TOOL-003](../../docs/tasks/TOOL-003-expo-foundation.md). It registers an empty
+native root; product screens, generated native projects and provider connections
+are absent. See [README](README.md) for actual root commands and compiler limits.
 
-The proposal is Expo/React Native with platform-native components. Before UI
+Expo/React Native is accepted for this foundation. Before UI
 integration inspect actual Mobbin screens and record neutral flow links. Reuse
 canonical brand tokens. Routes hold routing; feature components, services and
 native adapters live outside the route tree. Do not put secrets in client code.

@@ -31,8 +31,8 @@ exports both target platforms. Record bundling separately from native journeys.
 
 ## Task 1: Record assignment
 
-- [ ] Merge this packet, plan and D014 through an assignment PR.
-- [ ] Read the merged assignment, create the implementation branch and verify
+- [x] Merge this packet, plan and D014 through an assignment PR.
+- [x] Read the merged assignment, create the implementation branch and verify
       the existing frozen install and compiler baseline with Bun 1.4.4.
 
 ## Task 2: Integrate the mobile workspace
@@ -45,26 +45,27 @@ Consumes the existing root tools and Expo's reviewed blank template. Produces
 `@gloups/mobile`, its SDK-compatible strict compiler configuration and root
 `mobile:dev`, `mobile:ios`, `mobile:android` and `mobile:build` commands.
 
-- [ ] Scaffold with pinned `create-expo-app`, without installation or generated
+- [x] Scaffold with pinned `create-expo-app`, without installation or generated
       agent instructions; preserve the existing scoped instructions.
-- [ ] Reduce the template to a registered empty native root under `src/`, a
+- [x] Reduce the template to a registered empty native root under `src/`, a
       private manifest, minimal local app config and mobile setup instructions.
-- [ ] Inherit Expo runtime configuration and the shared strict base; include
+- [x] Inherit Expo runtime configuration and the shared strict base; include
       only authored entry/source files and set React runtime types explicitly.
-- [ ] Add SDK-compatible exact dependencies through the root lockfile, mobile
+- [x] Add SDK-compatible exact dependencies through the root lockfile, mobile
       `typecheck` and iOS/Android `build` scripts, and React lint rules.
-- [ ] Integrate root commands and update current-state documentation, keeping
+- [x] Integrate root commands and update current-state documentation, keeping
       accepted foundation work separate from unimplemented product domains.
 
 ## Task 3: Verify and integrate
 
-- [ ] Run frozen install, Ultracite fix/check/doctor, effective compiler settings,
+- [x] Run frozen install, Ultracite fix/check/doctor, effective compiler settings,
       root typecheck, the actual Turborepo build graph, both Metro exports and
       the existing docs build. Resolve any authored-code/configuration errors.
-- [ ] Run Expo's installed dependency/config checks and reviewed Expo Doctor.
+- [x] Run Expo's installed dependency/config checks and reviewed Expo Doctor.
       Start Metro on port 8083, verify its status, and stop the owned process.
-- [ ] Review local Markdown targets, every changed file, generated-file ignores,
+- [x] Review local Markdown targets, every changed file, generated-file ignores,
       scope/status consistency and secret/reference exclusions. Write the dated
       verification record with actual outcomes and native-journey limitations.
-- [ ] Review the complete branch, commit with real Husky hooks, push, create
-      and attach the PR, merge it and finish the packet's handoff.
+- [x] Review the complete branch, commit with real Husky hooks, push, create
+      and attach [PR #10](https://github.com/GloupsApp/gloups-health/pull/10).
+- [x] Finish the packet handoff in PR #10; integration completes on its merge.

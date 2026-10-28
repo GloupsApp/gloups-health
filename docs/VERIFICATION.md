@@ -2,7 +2,8 @@
 
 ## Current repository
 
-Workspace tooling and a local documentation site exist. Check Git diffs, local
+Workspace tooling, a local documentation site and a minimal Expo SDK 58 mobile
+shell exist. Check Git diffs, local
 Markdown targets and anchors, instruction consistency, task ownership, confirmed/proposed choices,
 reference-name exclusions and secret/data hygiene. Record actual commands/results
 under [verification](verification/README.md). TOOL-001 adds frozen Bun installs,
@@ -18,6 +19,15 @@ The shared base checks declarations. The docs project has an explicit exception
 for published dependency declaration errors; see
 [CODE-STANDARDS](CODE-STANDARDS.md#typescript-configuration) and the
 [TypeScript evidence](verification/2026-10-28-strict-typescript.md).
+
+TOOL-003 adds mobile typechecking, SDK dependency/config checks and iOS/Android
+Metro exports through `bun run mobile:build` and the root build. Verify effective
+settings with `bun run tsc --project apps/mobile/tsconfig.json --showConfig`.
+Mobile source inherits the shared strict checks; its separate declaration
+exception and the actual bundling/server evidence are recorded in the
+[Expo verification record](verification/2026-10-28-expo-foundation.md).
+The empty shell has no product journeys. Native device and E2E Army acceptance
+are required when those journeys are implemented; bundle exports do not replace it.
 
 ## Future behavior
 

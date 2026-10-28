@@ -1,6 +1,7 @@
 # TOOL-003: Expo SDK 58 foundation
 
-Status: Assigned. Owner and integration coordinator: Codex, current Expo setup
+Status: Done on merge of [PR #10](https://github.com/GloupsApp/gloups-health/pull/10);
+Review until then. Owner and integration coordinator: Codex, current Expo setup
 chat. The owner's 28 October 2026 request, "setup expo sdk 58 + tsconfig +
 ultracite", authorizes this mobile bootstrap and its workspace integration.
 
@@ -71,7 +72,43 @@ handoff. Read this assignment back from merged main before implementation.
 
 ## Handoff
 
-Implementation and verification are pending. The
-[implementation plan](../plans/2026-10-28-expo-foundation.md) records the setup
-sequence. This packet and D014 record the owner's bounded Expo approval;
-unrelated product architecture proposals remain open.
+Assignment [PR #9](https://github.com/GloupsApp/gloups-health/pull/9) merged at
+`39624aa7ea008ed4bd6e25a444966ac0c9e29b10` and was read back before implementation.
+The private mobile shell uses Expo `58.0.20`, React `19.3.0`, React Native `0.88.0`,
+React types `19.3.0`, TypeScript `6.0.3` and `expo-system-ui` `58.0.6` for automatic
+native appearance. Root mobile commands run through Turborepo. The shared lint
+configuration adds React rules to core and anti-slop.
+
+Mobile inherits every shared authored-code safety check. Three errors in React
+Native's generated declarations require its own documented `skipLibCheck: true`
+exception. The shared base remains unchanged. The
+[verification record](../verification/2026-10-28-expo-foundation.md) contains the
+diagnostics, reproduction/removal condition and actual local results.
+
+Frozen Bun installation, Ultracite fix/check/doctor, effective compiler settings,
+root/workspace typechecks, the actual Turborepo graph, docs build, both native
+platform bundle exports, Expo dependency/config checks, Expo Doctor and
+Changesets status passed. The root development command served Metro status and
+both platform development bundles over HTTP. The owned process was stopped and
+port `8083` released. No simulator, emulator, database or provider was allocated.
+An independent Superpowers reviewer found no critical, important or minor issues
+and approved this bounded foundation for merge. The reviewer reproduced the three
+declaration errors and confirmed that mobile React resolves to `19.3.0`, while
+the existing docs React/React DOM consistently resolve to `19.3.1`.
+No native device journey or E2E Army acceptance is claimed.
+
+Implementation:
+[fae836b](https://github.com/GloupsApp/gloups-health/commit/fae836b714d456001bdb6a4c5569d1af03db03f1).
+Integration: [PR #10](https://github.com/GloupsApp/gloups-health/pull/10), including
+this handoff; its merge commit is the integrated main revision. Both real Husky
+hooks passed on the implementation commit, checking all 27 staged files and the
+Conventional Commit message. The task worktree contains committed authored files
+and generated local dependencies/build output only; it is safe to archive after
+integration. No shared runtime or user-owned ignored state was changed.
+
+Next work: an assigned UI packet with actual Mobbin references and native/E2E
+Army acceptance on regular iPhone, iPhone Duo and Android. Domain contracts,
+providers, native identifiers and distribution still require their own scope.
+Remove the declaration exception after a compatible SDK dependency update passes
+the recorded compiler command. The optional `--localhost` address mismatch is a
+recorded CLI limitation; default startup passed.
