@@ -6,10 +6,11 @@ tooling implementations have assigned owners. A coordinator records assignments
 on main before workers start. Follow
 [AGENT-WORKFLOW](../AGENT-WORKFLOW.md) and use the [template](TEMPLATE.md).
 
-| Implementation packet                     | Owner                                           | Status              | Approved scope                                                               |
-| ----------------------------------------- | ----------------------------------------------- | ------------------- | ---------------------------------------------------------------------------- |
-| [TOOL-001](TOOL-001-workspace-tooling.md) | Codex chat 01a18275-5307-7d93-98f7-10ca191559f3 | Done on PR #6 merge | Bun/Turborepo tooling, Blume docs, Changesets and commit hooks               |
-| [TOOL-002](TOOL-002-strict-typescript.md) | Codex, current strict TypeScript chat           | Done on PR #8 merge | Strict shared TypeScript configuration and current-workspace compiler checks |
+| Implementation packet                     | Owner                                           | Status              | Approved scope                                                                      |
+| ----------------------------------------- | ----------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------- |
+| [TOOL-001](TOOL-001-workspace-tooling.md) | Codex chat 01a18275-5307-7d93-98f7-10ca191559f3 | Done on PR #6 merge | Bun/Turborepo tooling, Blume docs, Changesets and commit hooks                      |
+| [TOOL-002](TOOL-002-strict-typescript.md) | Codex, current strict TypeScript chat           | Done on PR #8 merge | Strict shared TypeScript configuration and current-workspace compiler checks        |
+| [TOOL-003](TOOL-003-expo-foundation.md)   | Codex, current Expo setup chat                  | Assigned            | Expo SDK 58 bootstrap, inherited strict TypeScript and mobile Ultracite integration |
 
 | Packet                             | Specification output                                                 | Dependency before code                                             |
 | ---------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------ |
@@ -30,7 +31,8 @@ final context shapes depend on domain contracts. ING-001 cannot approve a source
 record shape on behalf of a domain owner.
 
 TOOL-001 and TOOL-002 permit only their listed tooling and documentation workspace
-files.
+files. TOOL-003 separately approves the minimal Expo mobile foundation and its
+listed shared-file integration.
 Product application scaffolding/imports still require separate approval with
 exact files, real versions/targets, accepted dependencies and verification.
 Do not add package manifests or source code from a specification assignment.
