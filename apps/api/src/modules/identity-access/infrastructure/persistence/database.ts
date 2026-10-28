@@ -18,11 +18,25 @@ export const createDatabase = (config: ApiConfig) => {
 
   const db = drizzle(connection, { schema });
 
+  const proofConnection = postgres(config.databaseURL, {
+    connect_timeout: 10,
+    idle_timeout: 20,
+    max: 2,
+    onnotice: () => {
+      /* Suppress database query context. */
+    },
+  });
+
+  const proofDb = drizzle(proofConnection, { schema });
+
   const close = async () => {
-    await connection.end({ timeout: 5 });
+    await Promise.all([
+      connection.end({ timeout: 5 }),
+      proofConnection.end({ timeout: 5 }),
+    ]);
   };
 
-  return { close, db, onApplicationShutdown: close };
+  return { close, db, onApplicationShutdown: close, proofDb };
 };
 
 export type Database = ReturnType<typeof createDatabase>["db"];

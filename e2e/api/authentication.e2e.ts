@@ -1,5 +1,6 @@
-import { execFileSync } from "node:child_process";
-import { randomBytes, randomUUID } from "node:crypto";
+import { spawn, execFileSync } from "node:child_process";
+import { createHmac, randomBytes, randomUUID } from "node:crypto";
+import path from "node:path";
 import { loadEnvFile } from "node:process";
 
 import { afterEach, beforeAll, beforeEach, expect, test } from "e2e";
@@ -102,14 +103,18 @@ const responseStatus = async (pending: Promise<Response>): Promise<number> => {
   return response.status;
 };
 
-const post = (path: string, body: string, cookie = ""): Promise<Response> => {
+const post = (
+  routePath: string,
+  body: string,
+  cookie = ""
+): Promise<Response> => {
   const headers = new Headers({ "content-type": "application/json", origin });
 
   if (cookie) {
     headers.set("cookie", cookie);
   }
 
-  return fetch(`${origin}${path}`, {
+  return fetch(`${origin}${routePath}`, {
     body,
     headers,
     method: "POST",
@@ -177,6 +182,56 @@ const verifiedIdentity = async (language: "en" | "fr" = "en", name = "") => {
   return { cookie, link, signin, user };
 };
 
+const deletionReceiptSchema = z
+  .object({
+    appleRevocation: z.enum([
+      "pending",
+      "complete",
+      "manual_required",
+      "not_applicable",
+    ]),
+    deletionId: z.uuid(),
+    gloups: z.enum(["pending", "deleted"]),
+  })
+  .strict();
+
+const ownedDeletions = new Set<string>();
+
+const deleteAccount = (
+  cookie: string,
+  key: string,
+  body?: { confirm: boolean }
+) =>
+  fetch(`${origin}/api/account`, {
+    body: JSON.stringify(body ?? { confirm: true }),
+    headers: {
+      "content-type": "application/json",
+      cookie,
+      "idempotency-key": key,
+      origin,
+    },
+    method: "DELETE",
+  });
+
+const runWorker = () =>
+  execFileSync(
+    "node",
+    ["--env-file=.env.local", "dist/deletion-worker.js", "--once"],
+    { cwd: "apps/api", encoding: "utf-8", timeout: 15_000 }
+  );
+
+const acceptedDeletion = async (cookie: string, key = randomUUID()) => {
+  const response = await deleteAccount(cookie, key);
+  expect(response.status).toBe(202);
+  const receipt = deletionReceiptSchema.parse(await response.json());
+  ownedDeletions.add(receipt.deletionId);
+  expect(
+    response.headers.getSetCookie().some((value) => /max-age=0/iu.test(value))
+  ).toBe(true);
+
+  return receipt;
+};
+
 beforeEach(async () => {
   sql("truncate table rate_limit, http_rate_limit");
   await fetch(`${sink}/control`, {
@@ -194,6 +249,14 @@ afterEach(async () => {
     method: "POST",
   });
   await fetch(`${sink}/messages`, { headers: sinkHeaders, method: "DELETE" });
+
+  for (const id of ownedDeletions) {
+    sql(
+      `begin; delete from provider_credential where id in (select jsonb_array_elements_text(credential_refs) from deletion_job where id='${id}'); delete from identity_tombstone where deletion_id='${id}'; delete from deletion_job where id='${id}'; commit;`
+    );
+  }
+
+  ownedDeletions.clear();
   sql(
     "begin; delete from verification where value in (select id from \"user\" where email like 'auth003-%@example.test'); delete from gloups_account where auth_user_id in (select id from \"user\" where email like 'auth003-%@example.test'); delete from \"user\" where email like 'auth003-%@example.test'; commit;"
   );
@@ -533,5 +596,473 @@ test(
         fetch(`${origin}/api/me`, { headers: { cookie: current.cookie } })
       )
     ).toBe(401);
+  }
+);
+
+test(
+  "API-02/SOCIAL-03: ordinary Nest JSON parsing validates Apple input before provider availability",
+  { platforms: ["api"] },
+  async () => {
+    expect(
+      await responseStatus(
+        post(
+          "/api/identity/apple/challenges",
+          JSON.stringify({ nonceHash: "invalid", purpose: "sign-in" })
+        )
+      )
+    ).toBe(400);
+    expect(
+      await responseStatus(
+        post(
+          "/api/identity/apple/challenges",
+          JSON.stringify({
+            nonceHash: "a".repeat(64),
+            ownerId: randomUUID(),
+            purpose: "sign-in",
+          })
+        )
+      )
+    ).toBe(400);
+
+    const unavailable = await post(
+      "/api/identity/apple/challenges",
+      JSON.stringify({ nonceHash: "a".repeat(64), purpose: "sign-in" })
+    );
+
+    expect(unavailable.status).toBe(503);
+    expect(unavailable.headers.getSetCookie().length).toBe(0);
+    expect(
+      await responseStatus(
+        post(
+          "/api/identity/apple/native",
+          JSON.stringify({
+            challengeId: randomUUID(),
+            code: "invalid",
+            nonce: "a".repeat(32),
+          })
+        )
+      )
+    ).toBe(503);
+    expect(
+      await responseStatus(
+        post(
+          "/api/identity/apple/notifications",
+          JSON.stringify({ signedPayload: "invalid" })
+        )
+      )
+    ).toBe(400);
+  }
+);
+
+test(
+  "SOCIAL-03: client-supplied proof headers never authorize direct provider ID tokens",
+  { platforms: ["api"] },
+  async () => {
+    const response = await fetch(`${origin}/api/auth/sign-in/social`, {
+      body: JSON.stringify({
+        idToken: { nonce: "a".repeat(32), token: "invalid" },
+        provider: "apple",
+      }),
+      headers: {
+        "content-type": "application/json",
+        origin,
+        "x-gloups-native-proof": "true",
+      },
+      method: "POST",
+    });
+
+    expect(response.status).toBe(403);
+    expect(response.headers.getSetCookie().length).toBe(0);
+    expect(
+      await responseStatus(
+        post(
+          "/api/auth/sign-in/social",
+          JSON.stringify({ idToken: { token: "invalid" }, provider: "google" })
+        )
+      )
+    ).toBe(403);
+  }
+);
+
+test(
+  "DEL-01/03: deletion freezes two sessions, survives worker restart, and isolates re-registration proofs",
+  { platforms: ["api"] },
+  async () => {
+    const current = await verifiedIdentity();
+
+    const account = await json(
+      await fetch(`${origin}/api/me`, { headers: { cookie: current.cookie } })
+    );
+
+    const second = await post(
+      "/api/auth/sign-in/email",
+      JSON.stringify(current.user)
+    );
+
+    expect(second.status).toBe(200);
+    await post(
+      "/api/auth/request-password-reset",
+      JSON.stringify({
+        email: current.user.email,
+        redirectTo: "gloups-health://auth/callback",
+      })
+    );
+    const reset = await deliveredLink(current.user.email, "reset-password");
+    const oldResetToken = new URL(reset.url).pathname.split("/").at(-1);
+    expect(
+      await responseStatus(
+        deleteAccount(current.cookie, randomUUID(), { confirm: false })
+      )
+    ).toBe(400);
+    const receipt = await acceptedDeletion(current.cookie);
+    expect(receipt.gloups).toBe("pending");
+    expect(receipt.appleRevocation).toBe("not_applicable");
+
+    const statuses = await Promise.all(
+      [current.cookie, cookies(second)].map((cookie) =>
+        responseStatus(fetch(`${origin}/api/me`, { headers: { cookie } }))
+      )
+    );
+
+    expect(statuses).toEqual([401, 401]);
+    expect(
+      await responseStatus(deleteAccount(current.cookie, randomUUID()))
+    ).toBe(401);
+    expect(
+      await responseStatus(fetch(`${origin}/api/account/${receipt.deletionId}`))
+    ).toBe(404);
+    expect(
+      await responseStatus(
+        post("/api/auth/sign-in/email", JSON.stringify(current.user))
+      )
+    ).toBe(403);
+    // Simulate an interrupted worker lease in the real isolated database.
+    sql(
+      `update deletion_job set lease_id='${randomUUID()}',lease_until=now()+interval '1 minute' where id='${receipt.deletionId}'`
+    );
+    runWorker();
+    expect(
+      sql(`select count(*) from "user" where email='${current.user.email}'`)
+    ).toBe("1");
+    sql(
+      `update deletion_job set lease_until=now()-interval '1 second' where id='${receipt.deletionId}'`
+    );
+    runWorker();
+    expect(
+      sql(
+        `select gloups || ':' || apple_revocation || ':' || (auth_user_id is null)::text from deletion_job where id='${receipt.deletionId}'`
+      )
+    ).toBe("deleted:not_applicable:true");
+    expect(
+      sql(`select count(*) from "user" where email='${current.user.email}'`)
+    ).toBe("0");
+    expect(
+      sql(
+        `select count(*) from gloups_account where id='${account.account.id}'`
+      )
+    ).toBe("0");
+    expect(
+      sql(
+        'select count(*) from issued_verification where auth_user_id not in (select id from "user")'
+      )
+    ).toBe("0");
+
+    const blocked = await post(
+      "/api/auth/sign-up/email",
+      JSON.stringify(current.user)
+    );
+
+    expect(blocked.status >= 400).toBe(true);
+    expect(
+      sql(`select count(*) from "user" where email='${current.user.email}'`)
+    ).toBe("0");
+    // Advance only this synthetic reservation beyond the explicit local security window.
+    sql(
+      `update identity_tombstone set expires_at=now()-interval '1 second' where deletion_id='${receipt.deletionId}'`
+    );
+    await fetch(`${sink}/messages`, { headers: sinkHeaders, method: "DELETE" });
+
+    const replacement = {
+      ...current.user,
+      password: randomBytes(24).toString("base64url"),
+    };
+
+    expect(
+      await responseStatus(
+        post("/api/auth/sign-up/email", JSON.stringify(replacement))
+      )
+    ).toBe(200);
+    const link = await deliveredLink(replacement.email, "verify-email");
+    expect(await responseStatus(fetch(link.url, { redirect: "manual" }))).toBe(
+      302
+    );
+
+    const signin = await post(
+      "/api/auth/sign-in/email",
+      JSON.stringify(replacement)
+    );
+
+    expect(signin.status).toBe(200);
+
+    const next = await json(
+      await fetch(`${origin}/api/me`, { headers: { cookie: cookies(signin) } })
+    );
+
+    expect(next.account.id !== account.account.id).toBe(true);
+    expect(
+      await responseStatus(fetch(current.link.url, { redirect: "manual" }))
+    ).toBe(400);
+    expect(
+      await responseStatus(
+        post(
+          "/api/auth/reset-password",
+          JSON.stringify({
+            newPassword: randomBytes(24).toString("base64url"),
+            token: oldResetToken,
+          })
+        )
+      )
+    ).toBe(400);
+  }
+);
+
+test(
+  "DEL-01: concurrent same-key commands create one durable receipt",
+  { platforms: ["api"] },
+  async () => {
+    const current = await verifiedIdentity();
+    const key = randomUUID();
+
+    const responses = await Promise.all(
+      Array.from({ length: 8 }, () => deleteAccount(current.cookie, key))
+    );
+
+    expect(
+      responses.every((response) => [202, 401].includes(response.status))
+    ).toBe(true);
+    const accepted = responses.filter((response) => response.status === 202);
+    expect(accepted.length > 0).toBe(true);
+
+    const receipts = await Promise.all(
+      accepted.map(async (response) =>
+        deletionReceiptSchema.parse(await response.json())
+      )
+    );
+
+    const ids = new Set(receipts.map((receipt) => receipt.deletionId));
+    expect(ids.size).toBe(1);
+    const id = z.uuid().parse(receipts[0]?.deletionId);
+    ownedDeletions.add(id);
+    expect(
+      sql(`select count(*) from deletion_job where idempotency_key='${key}'`)
+    ).toBe("1");
+    runWorker();
+  }
+);
+
+test(
+  "DEL-02: failed durable handoff rolls back freeze and revocation",
+  { platforms: ["api"] },
+  async () => {
+    const current = await verifiedIdentity();
+
+    const before = await json(
+      await fetch(`${origin}/api/me`, { headers: { cookie: current.cookie } })
+    );
+
+    sql(
+      `create function auth003_fail_deletion() returns trigger language plpgsql as $$ begin if new.account_id='${before.account.id}' then raise exception 'Controlled synthetic handoff failure'; end if; return new; end $$; create trigger auth003_fail_deletion before insert on deletion_job for each row execute function auth003_fail_deletion();`
+    );
+
+    try {
+      expect(
+        await responseStatus(deleteAccount(current.cookie, randomUUID()))
+      ).toBe(503);
+      expect(
+        await responseStatus(
+          fetch(`${origin}/api/me`, { headers: { cookie: current.cookie } })
+        )
+      ).toBe(200);
+      expect(
+        sql(
+          `select deletion_id is null from gloups_account where id='${before.account.id}'`
+        )
+      ).toBe("t");
+      expect(
+        sql(
+          `select count(*) from deletion_job where account_id='${before.account.id}'`
+        )
+      ).toBe("0");
+    } finally {
+      sql(
+        "drop trigger auth003_fail_deletion on deletion_job; drop function auth003_fail_deletion();"
+      );
+    }
+  }
+);
+
+const syntheticFingerprint = (kind: "identity" | "subject", value: string) =>
+  createHmac("sha256", process.env["IDENTITY_FINGERPRINT_SECRET"] ?? "")
+    .update(`${kind}:${value}`)
+    .digest("hex");
+
+const syntheticApple = (email: string, credential: boolean) => {
+  const userId = sql(`select id from "user" where email='${email}'`);
+  const subject = `auth003-sub-${randomUUID()}`;
+
+  sql(
+    `insert into account(id,account_id,provider_id,user_id,created_at,updated_at,identity_fingerprint,subject_fingerprint) values ('${randomUUID()}','${subject}','apple','${userId}',now(),now(),'${syntheticFingerprint("identity", userId)}','${syntheticFingerprint("subject", `apple:${subject}`)}')`
+  );
+
+  if (credential) {
+    sql(
+      `insert into provider_credential(id,apple_subject,auth_user_id,ciphertext,client_id,created_at,phase,retry_at) values('${randomUUID()}','${subject}','${userId}','synthetic-unreadable-credential','app.gloups.health',now(),'bound',now())`
+    );
+  }
+};
+
+test(
+  "DEL-02: missing Apple material completes Gloups erasure with explicit manual guidance",
+  { platforms: ["api"] },
+  async () => {
+    const current = await verifiedIdentity();
+    syntheticApple(current.user.email, false);
+    const receipt = await acceptedDeletion(current.cookie);
+    expect(receipt.appleRevocation).toBe("manual_required");
+    runWorker();
+    expect(
+      sql(
+        `select gloups || ':' || apple_revocation from deletion_job where id='${receipt.deletionId}'`
+      )
+    ).toBe("deleted:manual_required");
+    expect(
+      sql(`select count(*) from "user" where email='${current.user.email}'`)
+    ).toBe("0");
+  }
+);
+
+test(
+  "DEL-02: unavailable revocation retains only retry material, then applies the local fallback",
+  { platforms: ["api"] },
+  async () => {
+    const current = await verifiedIdentity();
+    // Deliberately unusable synthetic material exercises failure, never provider success.
+    syntheticApple(current.user.email, true);
+    const receipt = await acceptedDeletion(current.cookie);
+    expect(receipt.appleRevocation).toBe("pending");
+    runWorker();
+    expect(
+      sql(
+        `select gloups || ':' || apple_revocation || ':' || (auth_user_id is null)::text || ':' || attempts::text from deletion_job where id='${receipt.deletionId}'`
+      )
+    ).toBe("deleted:pending:true:1");
+    expect(
+      sql(
+        `select count(*) from provider_credential where id in (select jsonb_array_elements_text(credential_refs) from deletion_job where id='${receipt.deletionId}') and auth_user_id is null and expected_actor_id is null and apple_subject='' and ciphertext is not null`
+      )
+    ).toBe("1");
+    sql(
+      `update deletion_job set created_at=now()-interval '2 days',retry_at=now()-interval '1 second' where id='${receipt.deletionId}'`
+    );
+    runWorker();
+    expect(
+      sql(
+        `select gloups || ':' || apple_revocation || ':' || jsonb_array_length(credential_refs)::text from deletion_job where id='${receipt.deletionId}'`
+      )
+    ).toBe("deleted:manual_required:0");
+  }
+);
+
+test(
+  "API-04: account binding and session persist across isolated database and API restarts",
+  { platforms: ["api"], timeout: 60_000 },
+  async () => {
+    const current = await verifiedIdentity();
+
+    const before = await json(
+      await fetch(`${origin}/api/me`, { headers: { cookie: current.cookie } })
+    );
+
+    execFileSync(
+      "docker",
+      [
+        "compose",
+        "-p",
+        "gloups-auth-auth003",
+        "--env-file",
+        "apps/api/.env.local",
+        "-f",
+        "apps/api/compose.local.yaml",
+        "restart",
+        "postgres",
+      ],
+      { encoding: "utf-8", stdio: "pipe", timeout: 30_000 }
+    );
+
+    const status = async () => {
+      try {
+        return await responseStatus(
+          fetch(`${origin}/api/me`, { headers: { cookie: current.cookie } })
+        );
+      } catch {
+        return 0;
+      }
+    };
+
+    await expect.poll(status, { timeout: 20_000 }).toBe(200);
+
+    const listener = z.coerce
+      .number()
+      .int()
+      .positive()
+      .parse(
+        execFileSync("lsof", ["-tiTCP:4340", "-sTCP:LISTEN"], {
+          encoding: "utf-8",
+        }).trim()
+      );
+
+    const workingDirectory = execFileSync(
+      "lsof",
+      ["-a", "-p", String(listener), "-d", "cwd", "-Fn"],
+      { encoding: "utf-8" }
+    );
+
+    if (!workingDirectory.includes(`n${path.resolve("apps/api")}\n`)) {
+      throw new Error("Different checkout listener preserved.");
+    }
+
+    process.kill(listener, "SIGTERM");
+    await expect
+      .poll(async () => {
+        try {
+          await fetch(`${origin}/healthz`);
+
+          return false;
+        } catch {
+          return true;
+        }
+      })
+      .toBe(true);
+
+    const child = spawn("node", ["--env-file=.env.local", "dist/main.js"], {
+      cwd: "apps/api",
+      detached: true,
+      stdio: "ignore",
+    });
+
+    child.unref();
+    await expect.poll(status, { timeout: 20_000 }).toBe(200);
+
+    const after = await json(
+      await fetch(`${origin}/api/me`, { headers: { cookie: current.cookie } })
+    );
+
+    expect(after.account.id).toBe(before.account.id);
+    expect(
+      await responseStatus(
+        post("/api/auth/sign-out", JSON.stringify({}), current.cookie)
+      )
+    ).toBe(200);
+    expect(await status()).toBe(401);
   }
 );

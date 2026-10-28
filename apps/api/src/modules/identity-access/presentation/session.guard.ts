@@ -10,9 +10,10 @@ import { AccessFailureError } from "../application/types.js";
 import type { AccountView, VerifiedIdentity } from "../application/types.js";
 import type { DrizzleHttpRateLimit } from "../infrastructure/persistence/rate-limit.js";
 import { HTTP_RATE_LIMIT, HttpRateLimitedError } from "./http-rate-limit.js";
-import { PUBLIC_ROUTE } from "./public-route.js";
+import { IDENTITY_ONLY_ROUTE, PUBLIC_ROUTE } from "./public-route.js";
 
 export interface IdentityRequest extends FastifyRequest {
+  verifiedIdentity?: VerifiedIdentity;
   gloups?: {
     readonly identity: VerifiedIdentity;
     readonly account: AccountView;
@@ -66,6 +67,17 @@ export class SessionGuard implements CanActivate {
 
     if (!identity) {
       throw new AccessFailureError("AUTH_REQUIRED");
+    }
+
+    request.verifiedIdentity = identity;
+
+    if (
+      this.reflector.getAllAndOverride<boolean>(IDENTITY_ONLY_ROUTE, [
+        context.getHandler(),
+        context.getClass(),
+      ])
+    ) {
+      return true;
     }
 
     request.gloups = {

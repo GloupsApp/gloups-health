@@ -1,4 +1,5 @@
 import type { AccountRepository } from "../domain/account-repository.js";
+import type { DeletionRepository } from "../domain/deletion-job.js";
 import type { VerifiedIdentity } from "./types.js";
 
 export const IDENTITY_SESSIONS = Symbol("IDENTITY_SESSIONS");
@@ -6,7 +7,10 @@ export const ACCOUNT_UNIT_OF_WORK = Symbol("ACCOUNT_UNIT_OF_WORK");
 
 export interface AccountUnitOfWork {
   run: <T>(
-    work: (scope: { accounts: AccountRepository }) => Promise<T>
+    work: (scope: {
+      accounts: AccountRepository;
+      deletions: DeletionRepository;
+    }) => Promise<T>
   ) => Promise<T>;
 }
 

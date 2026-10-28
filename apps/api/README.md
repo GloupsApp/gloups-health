@@ -20,6 +20,7 @@ python3 - <<'PY'
 from pathlib import Path
 import os
 import secrets
+import json
 
 path = Path('apps/api/.env.local')
 if path.exists():
@@ -36,6 +37,8 @@ lines = [
     'DATABASE_URL=postgres://gloups_auth003:' + password + '@127.0.0.1:25440/gloups_auth003',
     'EMAIL_SINK_URL=http://127.0.0.1:4341',
     'EMAIL_SINK_SECRET=' + secrets.token_urlsafe(48),
+    'IDENTITY_FINGERPRINT_SECRET=' + secrets.token_urlsafe(48),
+    'AUTH_TOKEN_VAULT_KEYRING=' + json.dumps({'activeKid': 'local-v1', 'keys': {'local-v1': secrets.token_urlsafe(32)}}, separators=(',', ':')),
 ]
 with os.fdopen(os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), 'w') as file:
     file.write('\n'.join(lines) + '\n')
@@ -91,10 +94,50 @@ formatting/type-only imports cannot remove their runtime dependencies.
   Fastify IP, with local proxy trust disabled. SDK `X-Retry-After` is preserved
   and also exposed as standard `Retry-After`.
 
-Google, Apple, native exchange, deletion and mobile journeys follow later plan
-tasks; their complete acceptance is not established by this initial API slice.
-Release startup, real providers/email, retention policy and physical Apple device
-acceptance remain separate prerequisites. Deployment/distribution is unassigned.
+## Social sign-in and deletion
+
+Google uses browser OAuth; Apple uses the Service ID in browsers and the existing
+native bundle ID for the server-side code exchange. Configure only inventoried
+provider clients and the authorized HTTPS callback environment. Partial provider
+configuration fails startup; no provider is enabled by the checked-in example.
+Apple browser callbacks remain on the official handler. Direct provider ID tokens
+are rejected unless the private native proof scope was established server-side.
+
+`POST /api/identity/apple/challenges` issues a five-minute single-use nonce-hash
+challenge. `POST /api/identity/apple/native` exchanges the code, validates the
+native audience/nonce and invokes the official SDK. A prepared JWE credential
+intent precedes SDK writes; cookies are forwarded only after binding the material
+to the verified user/subject. A failed handoff returns unavailable, cleans tagged
+sessions and leaves durable reconciliation work. Explicit browser links carry
+server-controlled state bound to a still-fresh session. First-only Apple profile
+fields are preserved by subject; a new identity without email needs an existing
+sign-in method followed by explicit linking.
+
+Apple notifications accept the documented JSON `payload`, verify the signature,
+issuer, configured audiences and timestamps, and atomically deduplicate/revoke
+sessions for consent-revoked/account-deleted events. They do not erase Gloups data.
+Live provider success, native credential-state and notification delivery still
+need the authorized provider/device environment.
+
+`DELETE /api/account` requires a fresh verified session, explicit `confirm: true`
+and a UUID `Idempotency-Key`. Its transaction reserves fingerprints, records the
+job and revokes sessions. The 202 receipt distinguishes Gloups erasure from Apple
+revocation. Already-authenticated same-key commands share the receipt; a later
+revoked-cookie replay is 401. No unauthenticated status lookup is exposed.
+
+Run `bun run api:worker` separately. The worker claims jobs with row locks and
+expiring leases, purges this slice's records, and retries the official Apple
+revocation endpoint with bounded backoff. The independent key ring must retain
+old keys until pending credentials have been handled; credentials never go to the
+app. API transactions and SDK writes share reviewed fingerprint guards; issued
+proof/deletion operations also serialize on an identity lock in a separate pool.
+
+Only synthetic local retention is implemented: a 24-hour retry/orphan fallback,
+61-minute completed-identity reservation, 24-hour completed-job expiry and 48-hour
+notification replay marker window. These are development fixtures, not an
+accepted live retention/audit/backup policy. Release mode is rejected until that
+policy, real email/provider configuration and required device evidence are ready.
+Deployment/distribution remains unassigned.
 
 ## Schema and E2E verification
 

@@ -30,13 +30,32 @@ passed 12/12 in 5.12 seconds after boundary/style changes and service restart.
 - API-03 / LIFE-01: IP-header spoofing cannot bypass the database signin budget;
   standard Retry-After, sign-out and next-request revocation apply.
 
+## Social boundary and deletion checkpoint
+
+29 October 2026, run `01a184de-e508-700d-8f49-61e9fec8a402`: 19/19 passed,
+10.13 seconds, on the same Node/Postgres environment after service rebuild/restart.
+
+- API-02 / SOCIAL-03: ordinary Nest JSON validation, disabled-provider handling,
+  documented notification envelope validation and rejection of spoofed native
+  proof headers/direct Apple or Google ID tokens.
+- DEL-01/03: two sessions revoked at acceptance, concurrent same-key commands
+  yield one job/receipt, revoked-cookie replay denied, no public status lookup,
+  crashed lease blocks work until expiry, restarted worker erases auth/mapping/
+  issuance state, local reservation blocks replacement, then a replacement gets
+  a new account UUID and old reset/verification links fail.
+- DEL-02: controlled SQL handoff failure rolls back freeze and revocation;
+  missing Apple material takes the manual path. Deliberately unusable synthetic
+  material plus unavailable provider configuration exercises durable retry,
+  minimal remaining state and the explicit local fallback. This is not Apple
+  HTTP 5xx, JOSE persistence, native exchange or live revocation evidence.
+
 ## Remaining acceptance
 
-API-02's full browser provider/form callback and cookie-chunk evidence, database/API
-restart and failure/rollback cases, old-proof delete/re-register races, browser and
-native provider journeys, method linking, consent notifications and durable
-account deletion remain pending their implementation. The mobile/device matrix
-is independent. No complete authentication or release acceptance is claimed.
+API-02's browser/form callbacks and cookie chunks, full token clock expiry/races, live Google/Apple OAuth, native nonce/code/
+audience behavior, encrypted credential handoff failure, explicit method linking,
+verified notifications and actual Apple 5xx/revocation/restart remain unaccepted.
+The mobile/device matrix is independent. No complete authentication or release
+acceptance is claimed.
 
 ## Synthetic resource ownership
 
@@ -46,3 +65,10 @@ Before/after hooks reset its short-lived counters and remove this suite's
 rejects a different environment/database. Sink state is memory-only and cleared
 between cases. Reports and private one-time state remain ignored, with no cloud
 upload or feedback message.
+
+Final backend checkpoint run `01a184e0-7b76-7941-8b40-dbe22b51f59a` passed
+20/20 in 11.38 seconds. API-04 restarted only this lane's PostgreSQL and Node
+service, verified the same account UUID/session persisted, then confirmed
+sign-out revocation. The replacement Node listener remains owned by this lane.
+Root typecheck, API build, frozen install, graph dry-run, Ultracite and diff checks
+passed. Live provider and mobile acceptance remain outstanding.

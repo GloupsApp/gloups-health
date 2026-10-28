@@ -1,15 +1,58 @@
 import { fromNodeHeaders } from "better-auth/node";
-import type { FastifyInstance } from "fastify";
+import type { FastifyInstance, FastifyReply } from "fastify";
 
 import type { ApiConfig } from "../../../config.js";
 import type { Auth } from "../infrastructure/auth/auth.js";
-import { runAuthRequest } from "../infrastructure/auth/lifecycle-hooks.js";
+import {
+  withIssuedProofLock,
+  runAuthRequest,
+} from "../infrastructure/auth/lifecycle-hooks.js";
+import type { DatabaseResource } from "../infrastructure/persistence/database.js";
 import { sendHttpError } from "./http-errors.js";
+
+export const forwardAuthResponse = async (
+  response: Response,
+  reply: FastifyReply
+) => {
+  reply.status(response.status);
+
+  for (const [key, value] of response.headers) {
+    if (
+      ![
+        "set-cookie",
+        "transfer-encoding",
+        "connection",
+        "content-length",
+      ].includes(key)
+    ) {
+      reply.header(key, value);
+    }
+  }
+
+  const retryAfter =
+    response.headers.get("retry-after") ??
+    response.headers.get("x-retry-after");
+
+  if (response.status === 429 && retryAfter) {
+    reply.header("retry-after", retryAfter);
+  }
+
+  const cookies = response.headers.getSetCookie();
+
+  if (cookies.length) {
+    reply.header("set-cookie", cookies);
+  }
+
+  return reply.send(
+    response.body ? Buffer.from(await response.arrayBuffer()) : null
+  );
+};
 
 export const registerAuthHttp = async (
   instance: FastifyInstance,
   auth: Auth,
-  config: ApiConfig
+  config: ApiConfig,
+  database: DatabaseResource
 ): Promise<void> => {
   await instance.register((scope, _options, done) => {
     scope.removeAllContentTypeParsers();
@@ -43,44 +86,23 @@ export const registerAuthHttp = async (
             init.body = new Uint8Array(request.body);
           }
 
-          const response = await runAuthRequest(
-            new URL(`${config.baseURL}${request.url}`).pathname,
+          const webRequest = new Request(
+            `${config.baseURL}${request.url}`,
+            init
+          );
+
+          const response = await withIssuedProofLock(
+            database.db,
+            database.proofDb,
+            webRequest,
             () =>
-              auth.handler(new Request(`${config.baseURL}${request.url}`, init))
+              runAuthRequest(
+                new URL(`${config.baseURL}${request.url}`).pathname,
+                () => auth.handler(webRequest)
+              )
           );
 
-          reply.status(response.status);
-
-          for (const [key, value] of response.headers) {
-            if (
-              ![
-                "set-cookie",
-                "transfer-encoding",
-                "connection",
-                "content-length",
-              ].includes(key)
-            ) {
-              reply.header(key, value);
-            }
-          }
-
-          const retryAfter =
-            response.headers.get("retry-after") ??
-            response.headers.get("x-retry-after");
-
-          if (response.status === 429 && retryAfter) {
-            reply.header("retry-after", retryAfter);
-          }
-
-          const cookies = response.headers.getSetCookie();
-
-          if (cookies.length) {
-            reply.header("set-cookie", cookies);
-          }
-
-          return reply.send(
-            response.body ? Buffer.from(await response.arrayBuffer()) : null
-          );
+          return forwardAuthResponse(response, reply);
         } catch {
           return sendHttpError(reply, 503, "SERVICE_UNAVAILABLE");
         }

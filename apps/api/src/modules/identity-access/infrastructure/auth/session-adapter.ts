@@ -8,8 +8,8 @@ import type { Auth } from "./auth.js";
 
 export class BetterAuthSessions implements IdentitySessions {
   private readonly auth: Auth;
-  private readonly db: Database;
-  constructor(auth: Auth, db: Database) {
+  private readonly db: Pick<Database, "delete">;
+  constructor(auth: Auth, db: Pick<Database, "delete">) {
     this.auth = auth;
     this.db = db;
   }

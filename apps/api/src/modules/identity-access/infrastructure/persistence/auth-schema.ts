@@ -10,36 +10,41 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
-  id: text("id").primaryKey(),
   image: text("image"),
-  name: text("name").notNull(),
-  preferredLanguage: text("preferred_language", { enum: ["en", "fr"] })
-    .default("en")
-    .notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at")
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  emailFingerprint: text("email_fingerprint"),
+  nativeSetupId: text("native_setup_id"),
+  providerFingerprint: text("provider_fingerprint"),
+  preferredLanguage: text("preferred_language", { enum: ["en", "fr"] })
+    .default("en")
     .notNull(),
 });
 
 export const session = pgTable(
   "session",
   {
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    expiresAt: timestamp("expires_at").notNull(),
     id: text("id").primaryKey(),
-    ipAddress: text("ip_address"),
+    expiresAt: timestamp("expires_at").notNull(),
     token: text("token").notNull().unique(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
+    ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    identityFingerprint: text("identity_fingerprint"),
+    nativeSetupId: text("native_setup_id"),
   },
   (table) => [index("session_userId_idx").on(table.userId)]
 );
@@ -47,23 +52,26 @@ export const session = pgTable(
 export const account = pgTable(
   "account",
   {
-    accessToken: text("access_token"),
-    accessTokenExpiresAt: timestamp("access_token_expires_at"),
-    accountId: text("account_id").notNull(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
     id: text("id").primaryKey(),
-    idToken: text("id_token"),
-    password: text("password"),
+    accountId: text("account_id").notNull(),
     providerId: text("provider_id").notNull(),
-    refreshToken: text("refresh_token"),
-    refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
-    scope: text("scope"),
-    updatedAt: timestamp("updated_at")
-      .$onUpdate(() => /* @__PURE__ */ new Date())
-      .notNull(),
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
+    accessToken: text("access_token"),
+    refreshToken: text("refresh_token"),
+    idToken: text("id_token"),
+    accessTokenExpiresAt: timestamp("access_token_expires_at"),
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
+    scope: text("scope"),
+    password: text("password"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+    identityFingerprint: text("identity_fingerprint"),
+    nativeSetupId: text("native_setup_id"),
+    subjectFingerprint: text("subject_fingerprint"),
   },
   (table) => [index("account_userId_idx").on(table.userId)]
 );
@@ -71,29 +79,29 @@ export const account = pgTable(
 export const verification = pgTable(
   "verification",
   {
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    expiresAt: timestamp("expires_at").notNull(),
     id: text("id").primaryKey(),
     identifier: text("identifier").notNull(),
+    value: text("value").notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
-    value: text("value").notNull(),
   },
   (table) => [index("verification_identifier_idx").on(table.identifier)]
 );
 
 export const rateLimit = pgTable("rate_limit", {
-  count: integer("count").notNull(),
   id: text("id").primaryKey(),
   key: text("key").notNull().unique(),
+  count: integer("count").notNull(),
   lastRequest: bigint("last_request", { mode: "number" }).notNull(),
 });
 
 export const userRelations = relations(user, ({ many }) => ({
-  accounts: many(account),
   sessions: many(session),
+  accounts: many(account),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({

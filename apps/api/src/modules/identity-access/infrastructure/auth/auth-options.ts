@@ -10,6 +10,26 @@ export const authSchemaOptions = {
       enabled: true,
       updateUserInfoOnLink: false,
     },
+    additionalFields: {
+      identityFingerprint: {
+        input: false,
+        required: false,
+        returned: false,
+        type: "string",
+      },
+      nativeSetupId: {
+        input: false,
+        required: false,
+        returned: false,
+        type: "string",
+      },
+      subjectFingerprint: {
+        input: false,
+        required: false,
+        returned: false,
+        type: "string",
+      },
+    },
     encryptOAuthTokens: true,
   },
   advanced: {
@@ -48,6 +68,20 @@ export const authSchemaOptions = {
     window: 60,
   },
   session: {
+    additionalFields: {
+      identityFingerprint: {
+        input: false,
+        required: false,
+        returned: false,
+        type: "string",
+      },
+      nativeSetupId: {
+        input: false,
+        required: false,
+        returned: false,
+        type: "string",
+      },
+    },
     cookieCache: { enabled: false },
     expiresIn: 604_800,
     freshAge: 300,
@@ -55,11 +89,29 @@ export const authSchemaOptions = {
   },
   user: {
     additionalFields: {
+      emailFingerprint: {
+        input: false,
+        required: false,
+        returned: false,
+        type: "string",
+      },
+      nativeSetupId: {
+        input: false,
+        required: false,
+        returned: false,
+        type: "string",
+      },
       preferredLanguage: {
         defaultValue: "en",
         input: true,
         required: true,
         type: ["en", "fr"],
+      },
+      providerFingerprint: {
+        input: false,
+        required: false,
+        returned: false,
+        type: "string",
       },
     },
     changeEmail: { enabled: false },

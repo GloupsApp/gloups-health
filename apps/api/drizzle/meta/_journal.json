@@ -15,6 +15,27 @@
       "when": 1793226378725,
       "tag": "0001_chilly_king_bedlam",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793230084192,
+      "tag": "0002_magenta_psylocke",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793230318510,
+      "tag": "0003_worried_valeria_richards",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793230318751,
+      "tag": "0004_identity_write_guards",
+      "breakpoints": true
     }
   ]
 }

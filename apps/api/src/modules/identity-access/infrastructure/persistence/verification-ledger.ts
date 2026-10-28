@@ -39,6 +39,24 @@ export class VerificationLedger {
       tokenHash: hashToken(token),
     });
   }
+  async issuerFor(
+    token: string,
+    kind: "verify-email" | "reset-password"
+  ): Promise<string | null> {
+    const [row] = await this.db
+      .select({ authUserId: issuedVerification.authUserId })
+      .from(issuedVerification)
+      .where(
+        and(
+          eq(issuedVerification.tokenHash, hashToken(token)),
+          eq(issuedVerification.kind, kind),
+          gt(issuedVerification.expiresAt, new Date())
+        )
+      )
+      .limit(1);
+
+    return row?.authUserId ?? null;
+  }
   async consume(token: string, authUserId: string): Promise<boolean> {
     const rows = await this.db
       .delete(issuedVerification)

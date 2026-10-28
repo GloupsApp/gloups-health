@@ -151,3 +151,34 @@ API's final changed build/typecheck ran uncached. Changesets status passed and
 reports the existing documentation patch only. Graph dry-run includes API, docs
 and mobile. Migration reapplication is idempotent; isolated URL validation and
 postgres.js migration pool max 1 are configured. No source PR has been merged.
+
+### Social boundary and durable deletion checkpoint
+
+Official provider configuration, private native proof, persisted Apple challenges,
+prepared JOSE JWE handoff/reconciliation, explicit browser link proof and signed
+Apple notifications are implemented. Existing provider IDs/credentials and an
+authorized HTTPS/device environment are still required for live acceptance.
+
+Generated migrations 0002/0003 were reviewed; custom 0004 adds provider-subject
+uniqueness and transaction-level fingerprint/native-setup guards without editing
+the generated SDK schema. The isolated database had zero users before applying
+them. A separate two-connection pool holds issued-proof locks without consuming
+all SDK connections. Deletion reserves/freezes/revokes atomically; the worker uses
+leases, purges this slice and handles minimal Apple retry/manual state.
+
+Army run `01a184de-e508-700d-8f49-61e9fec8a402` passed 19/19 in 10.13 seconds.
+The expanded [case record](../../e2e/api/authentication.md) distinguishes actual
+HTTP/SQL rollback, concurrency, restart and replacement-proof evidence from the
+still-missing live provider scenarios. Root/API/docs/mobile typechecks passed.
+
+Local-only retention fixtures are explicit in the API README: 24-hour fallback,
+61-minute post-completion reservation, 24-hour job expiry, 48-hour notification
+markers. They do not resolve live tombstone/audit/backup/re-registration policy;
+release startup remains blocked. PR #26 remains draft/open with auto-merge off.
+
+Final backend checkpoint run `01a184e0-7b76-7941-8b40-dbe22b51f59a` passed
+20/20 in 11.38 seconds. API-04 restarted only this lane's PostgreSQL and Node
+service, verified the same account UUID/session persisted, then confirmed
+sign-out revocation. The replacement Node listener remains owned by this lane.
+Root typecheck, API build, frozen install, graph dry-run, Ultracite and diff checks
+passed. Live provider and mobile acceptance remain outstanding.

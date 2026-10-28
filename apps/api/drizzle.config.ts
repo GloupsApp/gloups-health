@@ -31,6 +31,7 @@ export default defineConfig({
   schema: [
     "./src/modules/identity-access/infrastructure/persistence/*-schema.ts",
     "./src/modules/identity-access/infrastructure/persistence/verification-ledger.ts",
+    "./src/modules/identity-access/infrastructure/persistence/apple-challenges.ts",
   ],
   strict: true,
   verbose: false,

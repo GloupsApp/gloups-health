@@ -181,3 +181,17 @@ typechecks, frozen install, Ultracite check/doctor, graph and Changesets status
 passed. This is a checkpoint: remaining transport/restart/failure acceptance and
 Tasks 3–7 are not Done. The API and sink are running on this lane's 4340/4341 and
 Postgres on 25440. No physical device or provider success is claimed.
+
+Source checkpoint: [draft PR #26](https://github.com/GloupsApp/gloups-health/pull/26),
+commit [`f698a8d5b4a6dcfcebbcad0488def163b118a4f3`](https://github.com/GloupsApp/gloups-health/commit/f698a8d5b4a6dcfcebbcad0488def163b118a4f3).
+It remains open and unmerged while native execution continues; no auto-merge.
+
+### Social and deletion source checkpoint
+
+Task 3/4 source and reviewed migrations implement official provider/native/link/
+notification boundaries and durable deletion. Army run
+`01a184de-e508-700d-8f49-61e9fec8a402` passed 19/19 real HTTP/Postgres cases.
+Live providers, Apple handoff/notification/revocation evidence, full transport and
+device matrix remain incomplete. Synthetic local retention is explicit and does
+not approve live release. Continue Expo Tasks 5/6 on this branch; no PR merge or
+auto-merge is authorized.

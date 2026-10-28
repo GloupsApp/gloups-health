@@ -43,8 +43,8 @@ const main = async (): Promise<void> => {
       /^https?:\/\//u.test(origin)
     ),
   });
-  await registerAuthHttp(instance, app.get<Auth>(AUTH), config);
   const database = app.get<DatabaseResource>(DATABASE);
+  await registerAuthHttp(instance, app.get<Auth>(AUTH), config, database);
   await database.db.execute(sql`select 1`);
   await app.listen(config.port, config.host);
   process.stdout.write(`Gloups API listening on port ${config.port}\n`);
