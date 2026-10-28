@@ -12,7 +12,7 @@ Read [root instructions](../../AGENTS.md), [PRODUCT](../PRODUCT.md),
 
 ## Deliverable and ownership
 
-Define verified identity mapping, common request/error/revision/idempotency vocabulary, schema approval/versioning and a concrete future Nx/Bun/NestJS bootstrap proposal. Separate confirmed NestJS from proposed client/database/ORM versions.
+Define verified identity mapping, common request/error/revision/idempotency vocabulary, schema approval/versioning and a concrete future NestJS bootstrap proposal using the accepted Bun/Turborepo tooling. Separate confirmed NestJS from proposed client/database/ORM versions. TOOL-001 owns the repository tooling setup.
 
 Allowed output: `docs/specs/foundation-contracts.md` and the handoff section of this packet.
 Shared/root files and other packets are owned by the integration coordinator.

@@ -14,6 +14,9 @@ apps/mobile/android/
 # Local workspaces, state and editor files
 .local/
 .nx/
+.turbo/
+.blume/
+.astro/
 .expo/
 .superpowers/
 .worktrees/

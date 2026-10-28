@@ -1,6 +1,6 @@
 # TOOL-001: Workspace tooling and Blume documentation
 
-Status: Assigned. Owner and integration coordinator: Codex chat
+Status: Review. Owner and integration coordinator: Codex chat
 `01a18275-5307-7d93-98f7-10ca191559f3`. The owner approved implementation in the
 28 October 2026 request to add the named tools and Conventional Commit hooks.
 This packet authorizes repository tooling and a minimal Blume documentation site.
@@ -45,7 +45,8 @@ Allowed paths: root `package.json`, `bun.lock`, `.bun-version`, `turbo.json`,
 `.husky/**`, `.changeset/**`, `apps/docs/**`, `AGENTS.md`, `CONTRIBUTING.md`,
 `README.md`, `ROADMAP.md`, `docs/PRODUCT.md`, `docs/ARCHITECTURE.md`,
 `docs/CODE-STANDARDS.md`, `docs/VERIFICATION.md`, `docs/RELEASING.md`,
-`docs/DECISIONS.md`, `docs/README.md`, `docs/tasks/README.md`, this packet and a
+`docs/DECISIONS.md`, `docs/README.md`, `docs/tasks/README.md`,
+`docs/tasks/FND-001-foundation.md`, `docs/verification/README.md`, this packet and a
 dated tooling verification record. Formatting other existing Markdown is allowed
 only if the initial formatter baseline requires it; keep content unchanged.
 
@@ -74,6 +75,15 @@ validation and local Changesets commands. No product interfaces are consumed.
 
 ## Handoff
 
-Assignment is ready for integration. Implementation starts after this assignment
-is merged on main and read back. Record implementation base/final commit, PR,
-actual versions/checks, remaining decisions and resource cleanup here.
+Assignment merged in [PR #4](https://github.com/GloupsApp/gloups-health/pull/4)
+at `473452055e55dcd2aa3d1084e58b5d7dfde87ab3` and read back before implementation.
+Record implementation final commit/PR, actual versions/checks, remaining decisions
+and resource cleanup here.
+
+The workspace, Blume site, Changesets configuration and hooks are implemented.
+Local installation, formatting/lint diagnostics, build/cache checks, HTTP checks
+and commit-message rejection are recorded in the
+[tooling verification](../verification/2026-10-28-workspace-tooling.md).
+The pre-commit hook completed against all 37 staged files it matched. No unit
+tests, application scaffolds or provider resources were created. Dev and preview
+servers on 127.0.0.1 ports 43217/43218 have been stopped.

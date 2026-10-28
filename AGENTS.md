@@ -7,8 +7,9 @@ files when entering their application or package.
 
 ## Current stage and authority
 
-- This repository contains documentation and metadata only. Do not claim that an
-  app, API, package, Nx target, check or provider connection exists here.
+- This repository contains documentation, workspace tooling and a local Blume
+  documentation site. API, mobile and product web folders remain reservations.
+  Do not claim product apps, services or provider connections exist here.
 - Worldwide iOS/Android launch, French/English first, nutrition/fitness/sleep/
   optional cycle, explainable daily coaching and full workout recording are
   confirmed. NestJS is the selected backend direction. Other architecture calls
@@ -60,17 +61,18 @@ files when entering their application or package.
 - Follow [ARCHITECTURE](docs/ARCHITECTURE.md) for placement and
   [CODE-STANDARDS](docs/CODE-STANDARDS.md) for code rules. Keep changes focused.
   Add shared packages only for actual consumers and an approved contract.
-- Bun 1.4.2 and one root bun.lock are the repository policy when JavaScript setup
-  is implemented. Nx will be the application command surface. There is no
-  package manifest, lockfile or runnable Nx target yet.
-- Once real projects exist, inspect resolved targets with
-  `bun run nx show project <project> --json`; run application tasks from the root
-  with `bun run nx run <project>:<target>`. Use Nx workspace/task/generator guidance
-  before exploration, execution or scaffolding; consult installed help for options.
+- Use the Bun version pinned in `.bun-version` and `package.json`, Bun workspaces
+  and one root `bun.lock`. Install with `bun install --frozen-lockfile`.
+  Turborepo replaces the earlier Nx policy under decision D011.
+- Run workspace tasks from the root. Inspect the actual graph with
+  `bun run turbo run build --dry=json`; use `bun run build` or
+  `bun run docs:dev` for the current documentation workspace. Consult installed
+  help before adding task options. New product projects still need approval.
 - Use Ultracite with Oxlint, Oxfmt and anti-slop when tooling is installed. Run
   `bunx ultracite fix` before committing relevant JS/TS/config changes, then
-  `bunx ultracite check`. Do not install tooling just to pretend this docs-only
-  repository already has those checks.
+  `bunx ultracite check`. Run `bunx ultracite doctor` when changing the setup.
+  Husky runs lint-staged before commits and commitlint on the commit message;
+  use Conventional Commits, for example `chore: update workspace tooling`.
 - Before every new UI flow, inspect actual screens through connected Mobbin and
   record selected flow links with neutral labels in [DESIGN](docs/DESIGN.md).
   Follow native conventions on each platform. Keep one canonical brand palette.

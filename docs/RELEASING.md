@@ -9,7 +9,9 @@ The initial repository README provides a base branch for the documentation PR.
 
 ## Product implementation
 
-There is no application or configured release target here. Before application
+The documentation workspace builds locally. Changesets records package versions;
+the package is private and no publishing/deployment workflow is configured.
+Before product application
 work, approve the relevant specifications/contracts, an implementation packet,
 actual tooling versions/targets and provider responsibilities. A merged design
 draft is not that approval. Domain agents must use accepted interface versions.

@@ -6,11 +6,11 @@ The cheapest stack that takes Gloups to 1M MAU keeps most of the proposed direct
 
 The research below was first framed around reusing existing applications and vendor accounts. There are none: every choice is made on cost, simplicity and speed alone. That removes the arguments for four proposals.
 
-| Proposed choice | From-scratch verdict | Reason |
-|---|---|---|
-| Clerk | Better Auth inside NestJS | No users to migrate, no license fee at any tier, identity stays in the EU Postgres |
-| Prisma | Drizzle | No code to reuse; avoids the certain Prisma 7 to 8 client rewrite and keeps time-based aggregates close to SQL |
-| Bun + Nx | Bun workspaces only | Two apps and one contracts package do not need a task graph or remote cache; Nx can be added if the repository grows |
+| Proposed choice                     | From-scratch verdict      | Reason                                                                                                                           |
+| ----------------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Clerk                               | Better Auth inside NestJS | No users to migrate, no license fee at any tier, identity stays in the EU Postgres                                               |
+| Prisma                              | Drizzle                   | No code to reuse; avoids the certain Prisma 7 to 8 client rewrite and keeps time-based aggregates close to SQL                   |
+| Bun + Nx                            | Bun workspaces only       | Two apps and one contracts package do not need a task graph or remote cache; Nx can be added if the repository grows             |
 | Self-hosted PostgreSQL from day one | Scaleway managed at first | About EUR 17-32 a month with an HA node, close to a Hetzner server, without owning backups, restore and failover for health data |
 
 NestJS, Expo, Coolify on Hetzner for the stateless API, PostHog EU and RevenueCat hold up without any reuse argument. The sections below keep the sourced facts as gathered; the recommendations, cost table and thresholds reflect these verdicts.
@@ -25,13 +25,13 @@ On the runtime, **Fastify serves about 88,000 requests/s versus about 60,000 for
 
 ### PostgreSQL: self-hosting wins, managed storage gets expensive at scale
 
-| Option (EU) | Unit price seen | Estimated monthly cost, small tier | Weak point |
-|---|---|---|---|
-| Self-hosted Postgres, Hetzner CPX32 | EUR 35.99, 160 GB NVMe ([Hetzner](https://www.hetzner.com/cloud/regular-performance/)) | about EUR 36-42 with WAL archiving to object storage | PITR, replica and on-call are on us |
-| Scaleway DB-PLAY2-PICO | EUR 0.0233/h, local storage EUR 0.0394/GB-month ([Scaleway](https://www.scaleway.com/en/pricing/managed-databases-pricing/)) | about EUR 17 alone, about EUR 32 with an HA node | PITR terms not confirmed |
-| Neon Launch (Frankfurt, London) | $0.106/CU-hour, $0.35/GB-month ([Neon](https://neon.com/pricing)) | about $77 for 1 always-on CU | Storage 9x the Scaleway price, no Paris ([Neon regions](https://neon.com/docs/introduction/regions)) |
-| Supabase Pro | $25 + compute, PITR $100/month for 7 days ([Supabase](https://supabase.com/pricing)) | about $130 with PITR | PITR dominates the cost |
-| Fly Managed Postgres | $38 to $1,922 ([Fly.io](https://docs.fly.io/about/pricing)) | $38 | US company |
+| Option (EU)                         | Unit price seen                                                                                                              | Estimated monthly cost, small tier                   | Weak point                                                                                           |
+| ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Self-hosted Postgres, Hetzner CPX32 | EUR 35.99, 160 GB NVMe ([Hetzner](https://www.hetzner.com/cloud/regular-performance/))                                       | about EUR 36-42 with WAL archiving to object storage | PITR, replica and on-call are on us                                                                  |
+| Scaleway DB-PLAY2-PICO              | EUR 0.0233/h, local storage EUR 0.0394/GB-month ([Scaleway](https://www.scaleway.com/en/pricing/managed-databases-pricing/)) | about EUR 17 alone, about EUR 32 with an HA node     | PITR terms not confirmed                                                                             |
+| Neon Launch (Frankfurt, London)     | $0.106/CU-hour, $0.35/GB-month ([Neon](https://neon.com/pricing))                                                            | about $77 for 1 always-on CU                         | Storage 9x the Scaleway price, no Paris ([Neon regions](https://neon.com/docs/introduction/regions)) |
+| Supabase Pro                        | $25 + compute, PITR $100/month for 7 days ([Supabase](https://supabase.com/pricing))                                         | about $130 with PITR                                 | PITR dominates the cost                                                                              |
+| Fly Managed Postgres                | $38 to $1,922 ([Fly.io](https://docs.fly.io/about/pricing))                                                                  | $38                                                  | US company                                                                                           |
 
 Data volume decides. Our estimate: about 15 KB per active user per day (meals, sets, sleep stages), or 10-12 MB a year with indexes. With 50% of MAU actively logging, that gives on the order of **5-6 GB at 1k MAU, 55 GB at 10k, 550 GB at 100k and 3 to 5.5 TB at 1M**. At that last tier, Neon storage alone would cost $1,000 to $1,900 a month before compute and PITR, while Scaleway local storage stays in the tens of euros. Storing raw minute-level HealthKit samples (heart rate, steps) would multiply that volume by 10 or more. The architectural rule that follows is to store daily aggregates and keep raw samples only where coaching needs them, with retention. At these volumes, native monthly range partitioning on the few heavy tables is enough. TimescaleDB is only justified for raw series, and its availability on managed offers was not verified.
 
@@ -55,14 +55,14 @@ For offline, PowerSync is the strongest managed alternative (Pro from $49 a mont
 
 Entry-level model prices have collapsed. **Claude Haiku 5.5 costs $0.10 input and $0.50 output per million tokens, $0.01 for cache reads and half price in batch** ([Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing)). gpt-5-nano is at $0.05/$0.40 ([OpenAI pricing](https://developers.openai.com/api/docs/pricing)) and Gemini 2.5 Flash-Lite at $0.10/$0.40 ([Gemini pricing](https://ai.google.dev/gemini-api/docs/pricing)). Under our assumptions (2,000-token shared cached prefix, 1,500 tokens of per-user facts, 400 output tokens, 30 batched briefings and 20 chat turns per MAU per month), the monthly cost per MAU comes out as follows:
 
-| Model | Estimated cost per MAU-month | Estimate at 1M MAU |
-|---|---|---|
-| gpt-5-nano | about $0.008 | about $8k |
-| Gemini 2.5 Flash-Lite | about $0.012 | about $12k |
-| Claude Haiku 5.5 (+30% tokenizer, +10% Bedrock EU) | $0.013 to $0.018 | $13k to $19k |
-| Scaleway gpt-oss-120b (no cache or batch) | about EUR 0.041 | about EUR 41k |
-| Gemini 3.6 Flash | $0.095, then $0.19 from 2027-01-01 | $95k to $190k |
-| Claude Sonnet 5.5 | about $0.24 | about $244k |
+| Model                                              | Estimated cost per MAU-month       | Estimate at 1M MAU |
+| -------------------------------------------------- | ---------------------------------- | ------------------ |
+| gpt-5-nano                                         | about $0.008                       | about $8k          |
+| Gemini 2.5 Flash-Lite                              | about $0.012                       | about $12k         |
+| Claude Haiku 5.5 (+30% tokenizer, +10% Bedrock EU) | $0.013 to $0.018                   | $13k to $19k       |
+| Scaleway gpt-oss-120b (no cache or batch)          | about EUR 0.041                    | about EUR 41k      |
+| Gemini 3.6 Flash                                   | $0.095, then $0.19 from 2027-01-01 | $95k to $190k      |
+| Claude Sonnet 5.5                                  | about $0.24                        | about $244k        |
 
 Two notes on these figures. The tokenizer of Claude models since 4.7 produces about 30% more tokens for the same text ([Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing)), so compare cost per request, not per token. And Gemini 3.6/3.8 Flash prices double on 1 January 2027 ([Gemini pricing](https://ai.google.dev/gemini-api/docs/pricing)). Routing 95% of calls to Haiku 5.5 and 5% to Sonnet 5.5 comes to about $0.025 per MAU. The real budget risk is chat: by our estimate, a heavy user at 300 turns a month costs $0.11 on Haiku 5.5 but about $2 on Sonnet 5.5. Per-plan quotas are therefore necessary. Meal photos are the second variable cost: about $0.0004 per photo by our estimate, or $0.04 a month for a user who sends 3 a day, more than all of their text coaching. Calories always come from the nutrition database; the model only proposes foods and portions.
 
@@ -86,38 +86,38 @@ All these rules lead to a single, inexpensive architecture. An identity zone (em
 
 ## Recommended stack and monthly cost per tier
 
-| Layer | Recommended choice | Rejected or deferred alternative |
-|---|---|---|
-| Runtime | NestJS 11 + Fastify on Node 24 LTS, Bun 1.4.2 workspaces for installs and scripts | Bun in production after a load test, Nx if the repository grows |
-| Hosting | Coolify on Hetzner (DE/FI), stateless app scaled horizontally | Managed PaaS (Railway, Fly), 2 to 8 times more expensive |
-| Database | Scaleway managed Postgres with HA at first, self-hosted with WAL archiving once storage or price justifies it, replica and PgBouncer at 100k | Neon, Supabase (storage or PITR too expensive at scale) |
-| ORM | Drizzle, SQL migrations reviewed in Git | Prisma 7.x (certain rewrite for 8), Kysely |
-| Background jobs | Postgres-backed queue (`SKIP LOCKED`) | Valkey + BullMQ if throughput requires it |
-| Mobile | Expo SDK 58, expo-router, Expo UI, targeted Swift/Kotlin modules | Flutter, KMP, fully native |
-| Health | kingstinct HealthKit + react-native-health-connect v4 | Paid health aggregators |
-| Offline | expo-sqlite + idempotent command queue + cursor pull | PowerSync if reactive queries prove necessary |
-| Push | Expo Push, with native tokens kept | OneSignal |
-| LLM | Small EU-processed model in a nightly batch, explicit escalation, chat quotas | Mid-tier model by default |
-| Auth | Better Auth inside NestJS from day one | Clerk, Logto Cloud, Supabase Auth |
-| Analytics | PostHog EU, lean event plan, cached flags | Self-hosted PostHog before 1M |
-| Subscriptions | RevenueCat, local entitlement copy via webhooks | Native StoreKit 2/Play Billing |
-| Food | OFF + CIQUAL + USDA imported | Commercial APIs billed per call |
+| Layer           | Recommended choice                                                                                                                           | Rejected or deferred alternative                                |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| Runtime         | NestJS 11 + Fastify on Node 24 LTS, Bun 1.4.2 workspaces for installs and scripts                                                            | Bun in production after a load test, Nx if the repository grows |
+| Hosting         | Coolify on Hetzner (DE/FI), stateless app scaled horizontally                                                                                | Managed PaaS (Railway, Fly), 2 to 8 times more expensive        |
+| Database        | Scaleway managed Postgres with HA at first, self-hosted with WAL archiving once storage or price justifies it, replica and PgBouncer at 100k | Neon, Supabase (storage or PITR too expensive at scale)         |
+| ORM             | Drizzle, SQL migrations reviewed in Git                                                                                                      | Prisma 7.x (certain rewrite for 8), Kysely                      |
+| Background jobs | Postgres-backed queue (`SKIP LOCKED`)                                                                                                        | Valkey + BullMQ if throughput requires it                       |
+| Mobile          | Expo SDK 58, expo-router, Expo UI, targeted Swift/Kotlin modules                                                                             | Flutter, KMP, fully native                                      |
+| Health          | kingstinct HealthKit + react-native-health-connect v4                                                                                        | Paid health aggregators                                         |
+| Offline         | expo-sqlite + idempotent command queue + cursor pull                                                                                         | PowerSync if reactive queries prove necessary                   |
+| Push            | Expo Push, with native tokens kept                                                                                                           | OneSignal                                                       |
+| LLM             | Small EU-processed model in a nightly batch, explicit escalation, chat quotas                                                                | Mid-tier model by default                                       |
+| Auth            | Better Auth inside NestJS from day one                                                                                                       | Clerk, Logto Cloud, Supabase Auth                               |
+| Analytics       | PostHog EU, lean event plan, cached flags                                                                                                    | Self-hosted PostHog before 1M                                   |
+| Subscriptions   | RevenueCat, local entitlement copy via webhooks                                                                                              | Native StoreKit 2/Play Billing                                  |
+| Food            | OFF + CIQUAL + USDA imported                                                                                                                 | Commercial APIs billed per call                                 |
 
 Assumptions behind the cost table: 30% DAU/MAU, 100 analytics events and 2 emails per MAU, 3% paying users at $5 net, LLM at $0.02-0.035 per MAU (text plus photos). These are all estimates built on prices seen on 27 October 2026. USD and EUR are added at parity. The infra row assumes self-hosted Postgres; managed Scaleway at launch adds about EUR 17-32 a month at the 1k and 10k tiers. Not included: store commissions, developer accounts, the team, legal advice and penetration tests.
 
-| Item (monthly) | 1k MAU | 10k MAU | 100k MAU | 1M MAU |
-|---|---|---|---|---|
-| Hetzner + Coolify infra (EUR) | 26-40 | 65-110 | 250-450 | 1,000-2,000 |
-| Clerk, if chosen instead of Better Auth (MRU = MAU) | 0-25 | 0-25 | about 1,025 | about 17,225 |
-| PostHog EU | 0 | 0 | 325-940 | 2,600-5,300 |
-| RevenueCat | 0 | 0 | about 150 | about 1,500 |
-| Sentry | 0 | 0 | 29-89 | a few hundred |
-| Email (SES or Resend) | 0 | 2-20 | 20-160 | 200-1,150 |
-| EAS Build/Update | 0-19 | 19-54 | 450-500 | 2,000-4,000 |
-| LLM coach | 20-35 | 200-350 | 2,000-3,500 | 20,000-35,000 |
-| Sampled LLM observability | 0 | 0 | 0-100 | 0-500 |
-| **Total with paid defaults** | **about 50-120** | **about 290-560** | **about 4,200-6,900** | **about 45,000-67,000** |
-| **Recommended total** (Better Auth from day one, SES, self-hosted updates) | same | same | **about 2,800-5,400** | **about 25,600-45,300** |
+| Item (monthly)                                                             | 1k MAU           | 10k MAU           | 100k MAU              | 1M MAU                  |
+| -------------------------------------------------------------------------- | ---------------- | ----------------- | --------------------- | ----------------------- |
+| Hetzner + Coolify infra (EUR)                                              | 26-40            | 65-110            | 250-450               | 1,000-2,000             |
+| Clerk, if chosen instead of Better Auth (MRU = MAU)                        | 0-25             | 0-25              | about 1,025           | about 17,225            |
+| PostHog EU                                                                 | 0                | 0                 | 325-940               | 2,600-5,300             |
+| RevenueCat                                                                 | 0                | 0                 | about 150             | about 1,500             |
+| Sentry                                                                     | 0                | 0                 | 29-89                 | a few hundred           |
+| Email (SES or Resend)                                                      | 0                | 2-20              | 20-160                | 200-1,150               |
+| EAS Build/Update                                                           | 0-19             | 19-54             | 450-500               | 2,000-4,000             |
+| LLM coach                                                                  | 20-35            | 200-350           | 2,000-3,500           | 20,000-35,000           |
+| Sampled LLM observability                                                  | 0                | 0                 | 0-100                 | 0-500                   |
+| **Total with paid defaults**                                               | **about 50-120** | **about 290-560** | **about 4,200-6,900** | **about 45,000-67,000** |
+| **Recommended total** (Better Auth from day one, SES, self-hosted updates) | same             | same              | **about 2,800-5,400** | **about 25,600-45,300** |
 
 In the optimized version, cost per MAU goes from $0.10 or more at 1k MAU (fixed costs) to $0.026-0.045 at 1M. Price differences between vendors matter little next to the usage profile, which weighs the most: number of briefings generated, chat turns, photos and analytics events.
 

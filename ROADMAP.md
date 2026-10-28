@@ -1,27 +1,28 @@
 # Gloups engineering roadmap
 
-Updated 27 October 2026. Worldwide iOS/Android launch, with French and English
+Updated 28 October 2026. Worldwide iOS/Android launch, with French and English
 first. Nutrition, full workout creation/execution, sleep, optional cycle tracking
 and explained daily food/training/rest recommendations are launch requirements.
 See [PRODUCT](docs/PRODUCT.md) and the [design draft](docs/specs/2026-10-27-unified-health-coach-design.md).
 
 ## Current state
 
-This repository contains documentation and metadata only. The prior applications
-are source references, not features implemented in this checkout. No product
-feature is In Progress or Complete here merely because a source module exists.
-The bootstrap verification record describes what was actually checked.
+This repository has engineering documentation, Bun/Turborepo tooling and a local
+Blume documentation site. Product application folders remain reserved. The prior
+applications are source references, not features implemented in this checkout.
+No product feature is In Progress or Complete merely because a source module
+exists. Dated verification records describe the actual checks.
 
 ## Proposed sequence
 
-| Milestone | Work | Exit evidence |
-| --- | --- | --- |
-| M0 | Scope, international contracts, service choices, scientific methods, privacy responsibilities and budget | Accepted decisions/contracts and explicit owners for unresolved items |
-| M1 | NestJS service, account boundary, nutrition/hydration parity, data protection and recovery | Real HTTP values, account isolation, retries, persistence and isolated restore |
-| M2 | Workout programming, live sets, timers, offline recovery and progression | Actual phone journeys, including background/lock/process death and denied permissions |
-| M3 | Health ingestion on both platforms, sleep/naps/corrections and optional cycle/symptoms | Real imports, edits/deletions, provenance, duplicates, missing data, permissions and international dates |
-| M4 | Connected daily coach, explanations, accepted actions and weekly review | Cross-domain evidence, numeric consistency, context invalidation, quality/cost/latency and provider failures |
-| M5 | Worldwide release readiness in French and English | Native acceptance, accessibility, market/locale coverage, consumer privacy/security and actual store/distribution evidence |
+| Milestone | Work                                                                                                     | Exit evidence                                                                                                              |
+| --------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| M0        | Scope, international contracts, service choices, scientific methods, privacy responsibilities and budget | Accepted decisions/contracts and explicit owners for unresolved items                                                      |
+| M1        | NestJS service, account boundary, nutrition/hydration parity, data protection and recovery               | Real HTTP values, account isolation, retries, persistence and isolated restore                                             |
+| M2        | Workout programming, live sets, timers, offline recovery and progression                                 | Actual phone journeys, including background/lock/process death and denied permissions                                      |
+| M3        | Health ingestion on both platforms, sleep/naps/corrections and optional cycle/symptoms                   | Real imports, edits/deletions, provenance, duplicates, missing data, permissions and international dates                   |
+| M4        | Connected daily coach, explanations, accepted actions and weekly review                                  | Cross-domain evidence, numeric consistency, context invalidation, quality/cost/latency and provider failures               |
+| M5        | Worldwide release readiness in French and English                                                        | Native acceptance, accessibility, market/locale coverage, consumer privacy/security and actual store/distribution evidence |
 
 M2 and M3 may progress independently after their shared contracts are accepted.
 All launch domains remain required. A partial development beta must state what
