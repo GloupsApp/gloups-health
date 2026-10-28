@@ -21,3 +21,4 @@ Records:
 - [28 October workspace tooling](2026-10-28-workspace-tooling.md).
 - [28 October strict TypeScript](2026-10-28-strict-typescript.md).
 - [28 October Expo foundation](2026-10-28-expo-foundation.md).
+- [28 October TypeScript commitlint](2026-10-28-commitlint-typescript.md).
