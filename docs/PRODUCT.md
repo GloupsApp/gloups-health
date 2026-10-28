@@ -17,7 +17,9 @@ repetitions, weights, rest timers and progression. Import-only fitness was
 considered and rejected as the first-release boundary. Sleep and cycle are new
 product domains, not already implemented capabilities in this repository.
 
-NestJS is the selected backend direction. The first consumer release will not
+NestJS with its official Fastify adapter, Drizzle ORM and DDD with Onion
+architecture is the selected backend direction under D016. The first consumer
+release will not
 provide HIPAA BAA/HDS support. Its consumer privacy/security obligations must be
 assessed. Prepare for future healthcare requirements without claiming coverage.
 

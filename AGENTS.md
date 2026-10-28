@@ -61,6 +61,10 @@ files when entering their application or package.
 - Follow [ARCHITECTURE](docs/ARCHITECTURE.md) for placement and
   [CODE-STANDARDS](docs/CODE-STANDARDS.md) for code rules. Keep changes focused.
   Add shared packages only for actual consumers and an approved contract.
+- Approved API work uses NestJS's official Fastify adapter, Drizzle ORM and
+  DDD with Onion architecture under D016. Domain/application depend inward on
+  core contracts; HTTP, Better Auth, ORM/driver types and Nest wiring remain
+  outside that core. Follow the layer placement in ARCHITECTURE.
 - Use the Bun version pinned in `.bun-version` and `package.json`, Bun workspaces
   and one root `bun.lock`. Install with `bun install --frozen-lockfile`.
   Turborepo replaces the earlier Nx policy under decision D011.

@@ -17,9 +17,10 @@ Assignment [PR #19](https://github.com/GloupsApp/gloups-health/pull/19) merged a
 The owner confirms Better Auth/NestJS/Expo SDK 58, official integrations/plugins
 only, Google/Apple/email-password, native iOS Apple and browser Google/Android
 Apple. D015 records those choices. Version pins, account/session/lifecycle
-defaults and the proposed PostgreSQL/Express composition await design approval.
+defaults awaited design approval in the initial delivery. The correction below
+supersedes its Express/direct-pool proposal with the owner's D016 choices.
 
-## Research evidence
+## Initial research evidence (PR #20)
 
 - Read both supplied documents, distinguishing the 1.7 stable index from the
   1.8-beta Expo guide. Read the official current Expo, Express, NestJS integration,
@@ -40,7 +41,7 @@ defaults and the proposed PostgreSQL/Express composition await design approval.
   `nothing important left`. The design keeps implementation-specific provider,
   retention and resource settings explicit rather than claiming they exist.
 
-## Local checks
+## Initial local checks (PR #20)
 
 The workspace used macOS arm64, Node.js `26.12.1` and Bun `1.4.4` from
 `/tmp/gloups-tooling-20261028/bun-1.4.4`, first on PATH. The global Bun `1.4.2`
@@ -95,3 +96,63 @@ The specification and this handoff integrate through
 is the main delivery record; merging the draft does not approve its proposals.
 The commit passed staged formatting and Conventional Commit hooks. The task
 worktree is preserved for the owner's design review and the subsequent plan.
+
+## Fastify, Drizzle and DDD/Onion correction
+
+The owner corrects the architecture on 28 October 2026. D016 records the official
+NestJS Fastify adapter, Drizzle ORM and DDD with Onion architecture as confirmed.
+Assignment amendment [PR #21](https://github.com/GloupsApp/gloups-health/pull/21)
+merged at `87a3861796848be73e8a4e98d7cf3caeb10e1660`. The packet was read on
+`origin/main` before revision work in `codex/auth-001-fastify-drizzle-onion`.
+Initial research/checks above describe the earlier delivery, not new runtime
+evidence for the corrected design.
+
+Read the owner's
+[NestJS/DDD/Onion reference](https://medium.com/@patrick.cunha336/structuring-a-nestjs-project-with-ddd-and-onion-architecture-65b04b7f2754),
+the [original Onion explanation](https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/),
+[NestJS Fastify adapter docs](https://docs.nestjs.com/techniques/performance),
+[Better Auth Fastify integration](https://better-auth.com/docs/integrations/fastify),
+[official Drizzle adapter](https://better-auth.com/docs/adapters/drizzle),
+[Drizzle PostgreSQL drivers](https://orm.drizzle.team/docs/get-started-postgresql),
+[Drizzle migration guidance](https://orm.drizzle.team/docs/migrations) and the
+Fastify content-parser/reply documentation linked from the revised spec.
+
+Registry stable metadata returned `@nestjs/platform-fastify` `12.3.2`, matching
+its `fastify` `5.12.7` and `@fastify/cors` `11.3.1` dependencies;
+`@better-auth/drizzle-adapter` `1.7.14`, `drizzle-orm` `0.45.4` and `drizzle-kit`
+`0.31.11`. The Better Auth adapter's Drizzle peer range includes `0.45.4`.
+Drizzle's current version-1 docs include RC install examples; those do not change
+the repository's stable-version policy. All pins are proposals until reviewed
+for the implementation packet. No dependency or lockfile changed.
+
+The revised spec covers scoped Fastify request-body preservation, form callbacks,
+multiple cookies/redirects, normal Nest JSON parsing, Drizzle-owned schema/SQL
+migrations and an inward dependency/import review. These are required future
+acceptance outcomes, not claims that a running adapter or repository passed.
+The DDD/Onion placement and thin HTTP/SDK/ORM adapters are Gloups implementation
+rules based on the owner's reference; no sample business code or unit tests were
+imported.
+
+Correction checks on the same macOS/Node/Bun environment:
+
+- `bun install --frozen-lockfile` passed with no dependency changes.
+- `bunx ultracite fix` with the 14 owned Markdown paths and
+  `bunx ultracite check` passed; the latter covered 79 supported repository files.
+- `python3 /tmp/gloups-auth-architecture-doccheck.py` validated all changed local
+  Markdown targets/anchors, the exact 14-file correction scope and absence of
+  unstaged/untracked source or literal private-key blocks.
+- `git diff --cached --check` passed. Actual diff/source/status review confirmed
+  the accepted D016 choices, unapproved remaining lifecycle defaults, no secrets,
+  real data or excluded health-app references, and no application scaffolding.
+  Searches found Express/direct-pool/Prisma only in historical/supersession
+  context in the active corrected documents; source inventories remain historical.
+- `bun run docs:build` succeeded with two Turborepo cache hits for docs
+  typecheck/build. The existing static landing page does not render all repository
+  Markdown; local link/anchor/diff checks cover these document edits directly.
+- A fresh Superpowers builder reviewer read the corrected design, API instructions
+  and architecture guide and returned `nothing important left`.
+
+No unit tests, E2E Army, API/database, native or live-provider/email acceptance
+was added or claimed. No server, database, port or device was reserved. Ignored
+user state and existing provider resources were preserved. The correction is
+documentation only; it does not approve the rest of the design or implementation.

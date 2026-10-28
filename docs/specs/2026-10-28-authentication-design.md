@@ -12,6 +12,10 @@ Auth in NestJS/Expo SDK 58, official integrations/plugins only, and Google, Appl
 and email/password. The owner chooses native Apple on iOS, browser Google on both
 platforms and browser Apple on Android.
 
+[D016](../DECISIONS.md#d016-api-adapter-persistence-and-dependency-direction)
+confirms NestJS's official Fastify adapter, Drizzle ORM, and DDD with Onion
+architecture. These replace the initial Express/direct-database proposal.
+
 The remaining technical and lifecycle choices below are this document's
 proposals, not previous owner approvals. Approval of this design must be recorded
 against a revision; an exact implementation packet/plan follows. Merging this
@@ -40,30 +44,39 @@ The owner considered two official-only social approaches:
 | Browser OAuth for Google and Apple on both platforms  | Fewest native modules; Apple on iOS leaves the native authentication sheet unused         | Not selected                       |
 | Native Apple on iOS; browser Google and Android Apple | Native iOS interaction; adds nonce, native audience and Apple authorization-code handling | Selected by owner, 28 October 2026 |
 
-For NestJS, use its official Express adapter and Better Auth's official Node
-handler. This fits the official-only requirement with a small application-owned
-session guard. The published NestJS wrapper is community maintained and excluded;
-rewriting the authentication protocol or operating a second auth service adds no
-needed capability. This handler/guard composition is the proposed implementation
-of the selected stack, not an official Better Auth NestJS plugin.
+For NestJS, use its official Fastify adapter. Bootstrap with `FastifyAdapter`
+from `@nestjs/platform-fastify` and keep Better Auth behind its documented
+Fastify-to-Web-Request integration. Use the official
+`@better-auth/drizzle-adapter` for persistence. The HTTP bridge and Nest guard
+are application-owned adapters around official APIs, not a community NestJS
+plugin. Better Auth remains the authentication engine; Gloups owns its account
+and authorization rules through DDD/Onion boundaries.
 
 ## Versions and compatibility
 
 The npm registry was checked on 28 October 2026. These are candidate exact pins
 for the later implementation packet, not installed authentication dependencies:
 
-| Component                                                    | Candidate        | Review basis                                                                |
-| ------------------------------------------------------------ | ---------------- | --------------------------------------------------------------------------- |
-| `better-auth`, `@better-auth/expo`, `auth` CLI               | `1.7.14` each    | Registry stable tags agree; supplied 1.8 Expo excerpt is beta               |
-| `@nestjs/common`, `@nestjs/core`, `@nestjs/platform-express` | `12.3.2` each    | Matching stable framework packages; review Express 5 route syntax           |
-| `pg`                                                         | `8.23.1`         | Official Better Auth direct PostgreSQL integration; no product ORM selected |
-| `reflect-metadata`, `rxjs`                                   | `0.2.2`, `7.8.2` | Stable NestJS peers                                                         |
+| Component                                                    | Candidate           | Review basis                                                                           |
+| ------------------------------------------------------------ | ------------------- | -------------------------------------------------------------------------------------- |
+| `better-auth`, `@better-auth/expo`, `auth` CLI               | `1.7.14` each       | Registry stable tags agree; supplied 1.8 Expo excerpt is beta                          |
+| `@nestjs/common`, `@nestjs/core`, `@nestjs/platform-fastify` | `12.3.2` each       | Matching stable framework packages; official Fastify adapter                           |
+| `fastify`, `@fastify/cors`                                   | `5.12.7`, `11.3.1`  | Match the reviewed NestJS adapter dependencies                                         |
+| `@better-auth/drizzle-adapter`                               | `1.7.14`            | Official Better Auth adapter; supports the stable Drizzle candidate                    |
+| `drizzle-orm`, `drizzle-kit`                                 | `0.45.4`, `0.31.11` | Registry stable releases; do not copy RC install commands from version-1 documentation |
+| `reflect-metadata`, `rxjs`                                   | `0.2.2`, `7.8.2`    | Stable NestJS peers                                                                    |
 
 Use the server's documented Node ESM runtime with the repository's Node
 `>=24.15.0` requirement; Bun remains the package/workspace tool. The implementation
 packet must pin the actual server runtime and PostgreSQL version/image digest,
 review all direct pins again, and define emitted Node ESM/decorator settings
 without weakening shared authored-code checks. No API runtime has been exercised.
+
+Drizzle still needs a database driver. Select and pin a compatible PostgreSQL
+driver in the implementation packet, encapsulated by Drizzle infrastructure.
+The earlier `pg` version was a driver pin; the rejected integration also bypassed
+Drizzle with a direct pool. The current contract requires Drizzle for both auth
+and Gloups persistence, with no driver client exposed to inner layers.
 
 SDK 58's installed `expo/bundledNativeModules.json` lists compatible ranges:
 AppleAuthentication `~58.0.2`, Crypto `~58.0.7`, SecureStore `~58.0.2`, Network
@@ -79,22 +92,38 @@ setup into SDK 58 without checking the installed stable APIs.
 - Use one NestJS service and one Better Auth instance, with `expo()` from
   `@better-auth/expo` on the server. Enable built-in Google/Apple providers and
   email/password; no community auth wrapper or replacement token stack.
-- Keep Better Auth at `/api/auth`. Disable Nest's automatic body parsing, mount
-  `toNodeHandler(auth)` before parsers, then register JSON/form parsers for Nest
-  routes. Use the Express 5 catch-all matching the installed adapter and exercise
-  GET/POST OAuth callbacks as well as JSON endpoints. Apply CORS before handlers.
-- Register an application-owned Nest global guard through dependency injection.
-  It calls `auth.api.getSession` with `fromNodeHeaders`, requires a valid
-  database-backed session and verified email, and resolves the internal account.
-  Public routes are explicitly allowlisted; auth routes retain Better Auth's own
-  protocol checks. Database/service failures return unavailable, never anonymous
-  or authenticated fallback. No token parsing/verification is delegated to UI.
-- Propose PostgreSQL with Better Auth's built-in `pg.Pool` integration for auth.
-  This accepts neither Prisma nor Drizzle for future product persistence. Keep
-  generated auth migrations reviewed/versioned with application migrations;
-  use the pinned official CLI. Never migrate at API startup or against a source
-  database. Apply/rollback/recovery procedures target an isolated local database
-  first. No database is provisioned by this specification.
+- Keep Better Auth at `/api/auth` through a scoped Fastify route/plugin beneath
+  Nest's official adapter. Convert the original method, path/query, headers and
+  body to a standard `Request`, call `auth.handler`, and forward its `Response`.
+  Use the configured canonical base URL; do not trust an arbitrary Host header.
+  Configure body parsers only within that auth scope to preserve original bytes,
+  with body limits, for JSON and Apple form-encoded POST callbacks. Do not
+  JSON-stringify a parsed form or read an already-consumed Node stream. Normal
+  Nest/Fastify JSON parsing remains available outside this scope.
+- Forward status, redirect location, content type and body without rewrapping
+  auth responses. Preserve each `Set-Cookie` header separately, including cookie
+  deletion/chunks; never combine them with commas. Configure Fastify CORS before
+  the auth routes and verify preflight. Register the raw Fastify routes once,
+  independently of Nest controller prefixes, without doubling `/api`.
+- Register a thin Nest global guard through dependency injection. It delegates
+  to application use cases/ports for verified identity and account resolution.
+  A Better Auth infrastructure adapter calls `auth.api.getSession` with
+  `fromNodeHeaders` and maps the result to a framework-neutral principal. Require
+  a valid database-backed session and verified email. Public routes are explicitly
+  allowlisted; auth routes retain Better Auth's own protocol checks. Database or
+  provider failure yields unavailable and no domain access.
+- Drizzle ORM is confirmed. PostgreSQL remains the proposed database. Configure
+  the official `drizzleAdapter(db, { provider: "pg", schema })` in infrastructure;
+  `"pg"` is the adapter's dialect identifier, not a direct-pool architecture.
+  Both auth tables and Gloups repositories use the Drizzle database boundary.
+  Pass the generated schema explicitly and preserve its model/property mappings.
+- Generate the auth Drizzle schema with the pinned Better Auth CLI, then generate,
+  review/version and apply SQL migrations through Drizzle Kit. Include the
+  Gloups mapping/unique constraints in the same ordered migration history.
+  Do not use Better Auth's direct-adapter migration path or unreviewed schema
+  push as the delivery mechanism. Never migrate at API startup or against a source
+  database. Exercise ordered migration/recovery against an isolated database;
+  no database is provisioned by this specification.
 - Better Auth owns user, provider/credential account, session and verification
   records. Its `account` model is an authentication method, not a Gloups account.
   Store an independent immutable Gloups UUID with a unique `authUserId` binding.
@@ -106,6 +135,41 @@ setup into SDK 58 without checking the installed stable APIs.
   caller. It never returns password hashes, cookies, session/provider tokens or
   accepts an owner parameter. The guard attaches a server-owned account context;
   later domain handlers cannot replace it with request-supplied IDs.
+
+## DDD and Onion boundaries
+
+Follow the accepted [API architecture](../ARCHITECTURE.md#ddd-and-onion-architecture)
+and the owner's [NestJS/DDD/Onion reference](https://medium.com/@patrick.cunha336/structuring-a-nestjs-project-with-ddd-and-onion-architecture-65b04b7f2754).
+Organize by bounded context, starting with identity/access. The domain owns
+Gloups account identity and lifecycle invariants; Better Auth's provider-account
+record is an external persistence model, never the domain aggregate.
+
+Proposed layout, not directories authorized to create now:
+
+```text
+apps/api/src/modules/identity-access/
+  domain/           GloupsAccount, value objects, invariants, repository contracts
+  application/      resolve account, link identity, delete account; use-case ports
+  infrastructure/   Better Auth adapter, Drizzle schema/repositories/mappers, email
+  presentation/     Nest controllers/guards, Fastify auth bridge, HTTP DTO mapping
+  identity-access.module.ts
+```
+
+Domain code is plain TypeScript with no NestJS, Fastify, Better Auth, Drizzle or
+driver imports. Application code depends on domain and its own ports; it does
+not import infrastructure or transport DTOs. DTOs inside the application are
+plain input/output data; decorated/validated HTTP DTOs stay in presentation.
+Infrastructure implements the inner contracts and maps rows/provider results
+into domain/application values. Presentation translates HTTP and invokes use
+cases; it does not implement account provisioning, linking or deletion rules.
+
+Nest modules and the bootstrap are the outer composition root. Bind ports to
+infrastructure using injection tokens/factories there; keep Nest decorators
+outside the domain/application core. Use cases own transaction/retry intent
+through a unit-of-work port, whose Drizzle implementation binds repositories to
+one transaction without exposing Drizzle transaction types. Cross-context
+consumers use approved application contracts, never another context's tables or
+concrete repositories. Add only the abstractions needed by these actual use cases.
 
 ## Proposed mobile and session boundary
 
@@ -279,16 +343,17 @@ commands, actual device/runtime, synthetic versus live-provider boundaries and
 limitations. The later packet must allocate exact API/database/Metro ports and
 device ownership; this specification reserves none.
 
-| Boundary             | Required observed result                                                                                                                                                                                                                                                   |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| API mounting         | Real GET/POST auth/callback requests reach Better Auth without consumed bodies; Nest JSON routes still parse correctly; CORS/preflight and public-route allowlist behave as specified.                                                                                     |
-| Credentials          | Register, resend/verify, sign in, reject unverified/wrong password, reset/replay/expire, throttle and revoke sessions over actual HTTP; inspect persisted synthetic records.                                                                                               |
-| Isolation            | Missing/forged/expired/revoked cookies fail; two identities get distinct UUIDs; repeated/concurrent bootstrap gets one UUID; caller owner IDs cannot alter context; DB failure fails closed.                                                                               |
-| Persistence          | API/database restart preserves valid mapping/session state; session expiry and revocation apply on the next protected request.                                                                                                                                             |
-| Social/native        | Actual Google on iOS/Android, native Apple on iOS and Apple browser on Android; cancel/deny/interrupt/retry, wrong audience/nonce/state, duplicate callbacks, relay identity and missing repeat profile fields. Verify authorization-code exchange/revocation persistence. |
-| Lifecycle            | Explicit same/different-email linking, conflicting subject and last-method removal; sign-out/relaunch/offline local sign-out; another device's revoked session fails; account switching discards late responses.                                                           |
-| Deletion             | Synthetic account's sessions/mapping/auth records become unusable, Apple revocation succeeds or remains durably pending, concurrent retry cannot recreate ownership, and device credentials are removed.                                                                   |
-| Mobile/international | Regular iPhone, iPhone Duo and Android with exact runtime recorded; English/French, supported regional formatting, accessibility and deep links from email/browser in warm/cold launches.                                                                                  |
+| Boundary                     | Required observed result                                                                                                                                                                                                                                                                                                           |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| API mounting                 | Under Nest's Fastify adapter, preserve JSON and Apple form-encoded callback bytes, method/path/query, redirect status/location and multiple `Set-Cookie` headers, including expiry/chunks. Ordinary Nest JSON routes and CORS/preflight still work; no doubled prefix or consumed body.                                            |
+| Architecture and persistence | Review actual imports/DI for inward dependencies and port implementations; domain/application contain no framework/ORM/provider imports. Apply reviewed Drizzle migrations to an empty isolated PostgreSQL database; both auth and Gloups writes use Drizzle, and rollback of a failed account use case leaves no partial mapping. |
+| Credentials                  | Register, resend/verify, sign in, reject unverified/wrong password, reset/replay/expire, throttle and revoke sessions over actual HTTP; inspect persisted synthetic records.                                                                                                                                                       |
+| Isolation                    | Missing/forged/expired/revoked cookies fail; two identities get distinct UUIDs; repeated/concurrent bootstrap gets one UUID; caller owner IDs cannot alter context; DB failure fails closed.                                                                                                                                       |
+| Persistence                  | API/database restart preserves valid mapping/session state; session expiry and revocation apply on the next protected request.                                                                                                                                                                                                     |
+| Social/native                | Actual Google on iOS/Android, native Apple on iOS and Apple browser on Android; cancel/deny/interrupt/retry, wrong audience/nonce/state, duplicate callbacks, relay identity and missing repeat profile fields. Verify authorization-code exchange/revocation persistence.                                                         |
+| Lifecycle                    | Explicit same/different-email linking, conflicting subject and last-method removal; sign-out/relaunch/offline local sign-out; another device's revoked session fails; account switching discards late responses.                                                                                                                   |
+| Deletion                     | Synthetic account's sessions/mapping/auth records become unusable, Apple revocation succeeds or remains durably pending, concurrent retry cannot recreate ownership, and device credentials are removed.                                                                                                                           |
+| Mobile/international         | Regular iPhone, iPhone Duo and Android with exact runtime recorded; English/French, supported regional formatting, accessibility and deep links from email/browser in warm/cold launches.                                                                                                                                          |
 
 Static gates use existing root commands and later approved API/mobile tasks:
 frozen Bun install, Ultracite fix/check, relevant strict typechecks/builds and SDK
@@ -309,10 +374,17 @@ whole authentication slice Done while required journeys are missing.
 - [Stable documentation index](https://better-auth.com/docs/llms.txt) and
   [version selector index](https://better-auth.com/llms.txt); supplied 1.7 index
   and 1.8-beta Expo excerpt were read separately.
-- [Official Express handler](https://better-auth.com/docs/integrations/express),
+- [Official NestJS Fastify adapter](https://docs.nestjs.com/techniques/performance),
+  [official Better Auth Fastify integration](https://better-auth.com/docs/integrations/fastify),
   [NestJS integration status](https://better-auth.com/docs/integrations/nestjs),
   [NestJS guards](https://docs.nestjs.com/guards) and
-  [PostgreSQL integration](https://better-auth.com/docs/adapters/postgresql).
+  [official Better Auth Drizzle adapter](https://better-auth.com/docs/adapters/drizzle).
+- [Drizzle PostgreSQL drivers](https://orm.drizzle.team/docs/get-started-postgresql),
+  [Drizzle migrations](https://orm.drizzle.team/docs/migrations),
+  [Fastify content parsers](https://fastify.dev/docs/latest/Reference/ContentTypeParser/)
+  and [Fastify reply headers](https://fastify.dev/docs/latest/Reference/Reply/).
+- The owner's [NestJS/DDD/Onion reference](https://medium.com/@patrick.cunha336/structuring-a-nestjs-project-with-ddd-and-onion-architecture-65b04b7f2754)
+  and [Onion architecture's dependency direction](https://jeffreypalermo.com/2008/07/the-onion-architecture-part-1/).
 - [Official Expo integration](https://better-auth.com/docs/integrations/expo),
   [Expo AppleAuthentication](https://docs.expo.dev/versions/v58.0.0/sdk/apple-authentication/),
   installed SDK 58 module metadata and npm package stable/peer metadata.

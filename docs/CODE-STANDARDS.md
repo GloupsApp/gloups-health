@@ -51,6 +51,26 @@ Recheck with `bun run tsc --project apps/mobile/tsconfig.json --skipLibCheck fal
 after a compatible SDK update. The [Expo evidence](verification/2026-10-28-expo-foundation.md)
 records the actual diagnostics and removal condition.
 
+## API architecture
+
+D016 confirms the official NestJS Fastify adapter, Drizzle ORM and DDD with
+Onion architecture. Follow [ARCHITECTURE](ARCHITECTURE.md#ddd-and-onion-architecture)
+for context/layer placement. Domain invariants and application use cases are
+plain TypeScript; their dependencies point inward through core contracts/ports.
+Do not import NestJS, Fastify, Better Auth, Drizzle, driver types or concrete
+infrastructure into domain/application. Plain application DTOs are separate from
+decorated HTTP validation DTOs and database schemas.
+
+Keep controllers/guards and protocol conversion in presentation; implement
+repository, identity, email and unit-of-work ports in infrastructure. Use Nest
+modules as the outer composition root to bind ports through tokens/factories.
+Map Drizzle rows and Better Auth sessions into explicit core values rather than
+casting or exporting their external types. A use case owns transaction/retry
+intent; its Drizzle adapter owns the concrete transaction/client. Cross-context
+code consumes approved contracts rather than another context's tables or
+repositories. Review real import direction and wiring alongside E2E acceptance;
+this rule does not authorize scaffolding, a new lint dependency or unit tests.
+
 ## Implementation rules
 
 Use strict TypeScript and validated boundary schemas. Prefer unknown to any,

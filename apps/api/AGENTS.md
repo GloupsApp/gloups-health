@@ -2,10 +2,19 @@
 
 Read root [AGENTS](../../AGENTS.md), [ARCHITECTURE](../../docs/ARCHITECTURE.md),
 [CONTRACTS](../../docs/CONTRACTS.md), [I18N](../../docs/I18N.md) and the assigned packet.
-This directory contains instructions only; no NestJS project or Nx target exists.
+This directory contains instructions only; no NestJS project or API Turborepo task exists.
 
-NestJS is the selected direction. PostgreSQL/Prisma and module layout remain
-proposals until approved. Keep accepted schemas/DTOs independent of ORM entities.
+NestJS's official Fastify adapter, Drizzle ORM and DDD with Onion architecture
+are selected under D016. PostgreSQL hosting/version, driver and exact module
+implementation still need an approved packet. Organize each bounded context into
+domain, application, infrastructure and presentation, with Nest module/bootstrap
+wiring at the outer composition root. Domain/application stay plain TypeScript
+and depend inward through ports, without NestJS, Fastify, Better Auth or Drizzle
+imports. Keep persistence rows, HTTP DTOs and SDK results outside the core.
+Use Drizzle repositories and the official Better Auth Drizzle adapter in
+infrastructure, with reviewed Drizzle Kit migrations. Controllers/guards call
+use cases; Drizzle transactions implement an application unit-of-work port.
+Keep accepted schemas/DTOs independent of ORM entities.
 Derive record ownership from verified identity; validate every boundary and keep
 writes/retry receipts atomic. Domain calculations and authorization do not belong
 in model prompts. Keep exact units/time/provenance and language-neutral errors.

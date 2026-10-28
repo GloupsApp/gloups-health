@@ -5,7 +5,8 @@ records the full scope and proposed architecture. Confirmed choices are indexed
 in [DECISIONS](../DECISIONS.md). The design remains a draft.
 
 The [authentication design](2026-10-28-authentication-design.md) specifies the
-owner's Better Auth/NestJS/Expo direction under AUTH-001. Google, Apple,
+owner's Better Auth/NestJS/Expo direction under AUTH-001. Fastify, Drizzle ORM and
+DDD/Onion are confirmed under D016. Google, Apple,
 email/password and the native/browser split are confirmed; detailed contracts
 and implementation defaults remain pending owner approval of the design.
 

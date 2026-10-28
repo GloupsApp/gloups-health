@@ -1,7 +1,6 @@
 # AUTH-001: Official Better Auth authentication specification
 
-Status: Assigned for the owner's architecture correction; revision work starts
-after this assignment amendment merges. The initial specification was delivered
+Status: Review for the owner's architecture correction. The initial specification was delivered
 in [PR #20](https://github.com/GloupsApp/gloups-health/pull/20). Owner design
 approval and product implementation remain pending.
 Owner and integration coordinator: Codex, current authentication chat.
@@ -79,7 +78,7 @@ deleted. This specification assignment is not an implementation packet.
   transaction/account-isolation consequences in the revised acceptance.
 - Cover Google, Apple and email/password, verification/recovery, session expiry
   and revocation, explicit linking, account isolation, deletion and failure paths.
-- Identify database/ORM, provider/email settings, native design references and
+- Identify database/driver, provider/email settings, native design references and
   exact implementation ownership/acceptance still needed before code begins.
 - Distinguish confirmed decisions, proposed defaults and unresolved owner input.
 - Review the actual diff, local Markdown targets/anchors, scope/status consistency
@@ -93,6 +92,8 @@ deleted. This specification assignment is not an implementation packet.
   a separate implementation packet with exact paths and checks.
 
 ## Handoff
+
+### Initial design delivery
 
 Assignment merged in [PR #19](https://github.com/GloupsApp/gloups-health/pull/19)
 at `73d48e473fb07704d38592f4b2225adba4ff169c`. The packet was read back from
@@ -137,8 +138,19 @@ The existing worktree remains attached with the design available for review.
 
 ### Architecture correction
 
-The same owner/worktree is assigned this documentation correction. Assignment
-amendment pending merge. No revised design/guide work has started; application
-code, dependencies, provider setup and native work remain outside the packet.
-Preserve the initial PR/evidence as historical delivery and append the correction
-revision, sources, checks and remaining approval before integrating it.
+The same owner/worktree is assigned this documentation correction. The amendment
+merged in [PR #21](https://github.com/GloupsApp/gloups-health/pull/21) at
+`87a3861796848be73e8a4e98d7cf3caeb10e1660`; the packet was read back from
+`origin/main` before creating `codex/auth-001-fastify-drizzle-onion` at that base.
+The revised design and durable instructions now use official Fastify/Drizzle
+integration and define domain/application ports, infrastructure/presentation
+responsibilities and outer Nest composition. Original PR #20 evidence is retained
+as historical delivery. Application code, dependencies, provider setup and native
+work remain outside the packet. A fresh Superpowers builder reviewer read the
+corrected design/API rules and reported `nothing important left`. Frozen Bun
+installation, scoped formatting, repository Ultracite checks, local links/anchors
+and diff/scope checks passed. The existing docs build/typecheck succeeded through
+Turborepo cache hits; this is not new API, database or native acceptance.
+The verification record includes the correction's sources and exact checks.
+No new resources were allocated. Record the correction commit/PR before
+integration; the detailed design remains pending owner approval.
