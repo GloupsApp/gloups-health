@@ -7,9 +7,9 @@ A coordinator records assignments
 on main before workers start. Follow
 [AGENT-WORKFLOW](../AGENT-WORKFLOW.md) and use the [template](TEMPLATE.md).
 
-| Specification packet                | Owner                              | Status                                        | Assigned scope                                                                                                                   |
-| ----------------------------------- | ---------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| [AUTH-001](AUTH-001-better-auth.md) | Codex, current authentication chat | Done on PR #20 merge; design approval pending | Reconcile the owner's Better Auth decision and specify official NestJS/Expo authentication with Google, Apple and email/password |
+| Specification packet                | Owner                              | Status                                                    | Assigned scope                                                                                        |
+| ----------------------------------- | ---------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| [AUTH-001](AUTH-001-better-auth.md) | Codex, current authentication chat | Assigned architecture correction; design approval pending | Official Better Auth with NestJS Fastify, Drizzle ORM and DDD/Onion; Google, Apple and email/password |
 
 | Implementation packet                          | Owner                                           | Status               | Approved scope                                                                      |
 | ---------------------------------------------- | ----------------------------------------------- | -------------------- | ----------------------------------------------------------------------------------- |

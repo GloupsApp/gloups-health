@@ -1,8 +1,9 @@
 # AUTH-001: Official Better Auth authentication specification
 
-Status: Done on merge of [PR #20](https://github.com/GloupsApp/gloups-health/pull/20);
-Review until then. This completes specification delivery only; owner design
-approval and product implementation are pending.
+Status: Assigned for the owner's architecture correction; revision work starts
+after this assignment amendment merges. The initial specification was delivered
+in [PR #20](https://github.com/GloupsApp/gloups-health/pull/20). Owner design
+approval and product implementation remain pending.
 Owner and integration coordinator: Codex, current authentication chat.
 
 ## Intent and inputs
@@ -13,6 +14,12 @@ Apple and email/password as the initial sign-in methods. The community
 `@thallesp/nestjs-better-auth` package is excluded. This supersedes the earlier
 Clerk selection for new implementation; existing provider resources/data are
 preserved until a separate transition is authorized.
+
+The owner's follow-up on 28 October 2026 requires NestJS's official Fastify
+adapter, Drizzle ORM and DDD with Onion architecture, following the supplied
+[architecture reference](https://medium.com/@patrick.cunha336/structuring-a-nestjs-project-with-ddd-and-onion-architecture-65b04b7f2754).
+Correct the earlier Express/direct-database proposal and record these as owner
+decisions. Keep the confirmed authentication methods and official-only boundary.
 
 Read root [AGENTS](../../AGENTS.md), [PRODUCT](../PRODUCT.md),
 [DECISIONS](../DECISIONS.md), [ARCHITECTURE](../ARCHITECTURE.md),
@@ -31,6 +38,9 @@ Initial base: `b309d6cba41cc4ee18bba00c6812b2a3935e28a3`.
 Assignment branch: `codex/auth-001-assignment`.
 Specification branch: `codex/auth-001-official-better-auth`, created from the
 merged assignment. Read back that assignment on `origin/main` before starting.
+Correction assignment branch: `codex/auth-001-architecture-assignment`.
+Correction branch: `codex/auth-001-fastify-drizzle-onion`, created from the
+merged amendment. Read back the amendment on `origin/main` before revision work.
 One worker; no API/database, Metro, port or device resources are reserved.
 
 Allowed paths:
@@ -44,6 +54,8 @@ Allowed paths:
 - This packet, `docs/tasks/README.md`,
   `docs/verification/2026-10-28-authentication-design.md` and
   `docs/verification/README.md`.
+- `apps/api/AGENTS.md` and `docs/CODE-STANDARDS.md` for the confirmed API
+  adapter, ORM and inward dependency rules; no application source is authorized.
 
 Consumed interfaces: existing mobile shell/runtime, account ownership and
 international requirements. Produced interfaces: a documented proposal for auth
@@ -60,6 +72,11 @@ deleted. This specification assignment is not an implementation packet.
 - Reconcile active Clerk instructions with the owner's Better Auth decision.
 - Propose an official-only NestJS/Expo integration, reviewed stable versions and
   SDK 58 compatibility checks without claiming unperformed runtime verification.
+- Use the official NestJS Fastify adapter and official Better Auth Fastify/Drizzle
+  integration. Define DDD contexts, domain/application ports, infrastructure and
+  HTTP composition boundaries. Keep framework/ORM/provider types outside the core.
+  Cover raw JSON/form callback bodies, multiple cookies, migration ownership and
+  transaction/account-isolation consequences in the revised acceptance.
 - Cover Google, Apple and email/password, verification/recovery, session expiry
   and revocation, explicit linking, account isolation, deletion and failure paths.
 - Identify database/ORM, provider/email settings, native design references and
@@ -117,3 +134,11 @@ Integration: [PR #20](https://github.com/GloupsApp/gloups-health/pull/20), inclu
 this handoff. The merge revision is the integrated main record. Husky's staged
 formatting and Conventional Commit hooks passed on the specification commit.
 The existing worktree remains attached with the design available for review.
+
+### Architecture correction
+
+The same owner/worktree is assigned this documentation correction. Assignment
+amendment pending merge. No revised design/guide work has started; application
+code, dependencies, provider setup and native work remain outside the packet.
+Preserve the initial PR/evidence as historical delivery and append the correction
+revision, sources, checks and remaining approval before integrating it.
