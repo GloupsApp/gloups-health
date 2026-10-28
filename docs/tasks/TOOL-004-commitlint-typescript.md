@@ -1,6 +1,6 @@
 # TOOL-004: TypeScript commitlint configuration
 
-Status: Assigned. Owner and integration coordinator: Codex, current commitlint
+Status: Review. Owner and integration coordinator: Codex, current commitlint
 TypeScript chat. The owner's 28 October 2026 request approves replacing
 `commitlint.config.mjs` with `commitlint.config.ts`.
 
@@ -45,5 +45,24 @@ code need to change. Read back the assignment merged on main before implementati
 
 ## Handoff
 
-Implementation begins after the assignment is merged and read back from main.
-Deployment and distribution are outside this task.
+Assignment merged in [PR #12](https://github.com/GloupsApp/gloups-health/pull/12)
+at `f91c1dfa3553bb2a3652d0ad9346ab4b3fb01d5a`. The packet and registry were read
+back from `origin/main` before creating the implementation branch at that revision.
+
+The config is now `commitlint.config.ts`, with identical contents. Commitlint's
+installed loader discovers that file and the conventional preset. The root
+compiler includes it through the existing `*.ts` scope. Dependencies, compiler
+settings and the commit hook need no changes.
+
+Bun 1.4.4 frozen installation, Ultracite fix/check/doctor, root typechecking,
+build graph discovery, the root build and Changesets status passed. Turbo reused
+the unchanged docs/mobile typecheck and build tasks from its shared local cache;
+the root compiler ran directly. The actual Husky commit-message hook returned
+0 for a valid synthetic message and 1 for an invalid one. Temporary inputs were
+removed. Exact commands and limitations are in the
+[verification record](../verification/2026-10-28-commitlint-typescript.md).
+
+Implementation commit and PR links will be recorded before integration. No
+server, database or device was allocated. The task worktree contains only its
+committed changes and generated dependencies/build output and can be archived
+after merge. Deployment and distribution remain outside this task.
