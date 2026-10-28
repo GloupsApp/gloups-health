@@ -1,0 +1,9 @@
+{
+  "expo": {
+    "name": "Gloups",
+    "slug": "gloups-health",
+    "version": "0.0.0",
+    "platforms": ["ios", "android"],
+    "userInterfaceStyle": "automatic"
+  }
+}

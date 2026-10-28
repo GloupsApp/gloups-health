@@ -1,7 +1,10 @@
 # Implementation plans
 
-No application implementation plan is approved yet. Documentation/specification
-work is available through the [task packets](../tasks/README.md).
+The [Expo foundation plan](2026-10-28-expo-foundation.md) implements the owner's
+approved SDK 58, TypeScript and Ultracite setup under TOOL-003. It covers an empty
+native root and workspace tooling. Product feature implementation plans remain
+pending their specifications and contracts. Documentation/specification work is
+available through the [task packets](../tasks/README.md).
 
 After a relevant spec/contract is approved, write an implementation plan with
 exact owned files, consumed/produced interfaces, dependencies, acceptance through

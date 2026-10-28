@@ -10,7 +10,7 @@ on main before workers start. Follow
 | ----------------------------------------- | ----------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------- |
 | [TOOL-001](TOOL-001-workspace-tooling.md) | Codex chat 01a18275-5307-7d93-98f7-10ca191559f3 | Done on PR #6 merge | Bun/Turborepo tooling, Blume docs, Changesets and commit hooks                      |
 | [TOOL-002](TOOL-002-strict-typescript.md) | Codex, current strict TypeScript chat           | Done on PR #8 merge | Strict shared TypeScript configuration and current-workspace compiler checks        |
-| [TOOL-003](TOOL-003-expo-foundation.md)   | Codex, current Expo setup chat                  | Assigned            | Expo SDK 58 bootstrap, inherited strict TypeScript and mobile Ultracite integration |
+| [TOOL-003](TOOL-003-expo-foundation.md)   | Codex, current Expo setup chat                  | Review              | Expo SDK 58 bootstrap, inherited strict TypeScript and mobile Ultracite integration |
 
 | Packet                             | Specification output                                                 | Dependency before code                                             |
 | ---------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------ |

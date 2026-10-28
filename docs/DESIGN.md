@@ -1,9 +1,11 @@
 # Native design direction
 
 The product must work on iOS and Android with native components and conventions.
-Expo/React Native with platform-specific native UI is the current proposal;
-implementation choice and package compatibility remain subject to design review.
-No new screen design is integrated by this documentation bootstrap.
+Expo/React Native is accepted for the minimal mobile foundation under D014.
+Platform-specific product UI and package choices remain subject to design review.
+The startup shell renders an empty native root. It introduces no product flow,
+component system or brand palette; Mobbin reference selection belongs to each
+future UI packet.
 
 Before every new UI flow, inspect actual references through connected Mobbin,
 select the relevant interactions and record neutral flow labels/links in the

@@ -27,8 +27,9 @@ copy uses Gloups and health coach, with no health-app competitor references.
 
 ## Proposals requiring review
 
-Expo/React Native, PostgreSQL, the exact shared-contract approach, provider
-products and the detailed release design remain proposals. Bun workspaces,
+Expo SDK 58 / React Native is accepted for the minimal mobile foundation under
+D014. PostgreSQL, the exact shared-contract approach, provider products and the
+detailed release design remain proposals. Bun workspaces,
 Turborepo and Ultracite/Oxlint/Oxfmt are accepted repository tooling under D011.
 Blume serves the documentation workspace under D012. The product web framework
 remains open.

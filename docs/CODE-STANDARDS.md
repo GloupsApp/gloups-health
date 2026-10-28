@@ -1,7 +1,7 @@
 # Code standards for future implementation
 
-Workspace tooling and a Blume documentation site are installed. Product code
-still needs an approved task. The root agent policy takes precedence over
+Workspace tooling, a Blume documentation site and a minimal Expo SDK 58 shell are
+installed. Product features still need an approved task. The root agent policy takes precedence over
 skill defaults, including any unit-test/TDD instructions.
 
 ## TypeScript configuration
@@ -24,20 +24,32 @@ An approved NestJS packet must review module resolution, decorators and emitted
 imports for its actual runtime. These tooling defaults do not select a product
 framework. Keep safety checks inherited; document and review any exception.
 
-`bun run typecheck` checks root tooling and the docs configuration. Both build
+`bun run typecheck` checks root tooling, the docs configuration and mobile source.
+Both workspace build
 entry points require the relevant compiler checks. Turborepo includes the shared
 base in its global dependencies so a baseline change invalidates cached tasks.
 TypeScript 6.0.3 is pinned for compatibility with the current Blume/Astro compiler
 API dependencies. Node types follow the workspace's minimum supported Node major.
 
-The existing documentation project alone overrides `skipLibCheck` to `true`.
+The documentation project overrides `skipLibCheck` to `true`.
 Blume 2.2.6 and its dependencies currently fail declaration checking with missing
 optional adapter types and invalid published declarations. All authored docs
 configuration still receives the inherited strict checks. This exception does
-not authorize a product application to skip declaration checking. Recheck and
+not authorize another project to skip declaration checking. Recheck and
 remove it when compatible dependency declarations are available; the exact
 diagnostics and reproduction command are in the
 [verification record](verification/2026-10-28-strict-typescript.md).
+
+The mobile project extends `expo/tsconfig.base` followed by the shared base. It
+inherits Expo's JSX mode and `react-native` resolution condition while retaining
+the shared safety checks, ES2022 target and ES2023 library without browser globals.
+Its source scope and React runtime types are explicit. TOOL-003 records a separate
+`skipLibCheck: true` exception for three errors in React Native 0.88.0's generated
+declarations. Every strict check still applies to authored mobile code. The shared
+base remains `skipLibCheck: false`; no other project inherits either exception.
+Recheck with `bun run tsc --project apps/mobile/tsconfig.json --skipLibCheck false`
+after a compatible SDK update. The [Expo evidence](verification/2026-10-28-expo-foundation.md)
+records the actual diagnostics and removal condition.
 
 ## Implementation rules
 
@@ -52,7 +64,8 @@ from the verified identity; validate model/provider output as untrusted input.
 Do not expose ORM entities directly. Keep retries, concurrency and transactional
 writes inside the use-case boundary rather than patching values in the UI.
 
-Use Ultracite with Oxlint, Oxfmt and anti-slop for JS/TS/config. The approved
+Use Ultracite with Oxlint, Oxfmt and anti-slop for JS/TS/config. The root Oxlint
+configuration includes the React preset for mobile components. The approved
 tooling setup pins compatible versions and commits one Bun lockfile. Match the
 configured formatting; do not carry unrelated formatter changes in a feature PR.
 Use the applicable Ultracite/Turborepo/Expo guidance and inspect installed help

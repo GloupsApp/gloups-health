@@ -20,3 +20,4 @@ Records:
 - [27 October documentation foundation](2026-10-27-documentation-foundation.md).
 - [28 October workspace tooling](2026-10-28-workspace-tooling.md).
 - [28 October strict TypeScript](2026-10-28-strict-typescript.md).
+- [28 October Expo foundation](2026-10-28-expo-foundation.md).

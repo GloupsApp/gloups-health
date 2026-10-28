@@ -17,20 +17,20 @@ worker does not need the founders' chat history.
 
 ## Working here
 
-| Document                                | Covers                                                                          |
-| --------------------------------------- | ------------------------------------------------------------------------------- |
-| [ARCHITECTURE](ARCHITECTURE.md)         | Proposed runtime, actual/planned paths, boundaries and placement                |
-| [AGENT-WORKFLOW](AGENT-WORKFLOW.md)     | Assignment, isolation, shared-file ownership, contracts and handoff             |
-| [Tasks](tasks/README.md)                | Specification packets, approved tooling implementation, dependencies and owners |
-| [CONTRACTS](CONTRACTS.md)               | Common contract requirements and change coordination                            |
-| [I18N](I18N.md)                         | Language, region, timezone, units, currency and international acceptance        |
-| [CODE-STANDARDS](CODE-STANDARDS.md)     | Future coding/tool conventions and the no-unit-test policy                      |
-| [DESIGN](DESIGN.md)                     | Native component direction, brand source and reference workflow                 |
-| [VERIFICATION](VERIFICATION.md)         | Boundary acceptance, evidence and current documentation checks                  |
-| [SECURITY-PRIVACY](SECURITY-PRIVACY.md) | Consumer safeguards and future healthcare requirements                          |
-| [SERVICES](SERVICES.md)                 | Existing selected services, setup limits and unknowns                           |
-| [MIGRATION](MIGRATION.md)               | Source references, transfer rules and preservation decisions                    |
-| [RELEASING](RELEASING.md)               | Git, deployment, distribution and market readiness boundaries                   |
+| Document                                | Covers                                                                             |
+| --------------------------------------- | ---------------------------------------------------------------------------------- |
+| [ARCHITECTURE](ARCHITECTURE.md)         | Proposed runtime, actual/planned paths, boundaries and placement                   |
+| [AGENT-WORKFLOW](AGENT-WORKFLOW.md)     | Assignment, isolation, shared-file ownership, contracts and handoff                |
+| [Tasks](tasks/README.md)                | Specification packets, approved tooling/mobile foundation, dependencies and owners |
+| [CONTRACTS](CONTRACTS.md)               | Common contract requirements and change coordination                               |
+| [I18N](I18N.md)                         | Language, region, timezone, units, currency and international acceptance           |
+| [CODE-STANDARDS](CODE-STANDARDS.md)     | Future coding/tool conventions and the no-unit-test policy                         |
+| [DESIGN](DESIGN.md)                     | Native component direction, brand source and reference workflow                    |
+| [VERIFICATION](VERIFICATION.md)         | Boundary acceptance, evidence and current documentation checks                     |
+| [SECURITY-PRIVACY](SECURITY-PRIVACY.md) | Consumer safeguards and future healthcare requirements                             |
+| [SERVICES](SERVICES.md)                 | Existing selected services, setup limits and unknowns                              |
+| [MIGRATION](MIGRATION.md)               | Source references, transfer rules and preservation decisions                       |
+| [RELEASING](RELEASING.md)               | Git, deployment, distribution and market readiness boundaries                      |
 
 ## Records and templates
 

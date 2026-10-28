@@ -7,8 +7,9 @@ See [PRODUCT](docs/PRODUCT.md) and the [design draft](docs/specs/2026-10-27-unif
 
 ## Current state
 
-This repository has engineering documentation, Bun/Turborepo tooling and a local
-Blume documentation site. Product application folders remain reserved. The prior
+This repository has engineering documentation, Bun/Turborepo tooling, a local
+Blume documentation site and a minimal Expo SDK 58 mobile shell. The API and
+product web folders remain reserved; mobile product flows are unimplemented. The prior
 applications are source references, not features implemented in this checkout.
 No product feature is In Progress or Complete merely because a source module
 exists. Dated verification records describe the actual checks.

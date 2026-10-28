@@ -1,8 +1,9 @@
 # Contributing to Gloups
 
 Start with [AGENTS](AGENTS.md), [PRODUCT](docs/PRODUCT.md) and
-[ROADMAP](ROADMAP.md). The repository is private. It has workspace tooling and a
-local Blume documentation site; product application folders remain reserved.
+[ROADMAP](ROADMAP.md). The repository is private. It has workspace tooling, a
+local Blume documentation site and a minimal Expo SDK 58 mobile shell. API and
+product web folders remain reserved.
 
 ## First checkout
 
@@ -23,8 +24,9 @@ bun install --frozen-lockfile
 ```
 
 The root `packageManager` field and `.bun-version` pin Bun. Installation prepares
-Husky's hooks. Docker, Xcode and provider logins are unnecessary for this tooling
-and documentation workspace.
+Husky's hooks. Local native launch needs the relevant iOS/Android environment and
+an SDK 58-compatible Expo Go installation. Documentation builds, compiler checks
+and JavaScript bundle exports do not require provider logins or native builds.
 
 ## Current checks
 
@@ -58,16 +60,19 @@ without an extra dependency. Turborepo uses `"ui": "tui"` for interactive termin
 tools. Generated Blume/Astro/build output and the vendored local skill are ignored
 by the formatter. Existing planning Markdown follows the initial Oxfmt baseline.
 
-`typecheck` checks the root TypeScript tooling configs and then runs workspace
-typechecks through Turborepo. Both projects extend `tsconfig.base.json`.
-The docs project has a documented dependency-declaration exception in
+`typecheck` checks the root TypeScript tooling configs and then runs docs and
+mobile typechecks through Turborepo. All three projects extend `tsconfig.base.json`.
+The docs and mobile projects have documented dependency-declaration exceptions in
 [CODE-STANDARDS](docs/CODE-STANDARDS.md#typescript-configuration).
 
-`build` runs typechecking before building `@gloups/docs`. Its Turborepo build
-also depends on the docs typecheck, including through `bun run docs:build`.
+`build` runs typechecking before building `@gloups/docs` and exporting iOS/Android
+JavaScript bundles from `@gloups/mobile`. Each Turborepo build also depends on its
+workspace typecheck, including through `bun run docs:build` and `bun run mobile:build`.
 Inspect the graph with `bun run turbo run build --dry=json`; preview with
-`bun run docs:dev` or `bun run docs:preview` after building. No product app,
-API or E2E task exists yet. Tooling checks do not establish product behavior.
+`bun run docs:dev` or `bun run docs:preview` after building. Start the empty native
+shell with `bun run mobile:dev`, `bun run mobile:ios` or `bun run mobile:android`;
+these commands share Metro port `8083`. See [mobile setup](apps/mobile/README.md).
+No API or E2E task exists yet. Tooling checks do not establish product behavior.
 
 ## Future application work
 
