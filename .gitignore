@@ -6,10 +6,19 @@ target/
 coverage/
 test-output/
 *.tsbuildinfo
+*.apk
+*.aab
+*.ipa
 __pycache__/
 *.py[cod]
 apps/mobile/ios/
 apps/mobile/android/
+
+# Runtime logs and tool caches
+*.log
+*.log.*
+.cache/
+.metro-health-check*
 
 # Local workspaces, state and editor files
 .local/
@@ -22,6 +31,10 @@ apps/mobile/android/
 .worktrees/
 .idea/
 .DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
 
 # Secrets, health data and signing material
 .env*
@@ -31,8 +44,12 @@ apps/mobile/android/
 *.db
 *.db-*
 *.jks
+*.keystore
 *.p8
 *.p12
+*.pem
+*.pfx
+*.cer
 *.key
 *.mobileprovision
 credentials.json
