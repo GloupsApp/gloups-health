@@ -15,11 +15,12 @@ official Better Auth integration are confirmed under D014/D015. Google, Apple an
 email/password are selected. The
 [authentication design](specs/2026-10-28-authentication-design.md) describes the
 Fastify request/response bridge, official Drizzle adapter, account boundaries and
-Expo client; detailed behavior remains pending design approval.
+Expo client; its design is approved for implementation planning under D017.
 
-The proposed service runtime is one feature-organized NestJS service, PostgreSQL
-and protected media. Drizzle is the selected ORM for new persistence. Database
-hosting/version and the underlying driver remain implementation-packet choices.
+The selected database is PostgreSQL under D017, with Drizzle ORM for new
+persistence. One feature-organized NestJS service and protected media remain the
+runtime direction. Database hosting/version and the underlying driver remain
+implementation-packet choices.
 Native product controls remain subject to their design packets. Do not create
 microservices, a second
 permanent backend, a generic shared domain framework or speculative packages.

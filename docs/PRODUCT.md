@@ -18,16 +18,16 @@ considered and rejected as the first-release boundary. Sleep and cycle are new
 product domains, not already implemented capabilities in this repository.
 
 NestJS with its official Fastify adapter, Drizzle ORM and DDD with Onion
-architecture is the selected backend direction under D016. The first consumer
-release will not
-provide HIPAA BAA/HDS support. Its consumer privacy/security obligations must be
+architecture is the selected backend direction under D016. PostgreSQL and the
+authentication design are approved for implementation planning under D017.
+The first consumer release will not provide HIPAA BAA/HDS support. Its consumer privacy/security obligations must be
 assessed. Prepare for future healthcare requirements without claiming coverage.
 
 Better Auth in NestJS and Expo SDK 58 is the confirmed authentication direction,
 using official integrations/plugins only. Initial sign-in methods are Google,
 Apple and email/password. Apple uses the native iOS sheet; Google and Android
 Apple use browser OAuth. See D015 in [DECISIONS](DECISIONS.md). Detailed contracts
-and implementation remain subject to the authentication specification review.
+and implementation follow the approved authentication design and its plan review.
 
 The new private repository is GloupsApp/gloups-health. Existing Gloups and Mioum
 are source references. Public roadmap/feedback remains on Canny Free; public
@@ -36,7 +36,7 @@ copy uses Gloups and health coach, with no health-app competitor references.
 ## Proposals requiring review
 
 Expo SDK 58 / React Native is accepted for the minimal mobile foundation under
-D014. PostgreSQL, the exact shared-contract approach, provider products and the
+D014. Database hosting, the exact shared-contract approach, provider products and the
 detailed release design remain proposals. Bun workspaces,
 Turborepo and Ultracite/Oxlint/Oxfmt are accepted repository tooling under D011.
 Blume serves the documentation workspace under D012. The product web framework
