@@ -6,12 +6,14 @@ import { AuthenticationModule } from "./composition/authentication.module.js";
 import { CredentialHttpModule } from "./composition/credential-http.module.js";
 import { DeletionHttpModule } from "./composition/deletion-http.module.js";
 import { IdentityApplicationModule } from "./composition/identity-application.module.js";
+import { IdentityPersistenceModule } from "./composition/identity-persistence.module.js";
 import { SocialHttpModule } from "./composition/social-http.module.js";
 import { SafeHttpErrors } from "./presentation/http-errors.js";
 import { SessionGuard } from "./presentation/session.guard.js";
 
 @Module({
   imports: [
+    IdentityPersistenceModule,
     IdentityApplicationModule,
     AuthenticationModule,
     CredentialHttpModule,
