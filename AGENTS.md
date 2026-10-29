@@ -8,10 +8,10 @@ files when entering their application or package.
 ## Current stage and authority
 
 - This repository contains documentation, Bun/Turborepo tooling, a local Blume
-  site, an AUTH-003 NestJS/Fastify authentication API and a minimal Expo SDK 58
-  mobile shell. Credential API journeys have local E2E evidence; social/native
-  work is in progress. Health/product web flows and live provider connections
-  remain absent.
+  site and AUTH-003 NestJS/Fastify/Drizzle/Postgres plus Expo SDK 58 authentication
+  source. Credential/lifecycle API journeys have local E2E evidence; complete
+  native/provider acceptance remains pending. Health/product web flows and live
+  provider connections remain absent.
 - Worldwide iOS/Android launch, French/English first, nutrition/fitness/sleep/
   optional cycle, explainable daily coaching and full workout recording are
   confirmed. NestJS is the selected backend direction; Expo/React Native is

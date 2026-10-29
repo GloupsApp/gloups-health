@@ -72,3 +72,32 @@ service, verified the same account UUID/session persisted, then confirmed
 sign-out revocation. The replacement Node listener remains owned by this lane.
 Root typecheck, API build, frozen install, graph dry-run, Ultracite and diff checks
 passed. Live provider and mobile acceptance remain outstanding.
+
+## Fresh password/concurrency checkpoint
+
+Run `01a184fd-67ed-7ff1-982a-1655ba1f1aa0` passed 22/22 in 15.23 seconds
+after a successful uncached build and restart. It adds actual HTTP/Postgres
+freshness/ownership/length checks for the server-only password API bridge and
+concurrent unlink commands that preserve a last method and reject another
+owner's SDK account-row ID. Synthetic provider rows establish database/command
+behavior only, not successful OAuth linking.
+
+After bounded callback/language changes, run
+`01a18525-174b-7cc8-a4ec-974b71834edf` passed 22/22 in 58.97 seconds while
+local native compilation was running. Social language transfer still needs live
+provider evidence. Earlier failed builds/runs are not new-source acceptance.
+
+## Integrated 26-case checkpoint
+
+Run `01a1853d-dc2c-7aec-8be6-a0d94528d3ff`, command
+`GLOUPS_AUTH003_FAULTS=1 bunx e2e run --target api`: 26/26 passed in 14.77
+seconds after a successful uncached API build/restart. MAIL-03 now verifies a
+validly signed but expired local verification proof while its issuance ledger is
+still live, followed by concurrent single-use consumption. MAIL-04 verifies two
+concurrent resets produce one winner and invalidate prior sessions. API-04 checks
+no-store on account, denied and official SDK responses.
+
+RELAY-01 runs only with the owned relay available. It verifies actual upstream
+sign-in cookies/account identity, hold/release, transport cut and recovery. The
+default API script runs 25 ordinary cases and explicitly skips this opt-in case.
+It is not native delayed-write or real-provider acceptance.

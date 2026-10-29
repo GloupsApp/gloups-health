@@ -43,6 +43,7 @@ import { AppleNotificationsController } from "./presentation/apple-notifications
 import { HealthController } from "./presentation/health.controller.js";
 import { HTTP_RATE_LIMIT } from "./presentation/http-rate-limit.js";
 import { MeController } from "./presentation/me.controller.js";
+import { PasswordController } from "./presentation/password.controller.js";
 import { SessionGuard } from "./presentation/session.guard.js";
 
 @Module({})
@@ -50,6 +51,7 @@ export class IdentityAccessModule {
   static register(config: ApiConfig): DynamicModule {
     return {
       controllers: [
+        PasswordController,
         AccountController,
         HealthController,
         MeController,

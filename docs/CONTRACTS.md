@@ -1,16 +1,19 @@
 # Contract requirements
 
-There are no implemented or accepted wire schemas in this repository yet. The
-[domain packets](tasks/README.md) produce proposals. The integration owner records
-accepted contracts under [contracts](contracts/README.md) before parallel code
-work consumes them.
+The approved [authentication design](specs/2026-10-28-authentication-design.md)
+under D017 and AUTH-003 define the implemented identity/account boundary.
+Its local wire validators remain in the API/mobile consumers; source is under
+review and complete native/provider acceptance is pending. Health/shared domain
+schemas remain proposals from the [domain packets](tasks/README.md). The
+integration owner records accepted contracts under [contracts](contracts/README.md)
+before parallel domain work consumes them.
 
 Every domain contract must define:
 
 - Authenticated owner identity from server-verified Better Auth sessions (D015)
   mapped to an internal Gloups account ID. A caller cannot select a different
-  record owner. Exact mapping/lifecycle behavior is proposed in the
-  [authentication design](specs/2026-10-28-authentication-design.md), pending approval.
+  record owner. Exact mapping/lifecycle behavior follows the approved
+  [authentication design](specs/2026-10-28-authentication-design.md).
 - Stable identifiers, revision/conflict rules, request retry identity and atomic
   persistence boundaries. Define repeat, concurrent and interrupted commands.
 - Exact inputs/outputs, units, ranges, finite numeric handling, rounding and

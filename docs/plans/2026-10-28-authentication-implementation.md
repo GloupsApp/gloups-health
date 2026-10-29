@@ -22,7 +22,8 @@ Planning owner: [AUTH-002](../tasks/AUTH-002-authentication-plan.md).
 **Status:** Approved by the owner for native execution under D018, with PRs
 opened for owner review and no agent merge/auto-merge. [AUTH-003](../tasks/AUTH-003-authentication-implementation.md)
 records the execution assignment. Assignment PR #25 is merged/read back under explicit owner authorization.
-Tasks 1/2 source is underway; later tasks and required acceptance remain pending.
+Tasks 1–6 source is implemented/in verification on the execution branch; required
+live-provider, device and release-policy acceptance remains pending.
 No provider setup, external email, deployment or distribution is authorized.
 
 ## Global constraints
@@ -36,7 +37,9 @@ No provider setup, external email, deployment or distribution is authorized.
   imports. HTTP DTOs, SDK types, rows and transaction clients stay outside the core.
 - Use Bun `1.4.4`, one root `bun.lock`, exact reviewed direct dependency pins and
   inherited strict authored-code checks. No automatic/purchased CI workflows.
-- Keep Expo `58.0.20`, React Native `0.88.0` and React `19.3.0`; no product web app.
+- Keep Expo SDK 58, React Native `0.88.0` and React `19.3.0`; no product web app.
+  Execution uses Expo `58.0.21` / system-ui `58.0.7` after the installed official
+  dependency checker required these compatible patches.
 - Password length: 15–128 characters; verification/reset lifetime: 3,600 seconds.
 - Database sessions: 604,800-second sliding expiry, 86,400-second refresh interval,
   300-second freshness for linking/destructive operations; server cookie cache off.
@@ -71,19 +74,19 @@ These are implementation choices for review, verified against public metadata
 on 28 October 2026; they are not newly installed packages. If a pin changes before
 execution, review compatibility and update the packet/plan before installation.
 
-| Target           | Exact pin / choice                                                                                                                                                                                                                                          |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| API runtime      | Node `26.13.0` LTS; pin `apps/api/.node-version`; API `engines.node` is `~26.13.0`; do not change the root minimum solely for this package                                                                                                                  |
-| NestJS           | `@nestjs/common`, `@nestjs/core`, `@nestjs/platform-fastify` `12.3.2`                                                                                                                                                                                       |
-| Fastify          | `fastify` `5.12.7`, `@fastify/cors` `11.3.1`                                                                                                                                                                                                                |
-| Auth             | `better-auth`, `@better-auth/expo`, `@better-auth/drizzle-adapter`, CLI `auth` `1.7.14`; declare required adapter peers at `@better-auth/core` `1.7.14` / `@better-auth/utils` `0.5.1` if the reviewed workspace peer graph requires direct declarations    |
-| Persistence      | `drizzle-orm` `0.45.4`, `drizzle-kit` `0.31.11`, driver `postgres` `3.4.9` through `drizzle-orm/postgres-js`; connection pool max 10, migrations max 1                                                                                                      |
-| PostgreSQL       | Official `postgres:18.6-bookworm@sha256:5c4783a8cc3f0074912164f94dfa1be4e043438f0f707cf968d7af9a0d31a2c8`; named isolated volume mounted at `/var/lib/postgresql`, verify the image's PostgreSQL-18 data-directory layout before starting                   |
-| API support      | `reflect-metadata` `0.2.2`, `rxjs` `7.8.2`, `jose` `6.2.13`; API dev types `@types/node` `26.6.6`, TypeScript `6.0.3`                                                                                                                                       |
-| Boundary parsing | `zod` `4.6.7` in the API and E2E runner; outer HTTP/config/provider parsing only, no core imports; reviewed stable on 29 October                                                                                                                            |
-| Mobile auth      | `better-auth`, `@better-auth/expo` `1.7.14`                                                                                                                                                                                                                 |
-| SDK 58 modules   | `expo-router` `58.0.28`, `expo-apple-authentication` `58.0.2`, `expo-crypto` `58.0.7`, `expo-secure-store` `58.0.2`, `expo-network` `58.0.4`, `expo-linking` `58.0.15`, `expo-web-browser` `58.0.7`, `expo-constants` `58.0.14`, `expo-status-bar` `58.0.4` |
-| Router peers     | `@expo/metro-runtime` `58.0.15`, `@expo/log-box` `58.0.13`, `react-native-screens` `4.30.1`, `react-native-safe-area-context` `5.10.1`; omit optional web/native-toolbar/animation peers that the implementation does not use                               |
+| Target           | Exact pin / choice                                                                                                                                                                                                                                                                                                                                                        |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| API runtime      | Node `26.13.0` LTS; pin `apps/api/.node-version`; API `engines.node` is `~26.13.0`; do not change the root minimum solely for this package                                                                                                                                                                                                                                |
+| NestJS           | `@nestjs/common`, `@nestjs/core`, `@nestjs/platform-fastify` `12.3.2`                                                                                                                                                                                                                                                                                                     |
+| Fastify          | `fastify` `5.12.7`, `@fastify/cors` `11.3.1`                                                                                                                                                                                                                                                                                                                              |
+| Auth             | `better-auth`, `@better-auth/expo`, `@better-auth/drizzle-adapter`, CLI `auth` `1.7.14`; declare required adapter peers at `@better-auth/core` `1.7.14` / `@better-auth/utils` `0.5.1` if the reviewed workspace peer graph requires direct declarations                                                                                                                  |
+| Persistence      | `drizzle-orm` `0.45.4`, `drizzle-kit` `0.31.11`, driver `postgres` `3.4.9` through `drizzle-orm/postgres-js`; connection pool max 10, migrations max 1                                                                                                                                                                                                                    |
+| PostgreSQL       | Official `postgres:18.6-bookworm@sha256:5c4783a8cc3f0074912164f94dfa1be4e043438f0f707cf968d7af9a0d31a2c8`; named isolated volume mounted at `/var/lib/postgresql`, verify the image's PostgreSQL-18 data-directory layout before starting                                                                                                                                 |
+| API support      | `reflect-metadata` `0.2.2`, `rxjs` `7.8.2`, `jose` `6.2.13`; API dev types `@types/node` `26.6.6`, TypeScript `6.0.3`                                                                                                                                                                                                                                                     |
+| Boundary parsing | `zod` `4.6.7` in the API and E2E runner; outer HTTP/config/provider parsing only, no core imports; reviewed stable on 29 October                                                                                                                                                                                                                                          |
+| Mobile auth      | `better-auth`, `@better-auth/expo` `1.7.14`                                                                                                                                                                                                                                                                                                                               |
+| SDK 58 modules   | `expo-router` `58.0.28`, `expo-apple-authentication` `58.0.2`, `expo-crypto` `58.0.7`, `expo-secure-store` `58.0.2`, `expo-network` `58.0.4`, `expo-linking` `58.0.15`, `expo-web-browser` `58.0.7`, `expo-constants` `58.0.14`, `expo-status-bar` `58.0.4`; execution also uses official `expo-localization` `58.0.5`, `@expo/ui` `58.0.25`, `expo-dev-client` `58.0.17` |
+| Router peers     | `@expo/metro-runtime` `58.0.15`, `@expo/log-box` `58.0.13`, `react-native-screens` `4.30.1`, `react-native-safe-area-context` `5.10.1`; omit optional web/native-toolbar/animation peers that the implementation does not use                                                                                                                                             |
 
 Node `26.13.0` became LTS on the planning date; the planning host was still
 `26.12.1`, so no target-runtime/API compatibility is claimed. Expo pins must also
@@ -623,3 +626,18 @@ precedence. Assignment and source PRs stay open for owner review and integration
   installed Expo bundled-module ranges and registry peer metadata. Installed Bun
   and Turborepo help were inspected; future CLI flags still require the pinned
   installed tools' help during implementation.
+
+## Recorded execution adaptations
+
+The owner removed Mobbin and approved the API-local declaration exception under
+D019. The ledger/case records preserve actual evidence. The stable SDK marks
+`setPassword` server-only: a fresh guarded `POST /api/identity/password` invokes
+that public API for social-only users. Raw unlink/password/revocation commands
+share the identity lock to preserve the last method under concurrency.
+
+Native credential-state observations revoke only the current local session;
+global revocation requires verified Apple server evidence. Cold OAuth callback
+parameters never establish identity: the app revalidates existing stored proof
+or asks the user to restart the interrupted flow. Local debug builds supplement
+Expo Go when testing the Gloups custom callback scheme; generated projects stay
+ignored and no EAS/store registration or distribution is authorized.

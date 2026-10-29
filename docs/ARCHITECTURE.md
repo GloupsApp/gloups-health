@@ -1,9 +1,10 @@
 # Architecture
 
 This repository has engineering documents, Bun/Turborepo tooling, a local Blume
-site, an AUTH-003 NestJS/Fastify authentication API and an Expo SDK 58 mobile shell.
-The credential API has local HTTP/Postgres E2E evidence. Product web and health
-domains remain reserved; social/native authentication is still in progress.
+site and AUTH-003 authentication source: NestJS/Fastify with Drizzle/Postgres
+and an Expo SDK 58 Router client. Credential/lifecycle API cases have local E2E
+evidence. Native/provider acceptance is in progress; product web and health
+domains remain reserved.
 The full [design draft](specs/2026-10-27-unified-health-coach-design.md) is not yet
 approved for product implementation.
 
@@ -37,18 +38,18 @@ framework versions in each future implementation packet.
 
 ## Placement and ownership
 
-| Planned path       | Responsibility                                                                                    | Current state                                                |
-| ------------------ | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| apps/api           | NestJS composition, HTTP, application use cases, domain rules and persistence adapters by feature | Local auth service; credential E2E, social/lifecycle pending |
-| apps/mobile        | Expo routes, feature screens, native adapters and account-scoped offline state                    | Minimal Expo SDK 58 shell; product flows unimplemented       |
-| apps/web           | Possible product web app                                                                          | Empty reserved folders; framework undecided                  |
-| apps/docs          | Blume documentation site                                                                          | Runnable local workspace; static build; no deployment        |
-| packages/contracts | Approved wire schemas, explicit units and identifiers consumed by API/mobile                      | Scoped instructions only; no package                         |
-| design             | Canonical brand tokens/assets                                                                     | Scope reserved; no assets imported                           |
-| e2e/api            | Real HTTP acceptance with isolated PostgreSQL                                                     | Scope reserved; no harness                                   |
-| e2e/mobile         | Real app/device journeys                                                                          | Scope reserved; no harness                                   |
-| tools              | Proven build/verification utilities required by real workflows                                    | Scope reserved; no utilities                                 |
-| docs               | Product/architecture guides, domain specs/contracts, work packets and evidence                    | Present                                                      |
+| Planned path       | Responsibility                                                                                    | Current state                                                        |
+| ------------------ | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| apps/api           | NestJS composition, HTTP, application use cases, domain rules and persistence adapters by feature | Local auth service; credential E2E, social/lifecycle pending         |
+| apps/mobile        | Expo routes, feature screens, native adapters and account-scoped offline state                    | Authentication routes/features under review; native evidence pending |
+| apps/web           | Possible product web app                                                                          | Empty reserved folders; framework undecided                          |
+| apps/docs          | Blume documentation site                                                                          | Runnable local workspace; static build; no deployment                |
+| packages/contracts | Approved wire schemas, explicit units and identifiers consumed by API/mobile                      | Scoped instructions only; no package                                 |
+| design             | Canonical brand tokens/assets                                                                     | Canonical base/theme tokens in mobile; other assets reserved         |
+| e2e/api            | Real HTTP acceptance with isolated PostgreSQL                                                     | Official Army real-boundary cases; see dated evidence                |
+| e2e/mobile         | Real app/device journeys                                                                          | Official Army real-boundary cases; see dated evidence                |
+| tools              | Proven build/verification utilities required by real workflows                                    | Scope reserved; no utilities                                         |
+| docs               | Product/architecture guides, domain specs/contracts, work packets and evidence                    | Present                                                              |
 
 Existing web/email services remain in the source repository. Migration of those
 workloads needs a separate task; the documentation site does not replace them.

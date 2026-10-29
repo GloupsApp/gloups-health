@@ -1,5 +1,5 @@
 import { spawn, execFileSync } from "node:child_process";
-import { createHmac, randomBytes, randomUUID } from "node:crypto";
+import { createHash, createHmac, randomBytes, randomUUID } from "node:crypto";
 import path from "node:path";
 import { loadEnvFile } from "node:process";
 
@@ -1064,5 +1064,287 @@ test(
       )
     ).toBe(200);
     expect(await status()).toBe(401);
+  }
+);
+
+test(
+  "LIFE-02/03: password setup is guarded, bounded, fresh and uses the official server API",
+  { platforms: ["api"] },
+  async () => {
+    const password = randomBytes(24).toString("base64url");
+    expect(
+      await responseStatus(
+        post(
+          "/api/identity/password",
+          JSON.stringify({ newPassword: password })
+        )
+      )
+    ).toBe(401);
+    const current = await verifiedIdentity();
+    expect(
+      await responseStatus(
+        post(
+          "/api/identity/password",
+          JSON.stringify({ newPassword: password, ownerId: randomUUID() }),
+          current.cookie
+        )
+      )
+    ).toBe(400);
+    expect(
+      await responseStatus(
+        post(
+          "/api/identity/password",
+          JSON.stringify({ newPassword: password }),
+          current.cookie
+        )
+      )
+    ).toBe(400);
+    syntheticApple(current.user.email, false);
+    sql(
+      `delete from account where provider_id='credential' and user_id=(select id from "user" where email='${current.user.email}')`
+    );
+    expect(
+      await responseStatus(
+        post(
+          "/api/identity/password",
+          JSON.stringify({ newPassword: password }),
+          current.cookie
+        )
+      )
+    ).toBe(200);
+
+    const signin = await post(
+      "/api/auth/sign-in/email",
+      JSON.stringify({ email: current.user.email, password })
+    );
+
+    expect(signin.status).toBe(200);
+    sql(
+      `update session set created_at=now()-interval '6 minutes' where user_id=(select id from "user" where email='${current.user.email}')`
+    );
+    expect(
+      await responseStatus(
+        post(
+          "/api/identity/password",
+          JSON.stringify({ newPassword: password }),
+          current.cookie
+        )
+      )
+    ).toBe(403);
+  }
+);
+
+test(
+  "LIFE-03: concurrent method unlinking preserves one usable method and rejects another owner's row",
+  { platforms: ["api"] },
+  async () => {
+    const current = await verifiedIdentity();
+    const other = await verifiedIdentity();
+    syntheticApple(current.user.email, false);
+
+    const foreignRow = sql(
+      `select id from account where user_id=(select id from "user" where email='${other.user.email}') limit 1`
+    );
+
+    expect(
+      await responseStatus(
+        post(
+          "/api/auth/unlink-account",
+          JSON.stringify({ accountId: foreignRow }),
+          current.cookie
+        )
+      )
+    ).toBe(400);
+
+    const ids = sql(
+      `select id from account where user_id=(select id from "user" where email='${current.user.email}') order by id`
+    ).split("\n");
+
+    expect(ids.length).toBe(2);
+
+    const statuses = await Promise.all(
+      ids.map((accountId) =>
+        responseStatus(
+          post(
+            "/api/auth/unlink-account",
+            JSON.stringify({ accountId }),
+            current.cookie
+          )
+        )
+      )
+    );
+
+    expect(statuses.toSorted()).toEqual([200, 400]);
+    expect(
+      sql(
+        `select count(*) from account where user_id=(select id from "user" where email='${current.user.email}')`
+      )
+    ).toBe("1");
+  }
+);
+
+test(
+  "MAIL-03: an expired signed verification proof fails before ledger consumption; concurrent valid consumption is single-use",
+  { platforms: ["api"] },
+  async () => {
+    const user = identity();
+    const signup = await post("/api/auth/sign-up/email", JSON.stringify(user));
+    expect(signup.status).toBe(200);
+    const authUserId = sql(`select id from "user" where email='${user.email}'`);
+
+    const header = Buffer.from('{"alg":"HS256","typ":"JWT"}').toString(
+      "base64url"
+    );
+
+    const now = Math.floor(Date.now() / 1000);
+
+    const payload = Buffer.from(
+      JSON.stringify({
+        email: user.email,
+        exp: now - 3600,
+        gloupsUserId: authUserId,
+        iat: now - 7200,
+        jti: randomUUID(),
+      })
+    ).toString("base64url");
+
+    const signature = createHmac(
+      "sha256",
+      process.env["BETTER_AUTH_SECRET"] ?? ""
+    )
+      .update(`${header}.${payload}`)
+      .digest("base64url");
+
+    const expired = `${header}.${payload}.${signature}`;
+    const hash = createHash("sha256").update(expired).digest("hex");
+    sql(`insert into issued_verification (token_hash,auth_user_id,kind,expires_at)
+      values ('${hash}','${authUserId}','verify-email',now()+interval '1 hour')`);
+
+    const rejected = await fetch(
+      `${origin}/api/auth/verify-email?token=${encodeURIComponent(expired)}`
+    );
+
+    expect(rejected.status).toBe(400);
+    expect(
+      sql(`select count(*) from issued_verification where token_hash='${hash}'`)
+    ).toBe("1");
+    expect(
+      sql(`select email_verified from "user" where id='${authUserId}'`)
+    ).toBe("f");
+    const link = await deliveredLink(user.email, "verify-email");
+
+    const responses = await Promise.all([
+      fetch(link.url, { redirect: "manual" }),
+      fetch(link.url, { redirect: "manual" }),
+    ]);
+
+    expect(responses.map((response) => response.status).toSorted()).toEqual([
+      302, 400,
+    ]);
+    expect(
+      sql(`select email_verified from "user" where id='${authUserId}'`)
+    ).toBe("t");
+  }
+);
+
+test(
+  "MAIL-04: concurrent reset commands consume one proof and revoke every previous session",
+  { platforms: ["api"] },
+  async () => {
+    const first = await verifiedIdentity();
+
+    const extra = await post(
+      "/api/auth/sign-in/email",
+      JSON.stringify({
+        email: first.user.email,
+        password: first.user.password,
+      })
+    );
+
+    const secondCookie = cookies(extra);
+
+    const requested = await post(
+      "/api/auth/request-password-reset",
+      JSON.stringify({
+        email: first.user.email,
+        redirectTo: "gloups-health://reset-password",
+      })
+    );
+
+    expect(requested.status).toBe(200);
+    const receipt = await deliveredLink(first.user.email, "reset-password");
+    const redirect = await fetch(receipt.url, { redirect: "manual" });
+
+    const token = new URL(
+      redirect.headers.get("location") ?? ""
+    ).searchParams.get("token");
+
+    expect(Boolean(token)).toBe(true);
+
+    const passwords = [
+      randomBytes(24).toString("base64url"),
+      randomBytes(24).toString("base64url"),
+    ];
+
+    const results = await Promise.all(
+      passwords.map((newPassword) =>
+        post("/api/auth/reset-password", JSON.stringify({ newPassword, token }))
+      )
+    );
+
+    expect(results.map((response) => response.status).toSorted()).toEqual([
+      200, 400,
+    ]);
+    expect(
+      await responseStatus(
+        fetch(`${origin}/api/me`, { headers: { cookie: first.cookie } })
+      )
+    ).toBe(401);
+    expect(
+      await responseStatus(
+        fetch(`${origin}/api/me`, { headers: { cookie: secondCookie } })
+      )
+    ).toBe(401);
+    const winner = results.findIndex((response) => response.status === 200);
+
+    const success = await post(
+      "/api/auth/sign-in/email",
+      JSON.stringify({
+        email: first.user.email,
+        password: passwords[winner],
+      })
+    );
+
+    expect(success.status).toBe(200);
+  }
+);
+
+test(
+  "API-04: account, denied and official auth responses prohibit HTTP storage",
+  { platforms: ["api"] },
+  async () => {
+    const first = await verifiedIdentity();
+
+    const me = await fetch(`${origin}/api/me`, {
+      headers: { cookie: first.cookie },
+    });
+
+    expect(me.status).toBe(200);
+    expect(me.headers.get("cache-control")).toBe("no-store");
+
+    const session = await fetch(`${origin}/api/auth/get-session`, {
+      headers: { cookie: first.cookie },
+    });
+
+    expect(session.status).toBe(200);
+    expect(session.headers.get("cache-control")).toBe("no-store");
+    await post("/api/auth/sign-out", "{}", first.cookie);
+
+    const denied = await fetch(`${origin}/api/me`, {
+      headers: { cookie: first.cookie },
+    });
+
+    expect(denied.status).toBe(401);
+    expect(denied.headers.get("cache-control")).toBe("no-store");
   }
 );

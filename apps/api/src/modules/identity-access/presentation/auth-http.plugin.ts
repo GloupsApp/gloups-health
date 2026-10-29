@@ -39,6 +39,8 @@ export const forwardAuthResponse = async (
 
   const cookies = response.headers.getSetCookie();
 
+  reply.header("cache-control", "no-store");
+
   if (cookies.length) {
     reply.header("set-cookie", cookies);
   }
@@ -95,6 +97,7 @@ export const registerAuthHttp = async (
             database.db,
             database.proofDb,
             webRequest,
+            auth,
             () =>
               runAuthRequest(
                 new URL(`${config.baseURL}${request.url}`).pathname,

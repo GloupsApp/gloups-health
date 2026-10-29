@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import type { CanActivate, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import type { FastifyRequest } from "fastify";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 import { IDENTITY_SESSIONS } from "../application/ports.js";
 import type { IdentitySessions } from "../application/ports.js";
@@ -51,6 +51,10 @@ export class SessionGuard implements CanActivate {
       return true;
     }
 
+    context
+      .switchToHttp()
+      .getResponse<FastifyReply>()
+      .header("cache-control", "no-store");
     const request = context.switchToHttp().getRequest<IdentityRequest>();
 
     const budget = await this.limits.consume(request.ip, {

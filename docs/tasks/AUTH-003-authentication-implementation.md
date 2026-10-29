@@ -1,6 +1,7 @@
 # AUTH-003: Native execution of the approved authentication plan
 
-Status: Working. Assignment PR #25 merged and read back at
+Status: Review; source PR #26 open, complete native/provider acceptance pending.
+Assignment PR #25 merged and read back at
 `fbe808edcf8c8ce18b2083b0fab5c5af8ee7eac6` on 29 October 2026. Owner and integration coordinator: Codex, current
 authentication chat `01a1842f-75ee-7d31-a619-daeedf78f882`.
 
@@ -195,3 +196,30 @@ Live providers, Apple handoff/notification/revocation evidence, full transport a
 device matrix remain incomplete. Synthetic local retention is explicit and does
 not approve live release. Continue Expo Tasks 5/6 on this branch; no PR merge or
 auto-merge is authorized.
+
+### Native source and verification continuation
+
+Tasks 5/6 source adds official Expo Router/SecureStore/native Apple, English/French
+credential/social/method/deletion journeys and a retired-generation storage/request
+boundary. Compatible installed patches are Expo 58.0.21 / system-ui 58.0.7;
+official Localization 58.0.5, UI 58.0.25 and development-client 58.0.17 have actual
+consumers. Generated native projects/binaries remain ignored. Local native builds
+succeed; complete native/provider acceptance is still pending.
+
+The packet also owns loopback `4342` for a private test-only transparent HTTP
+relay under `e2e/mobile/helpers/`. It holds real API responses or cuts connections
+for MOBILE-03/04/05; it introduces no product endpoint or fake provider success.
+The coordinator verified that port was free before reservation. All upstream
+traffic stays within this lane's actual synthetic API/Postgres boundary.
+
+The computer-use tool reports that the Mac is locked. Manual unlock is requested;
+no lock bypass or native acceptance is claimed. Continue source/static/API review
+while waiting. Existing provider/HTTPS/physical-device inventory and live release
+retention decisions remain separate prerequisites. Source PR #26 remains open,
+unmerged and without auto-merge.
+
+The coordinator also owns authentication-specific current-state corrections in
+root `README.md`, `ROADMAP.md`, `AGENTS.md`, `docs/VERIFICATION.md` and
+`docs/CONTRACTS.md`. These replace the obsolete empty-shell/API-reservation notes
+with the implemented source and incomplete acceptance state; they do not approve
+another domain, public availability or a new shared package.

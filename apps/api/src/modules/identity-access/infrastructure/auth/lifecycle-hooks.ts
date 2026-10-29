@@ -21,6 +21,13 @@ import type { Database } from "../persistence/database.js";
 import { oauthLinkAttempt } from "../persistence/provider-credentials-schema.js";
 import { VerificationLedger } from "../persistence/verification-ledger.js";
 import { nativeAppleProof } from "./apple-proof-context.js";
+import type { Auth } from "./auth.js";
+
+const deliveryScope = new AsyncLocalStorage<{
+  language?: "en" | "fr";
+  pending: (() => Promise<void>)[];
+  providerFingerprint?: string;
+}>();
 
 const verificationQuerySchema = z.object({
   token: z.string().min(1).max(4096),
@@ -43,6 +50,48 @@ const verifyIssuedToken = async (token: string, secret: string) => {
       code: "INVALID_TOKEN",
       message: "Invalid or expired verification link.",
     });
+  }
+};
+
+const returnURLsSchema = z.object({
+  callbackURL: z.string().optional(),
+  errorCallbackURL: z.string().optional(),
+  newUserCallbackURL: z.string().optional(),
+  redirectTo: z.string().optional(),
+});
+
+const approvedReturn = (value: string, config: ApiConfig): boolean => {
+  try {
+    const url = new URL(value, config.baseURL);
+    let route = url.pathname.replace(/^\/--/u, "");
+
+    if (url.protocol === "gloups-health:") {
+      route = `/${url.hostname}${url.pathname}`;
+    }
+
+    return ["/auth/callback", "/reset-password"].includes(route);
+  } catch {
+    return false;
+  }
+};
+
+const checkReturnURLs = (
+  body: z.input<typeof returnURLsSchema> | undefined,
+  config: ApiConfig
+): void => {
+  const parsed = returnURLsSchema.safeParse(body);
+
+  if (!parsed.success) {
+    return;
+  }
+
+  for (const value of Object.values(parsed.data)) {
+    if (value && !approvedReturn(value, config)) {
+      throw new APIError("BAD_REQUEST", {
+        code: "INVALID_CALLBACK_URL",
+        message: "Invalid return route.",
+      });
+    }
   }
 };
 
@@ -84,6 +133,26 @@ const verifyResetIssuer = async (
   }
 };
 
+const captureAuthLanguage = async (
+  path: string,
+  headers: Headers | undefined
+): Promise<void> => {
+  const language = z
+    .enum(["en", "fr"])
+    .catch("en")
+    .parse(headers?.get("accept-language"));
+
+  const scope = deliveryScope.getStore();
+
+  if (scope) {
+    scope.language = language;
+  }
+
+  if (path === "/sign-in/social" && !nativeAppleProof()) {
+    await addOAuthServerContext({ gloupsLanguage: language });
+  }
+};
+
 export const createLifecycleHooks = ({
   db,
   config,
@@ -98,6 +167,11 @@ export const createLifecycleHooks = ({
   resolve: ResolveAccount;
 }) => ({
   before: createAuthMiddleware(async (context) => {
+    checkReturnURLs(context.body, config);
+    checkReturnURLs(context.query, config);
+
+    await captureAuthLanguage(context.path, context.headers);
+
     if (["/sign-in/social", "/link-social"].includes(context.path)) {
       const body = z
         .object({
@@ -222,10 +296,8 @@ export const identityFingerprint = (
     .update(`${kind}:${value}`)
     .digest("hex");
 
-const deliveryScope = new AsyncLocalStorage<{
-  pending: (() => Promise<void>)[];
-  providerFingerprint?: string;
-}>();
+export const authRequestLanguage = (): "en" | "fr" =>
+  deliveryScope.getStore()?.language ?? "en";
 
 export const createDatabaseHooks = (db: Database, config: ApiConfig) => ({
   account: {
@@ -367,6 +439,7 @@ export const withIssuedProofLock = async (
   db: Database,
   proofDb: Database,
   request: Request,
+  auth: Auth,
   work: () => Promise<Response>
 ): Promise<Response> => {
   const url = new URL(request.url);
@@ -391,9 +464,25 @@ export const withIssuedProofLock = async (
     }
   }
 
-  const issuer = token
+  let issuer = token
     ? await new VerificationLedger(db).issuerFor(token, kind)
     : null;
+
+  if (
+    [
+      "/api/auth/unlink-account",
+      "/api/auth/change-password",
+      "/api/auth/revoke-sessions",
+      "/api/auth/revoke-other-sessions",
+    ].includes(url.pathname)
+  ) {
+    const session = await auth.api.getSession({
+      headers: request.headers,
+      query: { disableCookieCache: true, disableRefresh: true },
+    });
+
+    issuer = session?.user.id ?? null;
+  }
 
   if (!issuer) {
     return work();

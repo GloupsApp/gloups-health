@@ -31,7 +31,7 @@ lines = [
     'API_HOST=127.0.0.1',
     'API_PORT=4340',
     'BETTER_AUTH_URL=http://127.0.0.1:4340',
-    'AUTH_TRUSTED_ORIGINS=http://127.0.0.1:4340,gloups-health://auth/callback',
+    'AUTH_TRUSTED_ORIGINS=http://127.0.0.1:4340,gloups-health://,exp://127.0.0.1:8085,exp://localhost:8085,exp://10.0.2.2:8085',
     'BETTER_AUTH_SECRET=' + secrets.token_urlsafe(48),
     'POSTGRES_PASSWORD=' + password,
     'DATABASE_URL=postgres://gloups_auth003:' + password + '@127.0.0.1:25440/gloups_auth003',
@@ -50,7 +50,7 @@ bun run api:db:migrate
 bun run api:build
 ```
 
-The lane owns API 4340, Postgres 25440, sink 4341 and future Metro 8085. The database
+The lane owns API 4340, Postgres 25440, sink 4341 and Metro 8085. The database
 is loopback-only and isolated in Compose project `gloups-auth-auth003`, with its
 volume mounted at `/var/lib/postgresql`. Startup rejects a different database and
 release mode while provider/email/retention decisions remain pending. No migration
@@ -78,6 +78,9 @@ formatting/type-only imports cannot remove their runtime dependencies.
 - Public `GET /healthz`; official auth endpoints at `/api/auth/*`.
 - Protected `GET /api/me` returns `{ account: { id }, user: { name, email,
   emailVerified } }`. A caller-supplied owner never selects account context.
+- Protected `POST /api/identity/password` validates a 15–128 character new password
+  and requires fresh verified identity. It calls public server-only
+  `auth.api.setPassword`; the SDK does not expose this as a public auth route.
 - Email/password requires verification, 15–128 characters and explicit sign-in.
   Verification/reset links last one hour; reset revokes existing sessions.
 - Verification tokens use the public Better Auth token helper with issuing-user
@@ -91,7 +94,9 @@ formatting/type-only imports cannot remove their runtime dependencies.
   is disabled. Application verification does not silently refresh a cookie.
 - The scoped Fastify bridge preserves JSON/form bytes, redirects and individual
   Set-Cookie headers within 64 KiB. It uses the configured origin and verified
-  Fastify IP, with local proxy trust disabled. SDK `X-Retry-After` is preserved
+  Fastify IP, with local proxy trust disabled. Return routes are restricted to
+  `/auth/callback` and `/reset-password` in addition to SDK trusted-origin checks.
+  SDK `X-Retry-After` is preserved
   and also exposed as standard `Retry-After`.
 
 ## Social sign-in and deletion
@@ -130,7 +135,8 @@ expiring leases, purges this slice's records, and retries the official Apple
 revocation endpoint with bounded backoff. The independent key ring must retain
 old keys until pending credentials have been handled; credentials never go to the
 app. API transactions and SDK writes share reviewed fingerprint guards; issued
-proof/deletion operations also serialize on an identity lock in a separate pool.
+proof/deletion operations also serialize on an identity lock in a separate pool. Unlink/password/session-revocation mutations share that
+identity lock, preserving the last method under concurrent unlink commands.
 
 Only synthetic local retention is implemented: a 24-hour retry/orphan fallback,
 61-minute completed-identity reservation, 24-hour completed-job expiry and 48-hour

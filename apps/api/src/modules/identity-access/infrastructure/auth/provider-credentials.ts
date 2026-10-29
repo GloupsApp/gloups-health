@@ -17,6 +17,7 @@ import {
 } from "../persistence/provider-credentials-schema.js";
 import { nativeAppleProof } from "./apple-proof-context.js";
 import {
+  authRequestLanguage,
   identityFingerprint,
   setVerifiedProviderIdentity,
 } from "./lifecycle-hooks.js";
@@ -173,7 +174,17 @@ export const createProviderCredentials = ({
       });
     }
 
-    return {};
+    const oauth = await getOAuthState();
+
+    const language = z
+      .object({ gloupsLanguage: z.enum(["en", "fr"]) })
+      .safeParse(oauth?.serverContext);
+
+    return {
+      preferredLanguage: language.success
+        ? language.data.gloupsLanguage
+        : authRequestLanguage(),
+    };
   };
 
   const socialProviders: NonNullable<BetterAuthOptions["socialProviders"]> = {};

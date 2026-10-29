@@ -3,7 +3,9 @@
 Date: 28 October 2026. Packet:
 [AUTH-003](../tasks/AUTH-003-authentication-implementation.md).
 Plan: [authentication implementation](../plans/2026-10-28-authentication-implementation.md).
-This record starts with Task 0 preflight; no authentication source has been added.
+This record covers assignment and ongoing implementation. Initial preflight
+sections describe the earlier state; the latest checkpoint below records current
+source, actual checks and remaining acceptance.
 
 ## Assignment and authority
 
@@ -182,3 +184,111 @@ service, verified the same account UUID/session persisted, then confirmed
 sign-out revocation. The replacement Node listener remains owned by this lane.
 Root typecheck, API build, frozen install, graph dry-run, Ultracite and diff checks
 passed. Live provider and mobile acceptance remain outstanding.
+
+## 29 October integrated source checkpoint
+
+PR #25 is merged at `fbe808edcf8c8ce18b2083b0fab5c5af8ee7eac6` under explicit
+owner authorization. Implementation branch `codex/auth-003-official-auth` and
+[draft PR #26](https://github.com/GloupsApp/gloups-health/pull/26) remain open and
+unmerged; no auto-merge is enabled. Tasks 1–6 source is implemented in this
+checkpoint; complete behavioral acceptance and owner integration remain pending.
+
+The Expo client uses official Better Auth/Expo, Router, SecureStore, native Apple,
+Localization, UI and development-client integrations. Canonical base/theme tokens
+were imported before flow source. Credential, social, method and deletion routes
+share one retired-generation storage/request boundary. Only a validated session
+and `/api/me` produce authenticated account state. Source contains no community
+NestJS wrapper, native Google plugin, health domain or provider registration.
+
+### Actual HTTP and database evidence
+
+`GLOUPS_AUTH003_FAULTS=1 bunx e2e run --target api`, run
+`01a1853d-dc2c-7aec-8be6-a0d94528d3ff`: **26/26 passed in 14.77 seconds**.
+The service was rebuilt successfully and restarted before this run. In addition
+to the earlier actual 22 cases, it verifies expired signed verification proofs
+independently of ledger expiry, concurrent verification/reset single-use behavior,
+no-store on authenticated/denied/SDK responses, and a transparent loopback relay
+forwarding real cookies/account data, holding/releasing a response, cutting a
+connection and recovering. No provider success or native race pass is inferred.
+
+The protected guard and official-response forwarding now set `Cache-Control:
+no-store`. The native client retains portable RequestInit options; an unsupported
+web cache option was removed without adding a shim or weakening type checks.
+See [API cases](../../e2e/api/authentication.md) and
+[native cases](../../e2e/mobile/authentication.md) for exact coverage and omissions.
+
+### Native evidence and manual prerequisite
+
+Regular iPhone Expo Go public-screen/language run
+`01a1850e-0827-746b-813b-fc7c5372031c` passed 1/1 in 16.36 seconds at that
+earlier source checkpoint. Current credential/social/device acceptance remains
+incomplete. iOS and Android native debug/development-client builds succeeded,
+with build warnings retained privately. Exports/builds are not native journeys.
+
+The owned iPhone 17 uses iOS 27.0; the owned Duo uses iOS 27.1; Android uses an
+owned Pixel 8 profile/Android 37 Google Play 16K arm64 AVD. The case record names
+exact IDs. Published Expo Go asset hashes were verified before install.
+
+Native attempts encountered repeated system Open-in-app prompts, a Duo hinge
+read without a sample, Android first-run/process-close errors and later iOS
+launch/cleanup timeouts. Computer-use inventory then explicitly reported the Mac
+locked and automatic unlock unsuccessful. Manual unlock is requested; no lock
+bypass or successful credential journey is claimed. Only the dedicated task
+driver was reset; the global driver and unrelated devices remain untouched.
+Owned idle Duo/Android devices were shut down to release resources.
+
+Live Google/Apple credentials, an authorized HTTPS callback environment, physical
+iPhone credential-state evidence, actual email delivery and release retention/
+audit/backup/re-registration decisions are still missing. Release startup remains
+blocked. No deployment, cloud build, paid resource or distribution occurred.
+
+### Static checks
+
+- `bun install --frozen-lockfile`: 1,501 installs checked, no dependency changes.
+- `bun run build`: 6/6 tasks successful, five cache hits; current mobile iOS/Android
+  export executed. Root compiler ran; API cache-control compilation ran uncached
+  before HTTP acceptance.
+- SDK-aware Expo dependency check: up to date at Expo 58.0.21 / system-ui 58.0.7,
+  React Native 0.88.0 / React 19.3.0 and exact compatible module pins.
+- `bunx ultracite fix`, `bunx ultracite check`: passed after spacing correction.
+  `bunx ultracite doctor`: eight passed, zero warnings/failures.
+- Graph dry-run contains API/docs/mobile build and typecheck, six tasks.
+  Changesets status reports the existing documentation patch only.
+- Inner domain/application imports remain framework/SDK/ORM-free. Generated
+  migration history remains reviewed/ordered; native output, private environment,
+  databases, reports and signing material remain ignored.
+
+Git diff/link/scope checks and the one fresh whole-branch source review are
+recorded after publication. No GitHub Actions/hosted CI evidence is claimed.
+
+### Execution decisions and costs
+
+The following decisions preserve the inline execution ledger in the committed
+handoff. They do not mark missing acceptance complete.
+
+- Apply the repository's no-unit-test/no-TDD policy instead of skill red/green defaults — explicit user repository instruction overrides skill examples — without required E2E evidence behavior remains unaccepted.
+- Open PRs and leave them unmerged; do not enable auto-merge — latest direct user instruction supersedes automatic integration — completion/integration waits for owner review and merge.
+- Keep TypeScript 6.0.3 despite registry latest 7.0.2 — approved shared baseline explicitly pins 6 for compiler API compatibility — upgrading requires a separate reviewed tooling change. Other API pins match latest stable metadata.
+- Proceed with independent backend source/static work while Army and live-provider evidence remain pending — plan Task 0 permits this — no task or behavioral acceptance is marked complete without its required evidence.
+- Drizzle config explicitly loads workspace .env.local when DATABASE_URL is absent — Bun filtered scripts did not load the workspace environment (observed generation error) — CLI must fail closed if no explicit URL/local file exists.
+- Apply API-local skipLibCheck true and document removal condition in CODE-STANDARDS — owner explicitly approved 29 October after the 99-error diagnostic — authored checks/root config remain strict; dependency declaration regressions remain unchecked until upstream repair.
+- Remove Mobbin prerequisite for auth/UI work — owner explicitly states Mobbin is not needed at all — platform and canonical-brand review still apply. E2E Army installation through Expo is authorized; inspect supported tooling before installation.
+- Add server-only email/identity/subject fingerprints and native setup correlations through official schema options — atomic deletion guards and partial native-effect cleanup need these values in the actual SDK transaction — custom SQL integrity rules must be reviewed and exercised before acceptance.
+- Use a separate two-connection proof-lock pool while the SDK uses its normal transaction pool — prevents deletion from racing issued reset/verification consumption without starving SDK connections — pool sizing needs load validation before release.
+- Implement only an explicit synthetic local retention policy (24-hour retry/orphan fallback, 61-minute post-completion reservation, 24-hour completed-job expiry, 48-hour notification replay markers) while release startup remains blocked — accepted design intentionally defers live retention/audit/backup decisions — these durations are not live policy or compliance claims and require owner decision before real release.
+- Commit Tasks 3/4 source as an integrated checkpoint — native setup guards and deletion reservations share official schema fields/migration contracts — a larger review diff is the cost; acceptance remains separately recorded and no task is marked complete.
+- Add the official Localization/UI packages and a root-invoked workspace deps:install script — supported native locale ordering and native controls need actual consumers — extra dependency/runtime surfaces require Expo checks and device evidence.
+- Use native React Native text fields for controlled drafts, autofill/paste and explicit accessibility labels; @expo/ui handles native actions/settings — SDK 58 universal input has observable state and no public accessibility-label prop — visual and assistive behavior must be checked on devices.
+- Prefer the approved generation/account boundary over generic stale-content caching guidance — an offline account cannot retain an authenticated AccountView — users must reconnect to validate protected access.
+- Add guarded POST /api/identity/password calling public auth.api.setPassword — stable SDK marks setPassword server-only, so the planned mobile SDK route does not exist — the new thin HTTP contract needs explicit E2E freshness/ownership/validation evidence.
+- Serialize raw SDK unlink/password mutations with the existing identity proof lock — concurrent unlink count checks must preserve the last method — extra lock contention needs runtime/load validation.
+- Treat native credential-state observations as grounds for current-session sign-out only — client observations are not verified Apple server evidence — global revocation relies on signed Apple notifications.
+- Apply SDK58 patch updates required by the official installed Expo checker — baseline Expo58.0.20/system-ui58.0.6 are below its current compatible patches — retain SDK58 and record exact new pins rather than leaving the dependency gate failed.
+- Allow explicit sign-in while already authenticated — fresh reauthentication/account switching cannot redirect away from its form — submit retires the old generation and revalidates the resulting account. Retirement is idempotent to prevent a delayed old revocation check clearing a newer generation's key index.
+- Add SDK-compatible official expo-dev-client for custom-scheme native acceptance — Expo Go cannot establish the Gloups app identity/custom callback configuration; prompt behavior is not yet attributed and the Mac was later found locked — adds a development runtime/dependency surface that needs compatible builds and device evidence. No EAS/cloud/distribution is involved.
+- Persist an explicit en/fr UI preference separately from credential ownership and carry it through bounded request headers/server OAuth context on social creation — language must survive relaunch without becoming identity authority or inferred country — extra local persistence and provider-language paths require their own real-device/provider coverage.
+- A cold OAuth callback revalidates stored proof or requires restarting the flow; query cookies never establish identity — only the owned official browser exchange may import its result — a process-death interruption can require repeating sign-in.
+- Reserve loopback 4342 for a private transparent HTTP fault relay in e2e/mobile/helpers — delayed real SDK/API responses and transport cuts need an observable real-boundary path without modifying product flows or substituting mocks — adds a local test process/configuration and requires explicit forwarding/reset evidence. Its upstream remains the real owned API 4340, payloads stay in memory, and no provider success is synthesized.
+- Commit Tasks5/6 source as an integrated checkpoint — generation/storage, social and account lifecycle screens share one client/controller contract — the larger review diff is the cost; native/provider acceptance remains incomplete and no task is marked complete.
+
+- Correct authentication current-state paragraphs in the coordinator-owned root README/ROADMAP/AGENTS and VERIFICATION/CONTRACTS guides — leaving empty-shell/API-reservation and pending-design-approval claims would contradict this implementation — expands documentation review scope only, without changing product authority or accepting a shared health contract.

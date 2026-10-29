@@ -2,8 +2,9 @@
 
 ## Current repository
 
-Workspace tooling, a local documentation site and a minimal Expo SDK 58 mobile
-shell exist. Check Git diffs, local
+Workspace tooling, a local documentation site and AUTH-003 API/mobile
+authentication source exist. API acceptance uses the actual local service and
+isolated Postgres; complete native/provider acceptance remains pending. Check Git diffs, local
 Markdown targets and anchors, instruction consistency, task ownership, confirmed/proposed choices,
 reference-name exclusions and secret/data hygiene. Record actual commands/results
 under [verification](verification/README.md). TOOL-001 adds frozen Bun installs,
@@ -26,8 +27,10 @@ settings with `bun run tsc --project apps/mobile/tsconfig.json --showConfig`.
 Mobile source inherits the shared strict checks; its separate declaration
 exception and the actual bundling/server evidence are recorded in the
 [Expo verification record](verification/2026-10-28-expo-foundation.md).
-The empty shell has no product journeys. Native device and E2E Army acceptance
-are required when those journeys are implemented; bundle exports do not replace it.
+AUTH-003 adds credential, social and account lifecycle journeys. Their current
+source/checks and remaining prerequisites are recorded in the
+[authentication execution evidence](verification/2026-10-28-authentication-execution.md).
+Native device and E2E Army acceptance remain required; bundle exports do not replace it.
 
 ## Future behavior
 
