@@ -8,16 +8,21 @@
     "typecheck": "tsc --project tsconfig.json",
     "start": "node --env-file=.env.local dist/main.js",
     "watch": "tsc --project tsconfig.build.json --watch",
+    "auth:generate": "auth generate --config ./src/modules/identity-access/infrastructure/auth/auth-schema.config.ts --adapter drizzle --dialect postgresql --output ./src/modules/identity-access/infrastructure/persistence/auth-schema.ts --yes",
     "db:generate": "drizzle-kit generate --config drizzle.config.ts",
     "db:migrate": "drizzle-kit migrate --config drizzle.config.ts"
   },
   "dependencies": {
+    "@better-auth/core": "1.7.14",
+    "@better-auth/drizzle-adapter": "1.7.14",
+    "@better-auth/expo": "1.7.14",
     "@fastify/cors": "11.3.1",
     "@nestjs/common": "12.3.2",
     "@nestjs/config": "12.0.1",
     "@nestjs/core": "12.3.2",
     "@nestjs/drizzle": "0.0.2",
     "@nestjs/platform-fastify": "12.3.2",
+    "better-auth": "1.7.14",
     "drizzle-orm": "0.45.4",
     "fastify": "5.12.7",
     "postgres": "3.4.9",
@@ -27,6 +32,7 @@
   },
   "devDependencies": {
     "@types/node": "26.6.6",
+    "auth": "1.7.14",
     "drizzle-kit": "0.31.11",
     "typescript": "6.0.3"
   },
