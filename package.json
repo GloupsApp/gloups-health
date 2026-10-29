@@ -30,6 +30,8 @@
     "api:build": "turbo run build --filter=@gloups/api",
     "api:start": "bun run --filter @gloups/api start",
     "api:watch": "bun run --filter @gloups/api watch",
+    "api:db:generate": "bun run --filter @gloups/api db:generate",
+    "api:db:migrate": "bun run --filter @gloups/api db:migrate",
     "e2e:api": "e2e run --target api"
   },
   "devDependencies": {
