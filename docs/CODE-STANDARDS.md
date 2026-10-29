@@ -83,6 +83,25 @@ overrides enforce the domain/application, infrastructure and presentation import
 boundaries from ARCHITECTURE;
 this rule does not authorize scaffolding, a new lint dependency or unit tests.
 
+## Architecture enforcement and Nest CLI
+
+Run `bun run architecture:check` for resolved API context boundaries, source/type
+and Nest-module cycles, explicit public APIs and narrow registered-provider
+exports. Root check, lint, typecheck/build and the pre-commit hook invoke it.
+Architecture tooling under `tools/architecture/` receives the shared strict
+TypeScript checks. New context exports or dynamic module factories require an
+explicit reviewed contract/policy change; do not add broad exclusions to pass.
+See [ARCHITECTURE](ARCHITECTURE.md#executable-boundary-checks) and the
+[checker guide](../tools/architecture/README.md).
+
+Official `@nestjs/cli` 12.0.11 is an exact root development dependency. Run
+`bun run nest --version`, `bun run nest --help` or
+`bun run nest generate --help` from the repository root. This managed install
+follows the [official CLI guidance](https://docs.nestjs.com/cli/overview).
+Use `--no-spec` for authorized generation to respect the no-agent-unit-test
+policy. Generated Nest wiring belongs outside domain/application. Installing the
+CLI does not scaffold another application or replace the Bun/Turborepo graph.
+
 ## Implementation rules
 
 Use strict TypeScript and validated boundary schemas. Prefer unknown to any,
