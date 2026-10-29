@@ -1,1 +1,2 @@
+bun run architecture:check
 bun run --bun lint-staged
