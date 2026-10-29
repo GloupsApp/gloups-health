@@ -61,6 +61,10 @@ transport and persistence details must not define its public domain vocabulary.
 
 ## DDD and Onion architecture
 
+AUTH-003 target module pattern, under owner review. The following staged PRs
+introduce the source; the verified extraction reference is recorded in the
+[review evidence](verification/2026-10-29-authentication-review-stack.md).
+
 This is the owner's confirmed dependency rule for future API implementation,
 based on the supplied
 [NestJS/DDD/Onion reference](https://medium.com/@patrick.cunha336/structuring-a-nestjs-project-with-ddd-and-onion-architecture-65b04b7f2754)

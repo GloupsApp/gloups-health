@@ -9,7 +9,9 @@ files when entering their application or package.
 
 - This repository contains documentation, Bun/Turborepo tooling, a local Blume
   site and AUTH-003 NestJS/Fastify/Drizzle/Postgres plus Expo SDK 58 authentication
-  source. Credential/lifecycle API journeys have local E2E evidence; complete
+  source under review. A review checkpoint contains only its assigned slice;
+  the task packet records the integrated reference. Credential/lifecycle API
+  journeys have local E2E evidence; complete
   native/provider acceptance remains pending. Health/product web flows and live
   provider connections remain absent.
 - Worldwide iOS/Android launch, French/English first, nutrition/fitness/sleep/

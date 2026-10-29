@@ -59,7 +59,7 @@ All strict authored-code checks remain inherited; the shared baseline stays
 `skipLibCheck: false`. Recheck with
 `bun run --filter @gloups/api typecheck --skipLibCheck false` after compatible
 dependency releases and remove this exception once their declarations pass. See
-the [authentication evidence](verification/2026-10-28-authentication-execution.md).
+the [recorded diagnostic](https://github.com/GloupsApp/gloups-health/blob/ada0ca072384bec24557af2d43cb853165b65fce/docs/verification/2026-10-28-authentication-execution.md#declaration-checking-prerequisite).
 
 ## API architecture
 
