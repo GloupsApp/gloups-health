@@ -3,11 +3,11 @@ import { Module } from "@nestjs/common";
 
 import { ApiConfigurationModule } from "../../../platform/configuration/api-configuration.module.js";
 import { TrustedOriginGuard } from "../presentation/trusted-origin.guard.js";
-import { IdentityApplicationModule } from "./identity-application.module.js";
+import { IdentityPersistenceModule } from "./identity-persistence.module.js";
 
 @Module({
   exports: [TrustedOriginGuard],
-  imports: [ApiConfigurationModule, IdentityApplicationModule],
+  imports: [IdentityPersistenceModule, ApiConfigurationModule],
   providers: [TrustedOriginGuard],
 })
 export class IdentityHttpPoliciesModule {}
