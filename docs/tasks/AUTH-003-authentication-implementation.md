@@ -298,3 +298,11 @@ actual composition consumers import that private module directly. Update the
 existing stack by normal feature-branch merges, preserve history, and leave all
 PRs open without auto-merge. The [enforcement evidence](../verification/2026-10-29-authentication-enforcement.md)
 separates this architecture-only checkpoint from subsequent runtime acceptance.
+
+Enforcement review source is now propagated across the existing review stack by
+normal feature merges, with no source PR/main merge or force push. Every
+checkpoint passed strict/architecture checks; API checkpoints passed actual
+startup/health. Final API run `01a187ab-555d-75a8-ab5e-431146e30a36` passed 32/32 in
+25.77s, including the narrowed worker graph. The [current head map](../verification/2026-10-29-authentication-review-stack.md#pr-27-enforcement-amendment-current-review-heads)
+records revisions. Owned services are stopped with volume/ignored state intact.
+All PRs stay open and native/provider/release acceptance remains pending.

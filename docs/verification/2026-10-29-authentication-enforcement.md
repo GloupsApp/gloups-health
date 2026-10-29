@@ -77,3 +77,50 @@ Git diff, local documentation links, path/privacy exclusions and commit hooks
 are checked before publication. There are no new unit tests, CI jobs, API/device
 journeys or claims of live-provider success in this checkpoint. Existing native,
 physical-device, provider, sender and live retention gates remain open.
+
+## Dependent stack and runtime readback
+
+The coordinator normally merged the updated predecessor into each dependent
+review branch, checked it and pushed it without rewriting history. All source
+PRs remain open/draft for owner review; no main/PR merge or auto-merge occurred.
+The [current head map](2026-10-29-authentication-review-stack.md#pr-27-enforcement-amendment-current-review-heads)
+records the actual revisions. Every branch passed strict typechecks and the new
+architecture/Ultracite gate. API checkpoints #28–35 and recomposed #26 additionally
+passed uncached compilation and actual Nest startup/health against the lane's
+isolated PostgreSQL; each owned API child was stopped after readiness.
+
+The real export leak is fixed in its owning slices: IdentityApplicationModule
+exports only its two use cases. Authentication/social/root-guard composition
+import persistence explicitly; HTTP-policy/deletion/worker composition replaces
+its indirect application import with persistence. API source differs from the
+prior extraction only in those seven wiring files (17 additions, 12 deletions).
+No domain/application/infrastructure/presentation behavior, schema/migration or
+mobile source was changed.
+
+Final actual API acceptance: `GLOUPS_AUTH003_FAULTS=1 bunx e2e run --target api`,
+run `01a187ab-555d-75a8-ab5e-431146e30a36`, **32/32 passed in 25.77s**. This includes
+actual API/database restart, the standalone worker's signal/drain lifecycle and
+private relay faults. Only the API target ran; the runner's configured native
+target names are not native evidence.
+
+`bun install --frozen-lockfile`, actual six-task graph, root build/typechecks,
+`bun run check`, Ultracite doctor and Changesets status passed. Root build 6/6,
+three cached, 8.187s, executed current API/docs builds and iOS/Android exports.
+Architecture passed 94 API source files/14 Nest modules; Ultracite checked 257
+code/config files; doctor 8/8 with no warnings. Changesets still reports only the
+existing docs patch. No unit tests, TDD, CI or paid/hosted checks were introduced.
+
+After evidence capture, cwd/command-verified lane API, sink and relay processes
+were stopped. API-04 intentionally replaced the original API process; its actual
+child was verified before cleanup. The labeled owned Postgres service was
+stopped and its `gloups-auth-auth003_postgres` volume preserved. Ports 4340/4341/
+4342/25440/8085 have no listeners. Ignored environments, reports, builds, device
+state and worktree remain preserved; unrelated processes and OrbStack are intact.
+Native/provider/physical-device/sender/live-retention gates remain pending.
+
+Final retained-file audit checked 214 paths, 27 Markdown files, 186 local links and
+12 anchors. No private material or generated-native/unit/workflow path entered
+the diff. Actual Git comparison confirms domain/application/infrastructure/
+presentation, migrations and mobile source are unchanged from the prior source;
+only the seven named Nest wiring files differ. Hooks run the architecture gate
+and staged formatting before the final documentation commit.

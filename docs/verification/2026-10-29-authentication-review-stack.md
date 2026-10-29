@@ -106,6 +106,8 @@ PR targets the preceding review branch, so its Files changed view isolates the
 listed concern. Every PR is draft and intended for owner review; no agent merge
 or auto-merge is authorized. The owner controls integration in this order.
 
+The original extraction checkpoints below precede the PR #27 enforcement
+amendment. Current review heads follow in the enforcement section at the end.
 The line counts below count additions plus deletions and exclude only generated
 `bun.lock` and Drizzle snapshot metadata. SQL, runtime source and E2E cases remain
 visible. The credential/deletion slices include their actual HTTP/Postgres E2E
@@ -164,10 +166,10 @@ no fake provider success or external mail was involved.
 | #34 | `01a18764-69b6-7dde-b560-991232f76db5` | 23/23, 10.79s; provider boundary only  |
 | #35 | `01a18766-1847-70c2-bc10-5b1633c6033b` | 31/31, 26.78s                          |
 
-The final #41 API/mobile source, root manifests/lock, TS/E2E configuration and
-architecture lint rules match preserved extraction revision
+At the original extraction, the #41 API/mobile source, root manifests/lock, TS/E2E configuration and
+architecture lint rules matched preserved extraction revision
 `2ee345cbd91db144d1210d999c0e983453200d3c` byte for byte. The API source already
-matches at #35. The final #26 adds the remaining four fault-harness files and
+matches at #35. The original #26 slice added the remaining four fault-harness files and
 review/handoff documentation. Source equality is checked with the actual Git
 diff, rather than inferred from commit messages.
 
@@ -207,8 +209,8 @@ The API was restarted from the newly emitted code before running
 Army run `01a1877b-a7c7-72df-9207-9683db912086` passed **32/32** in **25.93s**
 across seven real HTTP/Postgres suites, including the signal-driven standalone
 worker drain and private fault relay. Only the API target ran; the runner's
-configured native targets did not establish device acceptance. The application
-source/manifests remain byte-identical to the preserved verified reference.
+configured native targets did not establish device acceptance. At that checkpoint the application
+source/manifests were byte-identical to the preserved verified reference.
 
 After this run, only cwd/command-verified lane API 4340, sink 4341 and relay 4342
 processes were stopped. The Compose project/service labels were verified before
@@ -224,3 +226,63 @@ material, 24 Markdown files, 165 local links and eight anchors. No private,
 generated-native, workflow or unit-test path entered the source diff. Import
 direction checks passed through the configured architecture lint rules. The
 actual #41-to-final diff has no API/mobile application-source changes.
+
+## PR #27 enforcement amendment: current review heads
+
+The owner requests resolved context imports, circular-dependency checks and
+narrow Nest exports before continuing review, plus the official Nest CLI.
+PR #27 now introduces the architecture gate and exact CLI 12.0.11. See the
+[enforcement evidence](2026-10-29-authentication-enforcement.md) and
+[checker policy](../../tools/architecture/README.md). The table above retains
+original extraction evidence; the current reviewed source heads are:
+
+| PR                                                        | Current checked source revision                                                                                                                                     |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [#27](https://github.com/GloupsApp/gloups-health/pull/27) | [`d9fccc9`](https://github.com/GloupsApp/gloups-health/commit/d9fccc9d7127adf816d485f1dbade75ce011f102)                                                             |
+| [#28](https://github.com/GloupsApp/gloups-health/pull/28) | [`01721d3`](https://github.com/GloupsApp/gloups-health/commit/01721d3c0fd5910d47a8b9eb171766c82b21b89b)                                                             |
+| [#29](https://github.com/GloupsApp/gloups-health/pull/29) | [`f46148a`](https://github.com/GloupsApp/gloups-health/commit/f46148a67cde45b1bfb4b9c49f96c76df1735717)                                                             |
+| [#30](https://github.com/GloupsApp/gloups-health/pull/30) | [`f6ef479`](https://github.com/GloupsApp/gloups-health/commit/f6ef479f90b2d8fce78efd941fd21b881b6a2312)                                                             |
+| [#31](https://github.com/GloupsApp/gloups-health/pull/31) | [`f605a05`](https://github.com/GloupsApp/gloups-health/commit/f605a059bf067163e5df09d82789aabee547ea38)                                                             |
+| [#32](https://github.com/GloupsApp/gloups-health/pull/32) | [`de14bc6`](https://github.com/GloupsApp/gloups-health/commit/de14bc691b0a0e8a8fa5d6e140e15e7c0b9fc274)                                                             |
+| [#33](https://github.com/GloupsApp/gloups-health/pull/33) | [`9354172`](https://github.com/GloupsApp/gloups-health/commit/93541720b689a24b76ec05eef6ec73def23500fb)                                                             |
+| [#34](https://github.com/GloupsApp/gloups-health/pull/34) | [`fa1baa6`](https://github.com/GloupsApp/gloups-health/commit/fa1baa6c313f5e7c049af5f08e8428d323902d15)                                                             |
+| [#35](https://github.com/GloupsApp/gloups-health/pull/35) | [`7c5d322`](https://github.com/GloupsApp/gloups-health/commit/7c5d322fcb35418a3a794fcef0b91f0b1e566432)                                                             |
+| [#36](https://github.com/GloupsApp/gloups-health/pull/36) | [`42fed25`](https://github.com/GloupsApp/gloups-health/commit/42fed259342d214adb687d857df51e2927e89e90)                                                             |
+| [#37](https://github.com/GloupsApp/gloups-health/pull/37) | [`6f55a06`](https://github.com/GloupsApp/gloups-health/commit/6f55a064e538ffac2dcb301cf1479933f9e02506)                                                             |
+| [#38](https://github.com/GloupsApp/gloups-health/pull/38) | [`d6dedf7`](https://github.com/GloupsApp/gloups-health/commit/d6dedf7c17a79f5a753e8cee92391893fd01b635)                                                             |
+| [#39](https://github.com/GloupsApp/gloups-health/pull/39) | [`03538ed`](https://github.com/GloupsApp/gloups-health/commit/03538ed80c85b8ec17c9f05135af2f0c3f59e343)                                                             |
+| [#40](https://github.com/GloupsApp/gloups-health/pull/40) | [`3d4084d`](https://github.com/GloupsApp/gloups-health/commit/3d4084d683aa6e190188b1378a8255e0f38ff835)                                                             |
+| [#41](https://github.com/GloupsApp/gloups-health/pull/41) | [`440755c`](https://github.com/GloupsApp/gloups-health/commit/440755c5a40b5f0557355ca94f8e4456aa54b5e2)                                                             |
+| [#26](https://github.com/GloupsApp/gloups-health/pull/26) | Tested source [`c8334f0`](https://github.com/GloupsApp/gloups-health/commit/c8334f0fa4ada060446166f0ab1e16490ac4fbb6); subsequent documentation recorded in PR head |
+
+Each branch incorporated its updated predecessor through a normal local feature
+merge and normal push. No history was rewritten or force-pushed; no GitHub PR or
+main branch was merged. The bases/review order are unchanged. In particular #26
+still has no API/mobile application paths in its diff against #41.
+
+The architecture check caught and removed IdentityApplicationModule's whole
+persistence-module re-export. Six actual composition consumers now import the
+private persistence module directly; policy/worker/deletion wiring drops unused
+application-module imports. This is the only API source change from the initial
+extraction: seven wiring files, 17 additions/12 deletions. Domain/application,
+infrastructure, presentation, migrations and all mobile source remain unchanged.
+The original byte-equivalence observations above apply to their dated extraction
+checkpoint, not to these newer wiring/tooling revisions.
+
+Every dependent branch passed strict typechecks and architecture/Ultracite checks.
+API source checkpoints #28–35 and recomposed #26 also passed fresh uncached API
+compilation and actual Nest HTTP startup/health, stopping each owned child after
+readiness. Source definitions remain in their owning review slices.
+
+Final integrated Army run `01a187ab-555d-75a8-ab5e-431146e30a36` passed 32/32 in 25.77s
+on the real lane API/Postgres, including API/database restart, worker signal/drain
+and relay faults. Root build passed 6/6 (three cached) in 8.187s, executing current
+API/docs builds and iOS/Android exports. Architecture passed 94 sources/14 Nest
+modules; Ultracite checked 257 files and doctor passed 8/8. Frozen install, graph,
+Changesets and strict tooling checks passed. Full native/provider acceptance
+remains pending; source/export checks do not close it.
+
+Only verified lane API/sink/relay and Postgres were stopped afterward, including
+the API replacement deliberately spawned by API-04. Ports 4340/4341/4342/25440/8085
+have no listeners; the existing synthetic database volume and all ignored state
+remain preserved. No device, external provider, deployment or CI action occurred.
