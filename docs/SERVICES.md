@@ -1,8 +1,9 @@
 # Services and connection boundaries
 
-This new repository has no provisioned runtime, configured credentials, provider
-project or verified deployment. Existing selections below are constraints/source
-facts, not proof of a working connection here.
+AUTH-003 provisions only an isolated synthetic local Postgres/API/email sink and
+local simulator builds. No hosted runtime, external email sender, live OAuth
+connection or deployment is verified. Existing selections below remain service
+constraints/source facts.
 
 | Service          | Existing direction                                                                      | New-repository boundary                                                                                                             |
 | ---------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |

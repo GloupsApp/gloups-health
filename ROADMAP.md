@@ -1,6 +1,6 @@
 # Gloups engineering roadmap
 
-Updated 28 October 2026. Worldwide iOS/Android launch, with French and English
+Updated 29 October 2026. Worldwide iOS/Android launch, with French and English
 first. Nutrition, full workout creation/execution, sleep, optional cycle tracking
 and explained daily food/training/rest recommendations are launch requirements.
 See [PRODUCT](docs/PRODUCT.md) and the [design draft](docs/specs/2026-10-27-unified-health-coach-design.md).
@@ -8,9 +8,10 @@ See [PRODUCT](docs/PRODUCT.md) and the [design draft](docs/specs/2026-10-27-unif
 ## Current state
 
 This repository has engineering documentation, Bun/Turborepo tooling, a local
-Blume documentation site and a minimal Expo SDK 58 mobile shell. The API and
-product web folders remain reserved; mobile product flows are unimplemented. The prior
-applications are source references, not features implemented in this checkout.
+Blume site and AUTH-003 authentication source for NestJS/Fastify/Drizzle/Postgres
+and Expo SDK 58. The local API has actual credential/lifecycle E2E evidence;
+complete native/provider acceptance is pending in the open source PR. Health and
+product web flows remain reserved. The prior applications remain source references.
 No product feature is In Progress or Complete merely because a source module
 exists. Dated verification records describe the actual checks.
 

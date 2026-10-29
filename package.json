@@ -35,12 +35,14 @@
     "api:auth:generate": "bun run --filter @gloups/api auth:generate",
     "api:db:generate": "bun run --filter @gloups/api db:generate",
     "api:db:migrate": "bun run --filter @gloups/api db:migrate",
-    "e2e:api": "e2e run --target api"
+    "e2e:api": "e2e run --target api",
+    "e2e:mobile": "e2e run --target ios --target ios-duo --target android"
   },
   "devDependencies": {
     "@changesets/cli": "3.0.3",
     "@commitlint/cli": "21.2.4",
     "@commitlint/config-conventional": "21.2.4",
+    "@e2e-dev/mobile": "0.12.4",
     "@types/node": "24.19.2",
     "e2e": "0.21.3",
     "husky": "9.1.7",

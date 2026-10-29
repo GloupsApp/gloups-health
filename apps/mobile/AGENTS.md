@@ -2,8 +2,6 @@
 
 Read root [AGENTS](../../AGENTS.md), [DESIGN](../../docs/DESIGN.md),
 [I18N](../../docs/I18N.md), [CONTRACTS](../../docs/CONTRACTS.md) and the assigned packet.
-Review checkpoints add one slice at a time; this checkpoint contains secure
-transport/generation helpers and the existing shell, with Router flows following.
 The SDK 58 foundation is approved in [TOOL-003](../../docs/tasks/TOOL-003-expo-foundation.md).
 [AUTH-003](../../docs/tasks/AUTH-003-authentication-implementation.md) adds Router
 authentication source under review. Live provider connections and complete native

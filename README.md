@@ -12,14 +12,15 @@ sets, repetitions, weights, rest timers and progression.
 ## Repository status
 
 This is the new private planning and implementation home for the unified product.
-It contains engineering documentation, Bun/Turborepo workspace tooling, a
-local Blume documentation site in `apps/docs` and a minimal Expo SDK 58 shell in
-`apps/mobile`. The API and product web folders reserve future work. Mobile has an
-empty native root with local development and bundle-export commands. Product
-features, a native release build and automatic build workflows are still absent.
+It contains engineering documentation, Bun/Turborepo tooling, a local Blume site
+and AUTH-003 authentication source: NestJS/Fastify with Drizzle/Postgres and an
+Expo SDK 58 Router client. Credential/lifecycle API cases have local E2E evidence;
+complete native/provider acceptance remains pending. Health/product web flows,
+deployment and store release remain unimplemented.
 
-The existing applications remain source references. No application code, customer
-data, credentials, native projects or deployment configuration has been migrated.
+The existing applications remain source references. No customer data,
+credentials, native projects or deployment configuration has been migrated.
+The canonical source palette is imported for the new authentication screens.
 HIPAA BAA and HDS support are future work; consumer privacy and security remain
 part of the first release.
 
@@ -41,8 +42,8 @@ specifications now; an unassigned packet is not a claim or permission to build.
 
 ## Workspace commands
 
-Use Bun 1.4.4 and Node.js 24.15.0 or newer. Direct dependency versions are pinned
-to the latest stable releases verified during the 28 October 2026 setup.
+Use Bun 1.4.4 and the runtime pinned for the workspace: the API uses Node 26.13.0;
+the root minimum remains Node 24.15.0. Direct dependencies use reviewed exact pins.
 
 ```sh
 bun install --frozen-lockfile
@@ -55,6 +56,6 @@ bun run mobile:build
 
 `bun run build` checks types, builds the documentation site and exports iOS/Android
 JavaScript bundles through Turborepo. See the [mobile setup](apps/mobile/README.md)
-for local device commands and current verification limits.
+and [API setup](apps/api/README.md) for owned local commands and verification limits.
 Husky checks staged files before commits and validates Conventional Commit
 messages. See [CONTRIBUTING](CONTRIBUTING.md) for formatting and Changesets.
