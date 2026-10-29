@@ -8,6 +8,7 @@
     "typecheck": "tsc --project tsconfig.json",
     "start": "node --env-file=.env.local dist/main.js",
     "watch": "tsc --project tsconfig.build.json --watch",
+    "mail-sink": "node --env-file=.env.local dist/local-only/email-sink.js",
     "auth:generate": "auth generate --config ./src/modules/identity-access/infrastructure/auth/auth-schema.config.ts --adapter drizzle --dialect postgresql --output ./src/modules/identity-access/infrastructure/persistence/auth-schema.ts --yes",
     "db:generate": "drizzle-kit generate --config drizzle.config.ts",
     "db:migrate": "drizzle-kit migrate --config drizzle.config.ts"
@@ -25,6 +26,7 @@
     "better-auth": "1.7.14",
     "drizzle-orm": "0.45.4",
     "fastify": "5.12.7",
+    "jose": "6.2.13",
     "postgres": "3.4.9",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2",
