@@ -2,13 +2,16 @@
 
 Read root [AGENTS](../../AGENTS.md), [DESIGN](../../docs/DESIGN.md),
 [I18N](../../docs/I18N.md), [CONTRACTS](../../docs/CONTRACTS.md) and the assigned packet.
-This directory contains the minimal Expo SDK 58 shell approved in
-[TOOL-003](../../docs/tasks/TOOL-003-expo-foundation.md). It registers an empty
-native root; product screens, generated native projects and provider connections
-are absent. See [README](README.md) for actual root commands and compiler limits.
+Review checkpoints add one slice at a time; this checkpoint contains secure
+transport/generation helpers and the existing shell, with Router flows following.
+The SDK 58 foundation is approved in [TOOL-003](../../docs/tasks/TOOL-003-expo-foundation.md).
+[AUTH-003](../../docs/tasks/AUTH-003-authentication-implementation.md) adds Router
+authentication source under review. Live provider connections and complete native
+acceptance remain pending. Generated native projects stay ignored. See
+[README](README.md) for actual root commands and compiler limits.
 
-Expo/React Native is accepted for this foundation. Before UI
-integration inspect actual Mobbin screens and record neutral flow links. Reuse
+Expo/React Native is accepted for this foundation. D019 removes the Mobbin
+prerequisite by owner instruction. Follow native platform conventions and reuse
 canonical brand tokens. Routes hold routing; feature components, services and
 native adapters live outside the route tree. Do not put secrets in client code.
 

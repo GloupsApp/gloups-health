@@ -16,7 +16,7 @@ bun run typecheck
 bun run check
 ```
 
-The development commands share Metro port `8083`; start one at a time. `mobile:ios`
+The development commands share Metro port `8085`; start one at a time. `mobile:ios`
 and `mobile:android` ask Expo CLI to open an available local simulator/emulator
 or connected device. Expo Go must support SDK 58. These commands do not create an
 EAS project, sign an app or register a permanent application identifier.
@@ -42,3 +42,9 @@ Authored app code lives under `src/`; `index.ts` only registers it. A future Rou
 packet should keep routes under `src/app/` and screen bodies outside the route
 tree. Follow scoped [AGENTS](AGENTS.md),
 [I18N](../../docs/I18N.md) and [DESIGN](../../docs/DESIGN.md) before product UI work.
+
+This review checkpoint adds official auth transport, SecureStore generation
+ownership and a separate language preference. It retains the foundation shell
+entry; Router screens arrive in following PRs. Typechecks/exports do not establish
+credential, provider or real-device acceptance. The dependency/script manifest
+records the actual available commands for this checkpoint.
