@@ -29,6 +29,18 @@ export const AccountScreen = () => {
       <Host seedColor={gloupsColors.metricBlue} style={{ flex: 1 }}>
         <List>
           <ListItem
+            onPress={() => router.push("/(account)/sign-in-methods")}
+            testID="account-methods"
+          >
+            <Text>{strings.methods}</Text>
+          </ListItem>
+          <ListItem
+            onPress={() => router.push("/(account)/delete-account")}
+            testID="account-delete"
+          >
+            <Text>{strings.deleteAccount}</Text>
+          </ListItem>
+          <ListItem
             supportingText={
               state.account.user.name ? state.account.user.email : ""
             }
