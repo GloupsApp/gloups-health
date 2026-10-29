@@ -92,3 +92,10 @@ workspace typechecks used their recorded cache results. Ultracite fix/check
 passed 252 files; doctor 8/8, no warnings. The authored source adds no schema
 change. Mobile source is unchanged from the prior review; new native/provider
 acceptance is not claimed. The source is preserved before extracting branches.
+
+Verified refactor source: [`61f25e6a02a62445b711d7fa5edce5499a081451`](https://github.com/GloupsApp/gloups-health/commit/61f25e6a02a62445b711d7fa5edce5499a081451),
+preserved on `codex/auth-003-nest-boundaries` before review extraction. The
+follow-up documentation commit includes the API module guide. A retained/new-file
+scan of the complete source diff checked 206 paths against private environment
+material and excluded private/generated/unit-test paths. Deleted paths were
+excluded from content lookup. Husky staged formatting and commitlint passed.

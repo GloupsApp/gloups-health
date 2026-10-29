@@ -182,3 +182,35 @@ emailed verification links redirect only to a validated trusted callback with
 fixed `flow=verification&error=INVALID_TOKEN`; incoming query data is removed.
 Without a callback the API retains its JSON400 error. Callback query values do
 not authenticate the app.
+
+## Nest composition and Onion boundaries
+
+`AppModule` imports platform configuration, managed Drizzle connections, health
+and `IdentityAccessModule`. The feature root is a small composition module with
+no SDK/database exports. Internal `composition/` modules bind core identity,
+authentication, credential HTTP, social HTTP and deletion independently.
+Application/domain are plain TypeScript with explicit owning ports. Account
+work does not instantiate deletion repositories; deletion's separate work unit
+calls the aggregate transition before saving its lifecycle state.
+
+`@nestjs/config`12.0.1 validates namespaced local configuration through the
+existing schema. Official `@nestjs/drizzle`0.0.2 registers named main/proof
+postgres.js connections and manages shutdown; Drizzle 0.45.4 and the driver stay
+unchanged. Readiness uses a Nest lifecycle provider. The HTTP root uses Nest's
+Fastify/CORS APIs and duplicate-route diagnostics; the feature registers its
+APP_GUARD/APP_FILTER, origin/budget guards, schema pipes and current-actor
+parameter decorators through DI. Controllers call core decisions and the narrow
+protocol gateways, not SDK APIs or persistence rows.
+
+The worker entry point uses `NestFactory.createApplicationContext` with its own
+module graph, sharing deletion/persistence providers without creating HTTP
+controllers or a listener. `DeletionWorkerService` drains its current tick in
+`beforeApplicationShutdown`; the official Drizzle lifecycle then closes both
+clients. The real worker signal/drain E2E verifies this order.
+
+SDK email/proof policy, request effects, database hooks, issuer admission and
+fingerprinting are separate leaf adapters. The raw Better Auth bridge remains
+scoped to `/api/auth/*`, preserving the reviewed payload/redirect/cookie
+contract. Root Oxlint rules enforce inward imports and prevent persistence
+access from presentation. Generated metadata is collapsed for GitHub review;
+SQL migrations remain visible and need explicit review.
