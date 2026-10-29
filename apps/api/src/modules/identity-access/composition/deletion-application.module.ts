@@ -28,7 +28,7 @@ import { DATABASE } from "../infrastructure/persistence/database.js";
 import type { DatabaseResource } from "../infrastructure/persistence/database.js";
 import { DrizzleDeletionRepository } from "../infrastructure/persistence/deletion-repository.js";
 import { DrizzleDeletionUnitOfWork } from "../infrastructure/persistence/deletion-unit-of-work.js";
-import { IdentityApplicationModule } from "./identity-application.module.js";
+import { IdentityPersistenceModule } from "./identity-persistence.module.js";
 
 @Module({
   exports: [
@@ -37,7 +37,7 @@ import { IdentityApplicationModule } from "./identity-application.module.js";
     DELETION_JOBS,
     APPLE_REVOCATION,
   ],
-  imports: [ApiConfigurationModule, IdentityApplicationModule],
+  imports: [IdentityPersistenceModule, ApiConfigurationModule],
   providers: [
     {
       inject: [DATABASE, API_CONFIG],

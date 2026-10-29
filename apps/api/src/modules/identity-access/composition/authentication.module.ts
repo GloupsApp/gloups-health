@@ -15,10 +15,15 @@ import { LocalHttpEmailTransport } from "../infrastructure/email/local-http-tran
 import { DATABASE } from "../infrastructure/persistence/database.js";
 import type { DatabaseResource } from "../infrastructure/persistence/database.js";
 import { IdentityApplicationModule } from "./identity-application.module.js";
+import { IdentityPersistenceModule } from "./identity-persistence.module.js";
 
 @Module({
   exports: [AUTH, IDENTITY_SESSIONS, BetterAuthGateway],
-  imports: [ApiConfigurationModule, IdentityApplicationModule],
+  imports: [
+    IdentityPersistenceModule,
+    ApiConfigurationModule,
+    IdentityApplicationModule,
+  ],
   providers: [
     {
       inject: [API_CONFIG],

@@ -169,3 +169,19 @@ records dependencies and review order. The
 records source checks separately from each checkpoint's local evidence. This
 first checkpoint contains architecture/policy only; source arrives in subsequent
 PRs. Every PR stays open for owner review; the final PR map will be recorded here.
+
+### PR #27 enforcement and CLI amendment
+
+The owner asks to close cross-context, circular-dependency and Nest export gaps
+before proceeding with review, and separately requests the official Nest CLI.
+The same coordinator owns `tools/architecture/{check,source,modules}.ts` and its
+README, root package/lock/TypeScript/check/hook wiring, CONTRIBUTING, architecture
+and code-standard guidance, and the dated enforcement record. The CLI is an exact
+root development dependency; no new app or agent-written unit tests are included.
+
+PR #27 adds a resolved TypeScript source graph and static Nest metadata checks.
+Application modules no longer re-export persistence in the dependent slices;
+actual composition consumers import that private module directly. Update the
+existing stack by normal feature-branch merges, preserve history, and leave all
+PRs open without auto-merge. The [enforcement evidence](../verification/2026-10-29-authentication-enforcement.md)
+separates this architecture-only checkpoint from subsequent runtime acceptance.
