@@ -130,6 +130,41 @@ Authentication provider records remain separate from immutable Gloups account
 identity and lifecycle rules. No application or domain type exposes an HTTP
 request, SDK session, database row or transaction client.
 
+## Executable boundary checks
+
+`bun run architecture:check` uses the pinned TypeScript resolver and compiler AST
+against every source file under `apps/api/src/`. It runs before root check, lint,
+typecheck/build and commits. PR #27 has no API source yet; a zero-source result is
+reported explicitly and is not authentication acceptance. Later source slices
+must pass the same check. See [checker scope](../tools/architecture/README.md).
+
+A context can consume another context only through its named
+`application/public-api.ts`, or through its root Nest module from composition.
+Domain code cannot import another context. Public APIs expose owning application
+contracts, not domain entities or adapter types. Public imports and re-exports
+are named; wildcard barrels, private deep imports and unclassified context files
+are rejected. No shared-contract package is implicitly approved.
+
+The resolver follows aliases, relative paths, re-exports, import types and literal
+`import()`/`require()` calls. It checks source cycles including type-only edges,
+and Nest module import cycles including multiple modules in one file. Computed
+module loading or metadata that hides imports/exports fails the check. Core code
+stays on resolved inner TypeScript contracts; third-party and Node integrations
+belong in outer adapters.
+
+Nest exports must name locally registered providers. A context root may expose
+only tokens/providers imported from its application public API. It must bind a
+public token locally when delegating to an internal provider. Internal modules
+may export their owning application providers, with narrow, source-and-symbol
+adapter exceptions reviewed in the checker for current SDK/HTTP/persistence
+consumers. Re-exporting an entire private Nest module is rejected. Platform
+configuration and the official Drizzle module have explicit exceptions; these
+do not open feature resources to other contexts.
+
+Nest still validates provider construction at startup. Static import/metadata
+checks do not execute the application or replace actual HTTP/Postgres/device
+acceptance. There is no new CI workflow or unit-test harness.
+
 ## Mobile and coaching boundaries
 
 The mobile app owns native interaction, platform permissions, durable local
