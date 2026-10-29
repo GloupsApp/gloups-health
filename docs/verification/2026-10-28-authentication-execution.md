@@ -386,3 +386,9 @@ remain requested. No deployment/distribution/provider registration occurred.
 PR #26 remains draft/open; its mergeability is MERGEABLE and autoMergeRequest is
 null. Only PR #25 was authorized and merged. No Task 0–7 completion or release
 readiness is claimed.
+
+Fix-pass source revision: [`bbf84ab1ead60ac19630364815e4e20bf5ce63ca`](https://github.com/GloupsApp/gloups-health/commit/bbf84ab1ead60ac19630364815e4e20bf5ce63ca).
+Husky staged formatting and commitlint passed. The 23 staged fix/handoff paths
+were checked against private environment material without exposing values; no
+secret/signing block or generated/private path was staged. The subsequent
+handoff-only commit records this revision without changing the tested source.

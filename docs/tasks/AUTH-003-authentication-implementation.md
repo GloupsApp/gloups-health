@@ -235,3 +235,9 @@ The [execution record](../verification/2026-10-28-authentication-execution.md)
 contains all review decisions, costs and remaining acceptance. No complete task,
 native/provider acceptance or release readiness is claimed; PR26 stays draft,
 open and unmerged for owner review.
+
+Source reviewed after the fix pass: [`bbf84ab`](https://github.com/GloupsApp/gloups-health/commit/bbf84ab1ead60ac19630364815e4e20bf5ce63ca).
+Its emitted API and mobile source correspond to the checks above; later handoff
+documentation does not change that source. [Draft PR #26](https://github.com/GloupsApp/gloups-health/pull/26)
+is the integration artifact. All assigned services are stopped with the local
+Postgres volume and ignored state preserved; native/provider gates remain open.
