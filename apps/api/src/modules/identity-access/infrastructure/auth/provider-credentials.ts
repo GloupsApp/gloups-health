@@ -3,10 +3,9 @@ import { randomUUID } from "node:crypto";
 import type { BetterAuthOptions } from "better-auth";
 import { APIError, getOAuthState } from "better-auth/api";
 import { and, eq, gt } from "drizzle-orm";
-import { importPKCS8, SignJWT } from "jose";
 import { z } from "zod";
 
-import type { ApiConfig, AppleConfiguration } from "../../../../config.js";
+import type { ApiConfig } from "../../../../config.js";
 import type { AuthorizeSensitiveChange } from "../../application/authorize-sensitive-change.js";
 import type { ResolveAccount } from "../../application/resolve-account.js";
 import { account, session, user } from "../persistence/auth-schema.js";
@@ -15,30 +14,15 @@ import {
   oauthLinkAttempt,
   providerCredential,
 } from "../persistence/provider-credentials-schema.js";
+import { appleClientSecret } from "./apple-client-secret.js";
 import { nativeAppleProof } from "./apple-proof-context.js";
 import {
   authRequestLanguage,
-  identityFingerprint,
   setVerifiedProviderIdentity,
-} from "./lifecycle-hooks.js";
+} from "./auth-request-scope.js";
+import { identityFingerprint } from "./identity-fingerprint.js";
 import { createTokenVault } from "./token-vault.js";
 import type { AppleRevocationCredential } from "./token-vault.js";
-
-export const appleClientSecret = async (
-  config: AppleConfiguration,
-  clientId: string
-): Promise<string> => {
-  const key = await importPKCS8(config.privateKey, "ES256");
-
-  return new SignJWT({})
-    .setProtectedHeader({ alg: "ES256", kid: config.keyId })
-    .setIssuer(config.teamId)
-    .setSubject(clientId)
-    .setAudience("https://appleid.apple.com")
-    .setIssuedAt()
-    .setExpirationTime("1h")
-    .sign(key);
-};
 
 const stateContextSchema = z.object({ gloupsLinkAttemptId: z.uuid() });
 

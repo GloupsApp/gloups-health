@@ -1,59 +1,36 @@
-/* oxlint-disable class-methods-use-this -- Nest invokes instance handlers through its transport contract. */
+/* oxlint-disable class-methods-use-this -- Nest transport contract. */
 import {
-  BadRequestException,
   Body,
   Controller,
   HttpCode,
   Inject,
   Post,
-  Req,
+  UseGuards,
 } from "@nestjs/common";
-import type { FastifyRequest } from "fastify";
 import type { z } from "zod";
 
-import {
-  APPLE_NOTIFICATIONS,
-  appleNotificationInput,
-} from "../infrastructure/auth/apple-notifications.js";
-import type { AppleNotifications } from "../infrastructure/auth/apple-notifications.js";
-import type { DrizzleHttpRateLimit } from "../infrastructure/persistence/rate-limit.js";
-import { HTTP_RATE_LIMIT, HttpRateLimitedError } from "./http-rate-limit.js";
-import { PublicRoute } from "./public-route.js";
+import { PublicRoute } from "../../../platform/http/route-access.js";
+import { AppleHttpGateway } from "../infrastructure/auth/apple-http.gateway.js";
+import { appleNotificationInput } from "./dto/apple.inputs.js";
+import { RequestBudget, RequestBudgetGuard } from "./request-budget.guard.js";
+import { SchemaValidationPipe } from "./validation/schema-validation.pipe.js";
 
 @PublicRoute()
 @Controller("identity/apple/notifications")
+@UseGuards(RequestBudgetGuard)
+@RequestBudget({ max: 100, name: "apple-notifications", windowSeconds: 60 })
 export class AppleNotificationsController {
-  private readonly notifications: AppleNotifications;
-  private readonly limits: DrizzleHttpRateLimit;
-  constructor(
-    @Inject(APPLE_NOTIFICATIONS) notifications: AppleNotifications,
-    @Inject(HTTP_RATE_LIMIT) limits: DrizzleHttpRateLimit
-  ) {
-    this.notifications = notifications;
-    this.limits = limits;
+  private readonly gateway: AppleHttpGateway;
+  constructor(@Inject(AppleHttpGateway) gateway: AppleHttpGateway) {
+    this.gateway = gateway;
   }
   @Post()
   @HttpCode(204)
-  async receive(
-    @Body() body: z.input<typeof appleNotificationInput>,
-    @Req() request: FastifyRequest
+  receive(
+    @Body(new SchemaValidationPipe(appleNotificationInput)) input: z.infer<
+      typeof appleNotificationInput
+    >
   ): Promise<void> {
-    const parsed = appleNotificationInput.safeParse(body);
-
-    if (!parsed.success) {
-      throw new BadRequestException();
-    }
-
-    const budget = await this.limits.consume(request.ip, {
-      max: 100,
-      name: "apple-notifications",
-      windowSeconds: 60,
-    });
-
-    if (!budget.allowed) {
-      throw new HttpRateLimitedError(budget.retryAfterSeconds);
-    }
-
-    await this.notifications.process(parsed.data.payload);
+    return this.gateway.notify(input.payload);
   }
 }

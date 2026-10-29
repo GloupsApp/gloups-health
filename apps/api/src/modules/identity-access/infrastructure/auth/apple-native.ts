@@ -10,16 +10,20 @@ import { z } from "zod";
 
 import type { ApiConfig } from "../../../../config.js";
 import type { AuthorizeSensitiveChange } from "../../application/authorize-sensitive-change.js";
-import type { IdentitySessions } from "../../application/ports.js";
+import type {
+  AppleChallengeInput,
+  NativeAppleInput,
+} from "../../application/native-apple-input.js";
+import type { IdentitySessions } from "../../application/ports/identity-sessions.port.js";
 import type { ResolveAccount } from "../../application/resolve-account.js";
 import { AccessFailureError } from "../../application/types.js";
 import { createAppleChallenges } from "../persistence/apple-challenges.js";
 import { session } from "../persistence/auth-schema.js";
 import type { Database } from "../persistence/database.js";
+import { appleClientSecret } from "./apple-client-secret.js";
 import { withNativeAppleProof } from "./apple-proof-context.js";
+import { runAuthRequest } from "./auth-request-scope.js";
 import type { Auth } from "./auth.js";
-import { runAuthRequest } from "./lifecycle-hooks.js";
-import { appleClientSecret } from "./provider-credentials.js";
 import type { ProviderCredentials } from "./provider-credentials.js";
 
 export const APPLE_NATIVE = Symbol("APPLE_NATIVE");
@@ -27,28 +31,6 @@ export const APPLE_NATIVE = Symbol("APPLE_NATIVE");
 const appleKeys = createRemoteJWKSet(
   new URL("https://appleid.apple.com/auth/keys")
 );
-
-export const appleChallengeInput = z
-  .object({
-    nonceHash: z.string().regex(/^[a-f0-9]{64}$/u),
-    purpose: z.enum(["sign-in", "link"]),
-  })
-  .strict();
-
-export const nativeAppleInput = z
-  .object({
-    challengeId: z.uuid(),
-    code: z.string().min(1).max(4096),
-    nonce: z.string().min(32).max(256),
-    profile: z
-      .object({
-        familyName: z.string().max(256).nullable(),
-        givenName: z.string().max(256).nullable(),
-      })
-      .strict()
-      .optional(),
-  })
-  .strict();
 
 const exchangeSchema = z.object({
   id_token: z.string().min(1),
@@ -69,7 +51,7 @@ interface NativeAppleIdToken {
 }
 
 const toAppleIdToken = (
-  input: z.infer<typeof nativeAppleInput>,
+  input: NativeAppleInput,
   token: string
 ): NativeAppleIdToken => {
   const result: NativeAppleIdToken = { nonce: input.nonce, token };
@@ -119,10 +101,7 @@ export const createNativeApple = ({
   };
 
   return {
-    async challenge(
-      input: z.infer<typeof appleChallengeInput>,
-      headers: Headers
-    ) {
+    async challenge(input: AppleChallengeInput, headers: Headers) {
       if (!config.apple) {
         throw new ServiceUnavailableException();
       }
@@ -136,7 +115,7 @@ export const createNativeApple = ({
       );
     },
     async complete(
-      input: z.infer<typeof nativeAppleInput>,
+      input: NativeAppleInput,
       headers: Headers
     ): Promise<Response> {
       const { apple } = config;

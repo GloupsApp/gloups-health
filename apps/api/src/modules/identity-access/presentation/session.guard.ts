@@ -3,14 +3,18 @@ import type { CanActivate, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import type { FastifyReply, FastifyRequest } from "fastify";
 
-import { IDENTITY_SESSIONS } from "../application/ports.js";
-import type { IdentitySessions } from "../application/ports.js";
+import {
+  IDENTITY_ONLY_ROUTE,
+  PUBLIC_ROUTE,
+} from "../../../platform/http/route-access.js";
+import { IDENTITY_SESSIONS } from "../application/ports/identity-sessions.port.js";
+import type { IdentitySessions } from "../application/ports/identity-sessions.port.js";
+import { ACCESS_RATE_LIMIT } from "../application/ports/rate-limit.port.js";
+import type { AccessRateLimit } from "../application/ports/rate-limit.port.js";
 import { ResolveAccount } from "../application/resolve-account.js";
 import { AccessFailureError } from "../application/types.js";
 import type { AccountView, VerifiedIdentity } from "../application/types.js";
-import type { DrizzleHttpRateLimit } from "../infrastructure/persistence/rate-limit.js";
-import { HTTP_RATE_LIMIT, HttpRateLimitedError } from "./http-rate-limit.js";
-import { IDENTITY_ONLY_ROUTE, PUBLIC_ROUTE } from "./public-route.js";
+import { HttpRateLimitedError } from "./http-rate-limit.js";
 
 export interface IdentityRequest extends FastifyRequest {
   verifiedIdentity?: VerifiedIdentity;
@@ -25,7 +29,7 @@ export class SessionGuard implements CanActivate {
   private readonly reflector: Reflector;
   private readonly sessions: IdentitySessions;
   private readonly resolveAccount: ResolveAccount;
-  private readonly limits: DrizzleHttpRateLimit;
+  private readonly limits: AccessRateLimit;
   constructor(
     @Inject(Reflector)
     reflector: Reflector,
@@ -33,8 +37,8 @@ export class SessionGuard implements CanActivate {
     sessions: IdentitySessions,
     @Inject(ResolveAccount)
     resolveAccount: ResolveAccount,
-    @Inject(HTTP_RATE_LIMIT)
-    limits: DrizzleHttpRateLimit
+    @Inject(ACCESS_RATE_LIMIT)
+    limits: AccessRateLimit
   ) {
     this.reflector = reflector;
     this.sessions = sessions;

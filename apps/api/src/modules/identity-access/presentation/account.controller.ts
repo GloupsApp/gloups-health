@@ -1,79 +1,56 @@
-/* oxlint-disable class-methods-use-this -- Nest invokes instance handlers through its transport contract. */
+/* oxlint-disable class-methods-use-this -- Nest transport contract. */
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
+  HttpCode,
   Inject,
   Req,
   Res,
+  UseGuards,
 } from "@nestjs/common";
-import { fromNodeHeaders } from "better-auth/node";
-import type { FastifyReply } from "fastify";
+import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 
-import { API_CONFIG } from "../../../config.js";
-import type { ApiConfig } from "../../../config.js";
+import { IdentityOnlyRoute } from "../../../platform/http/route-access.js";
 import { RequestAccountDeletion } from "../application/request-account-deletion.js";
-import { AccessFailureError } from "../application/types.js";
-import { AUTH } from "../infrastructure/auth/auth.js";
-import type { Auth } from "../infrastructure/auth/auth.js";
-import { IdentityOnlyRoute } from "./public-route.js";
-import { assertRequestOrigin } from "./request-origin.js";
-import type { IdentityRequest } from "./session.guard.js";
+import type { VerifiedIdentity } from "../application/types.js";
+import { BetterAuthGateway } from "../infrastructure/auth/better-auth.gateway.js";
+import { CurrentIdentity } from "./current-identity.decorator.js";
+import { IdempotencyKey } from "./idempotency-key.decorator.js";
+import { TrustedOriginGuard } from "./trusted-origin.guard.js";
+import { SchemaValidationPipe } from "./validation/schema-validation.pipe.js";
 
 const deletionInput = z.object({ confirm: z.literal(true) }).strict();
-const keySchema = z.uuid();
 
 @Controller("account")
+@UseGuards(TrustedOriginGuard)
 export class AccountController {
   private readonly command: RequestAccountDeletion;
-  private readonly auth: Auth;
-  private readonly config: ApiConfig;
+  private readonly gateway: BetterAuthGateway;
   constructor(
     @Inject(RequestAccountDeletion) command: RequestAccountDeletion,
-    @Inject(AUTH) auth: Auth,
-    @Inject(API_CONFIG) config: ApiConfig
+    @Inject(BetterAuthGateway) gateway: BetterAuthGateway
   ) {
     this.command = command;
-    this.auth = auth;
-    this.config = config;
+    this.gateway = gateway;
   }
   @Delete()
+  @HttpCode(202)
   @IdentityOnlyRoute()
   async remove(
-    @Body() body: z.input<typeof deletionInput>,
-    @Req() request: IdentityRequest,
-    @Res() reply: FastifyReply
+    @Body(new SchemaValidationPipe(deletionInput)) _body: z.infer<
+      typeof deletionInput
+    >,
+    @IdempotencyKey() key: string,
+    @CurrentIdentity() actor: VerifiedIdentity,
+    @Req() request: FastifyRequest,
+    @Res({ passthrough: true }) reply: FastifyReply
   ) {
-    assertRequestOrigin(request, this.config);
-    const input = deletionInput.safeParse(body);
-    const key = keySchema.safeParse(request.headers["idempotency-key"]);
+    const receipt = await this.command.execute(actor, { idempotencyKey: key });
+    const response = await this.gateway.signOut(request.headers, request.ip);
+    reply.header("set-cookie", response.headers.getSetCookie());
 
-    if (!input.success || !key.success) {
-      throw new BadRequestException();
-    }
-
-    const actor = request.verifiedIdentity;
-
-    if (!actor) {
-      throw new AccessFailureError("AUTH_REQUIRED");
-    }
-
-    const receipt = await this.command.execute(actor, {
-      idempotencyKey: key.data,
-    });
-
-    const headers = fromNodeHeaders(request.headers);
-    headers.set("x-gloups-client-ip", request.ip);
-
-    const signedOut = await this.auth.api.signOut({
-      asResponse: true,
-      headers,
-    });
-
-    reply.header("set-cookie", signedOut.headers.getSetCookie());
-
-    return reply.status(202).send(receipt);
+    return receipt;
   }
 }

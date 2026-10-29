@@ -5,7 +5,7 @@ import type {
   IdentityRemoval,
   AppleRevocation,
 } from "../../application/process-account-deletion.js";
-import { appleClientSecret } from "../auth/provider-credentials.js";
+import { appleClientSecret } from "../auth/apple-client-secret.js";
 import { createTokenVault } from "../auth/token-vault.js";
 import { gloupsAccount } from "./account-schema.js";
 import { appleChallenge } from "./apple-challenges.js";

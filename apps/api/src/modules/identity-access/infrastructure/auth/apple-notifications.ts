@@ -18,10 +18,6 @@ import { BetterAuthSessions } from "./session-adapter.js";
 
 export const APPLE_NOTIFICATIONS = Symbol("APPLE_NOTIFICATIONS");
 
-export const appleNotificationInput = z
-  .object({ payload: z.string().min(1).max(16_384) })
-  .strict();
-
 const keys = createRemoteJWKSet(new URL("https://appleid.apple.com/auth/keys"));
 
 const eventSchema = z.object({

@@ -78,7 +78,9 @@ Map Drizzle rows and Better Auth sessions into explicit core values rather than
 casting or exporting their external types. A use case owns transaction/retry
 intent; its Drizzle adapter owns the concrete transaction/client. Cross-context
 code consumes approved contracts rather than another context's tables or
-repositories. Review real import direction and wiring alongside E2E acceptance;
+repositories. Review real import direction and wiring alongside E2E acceptance. The root Oxlint
+overrides enforce the domain/application, infrastructure and presentation import
+boundaries from ARCHITECTURE;
 this rule does not authorize scaffolding, a new lint dependency or unit tests.
 
 ## Implementation rules

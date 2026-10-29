@@ -1,7 +1,10 @@
 import { z } from "zod";
 
 import type { ApiConfig } from "../../../../config.js";
-import type { AuthEmail, EmailTransport } from "../../application/ports.js";
+import type {
+  AuthEmail,
+  EmailTransport,
+} from "../../application/ports/auth-email.port.js";
 import { renderAuthEmail } from "./templates.js";
 
 const receiptSchema = z.object({

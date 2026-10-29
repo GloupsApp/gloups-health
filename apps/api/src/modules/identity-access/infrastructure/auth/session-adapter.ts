@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 
-import type { IdentitySessions } from "../../application/ports.js";
+import type { IdentitySessions } from "../../application/ports/identity-sessions.port.js";
 import type { VerifiedIdentity } from "../../application/types.js";
 import { session } from "../persistence/auth-schema.js";
 import type { Database } from "../persistence/database.js";

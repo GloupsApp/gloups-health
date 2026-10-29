@@ -1,4 +1,4 @@
-import type { AuthEmail } from "../../application/ports.js";
+import type { AuthEmail } from "../../application/ports/auth-email.port.js";
 
 const messages = {
   en: {

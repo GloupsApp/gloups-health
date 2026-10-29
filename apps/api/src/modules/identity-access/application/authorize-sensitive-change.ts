@@ -1,4 +1,4 @@
-import type { AccountUnitOfWork } from "./ports.js";
+import type { AccountUnitOfWork } from "./ports/account-unit-of-work.port.js";
 import { AccessFailureError } from "./types.js";
 import type { VerifiedIdentity } from "./types.js";
 

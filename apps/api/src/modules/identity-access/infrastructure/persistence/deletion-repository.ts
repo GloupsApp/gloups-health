@@ -9,7 +9,7 @@ import type {
   DeletionJob,
   DeletionRepository,
 } from "../../domain/deletion-job.js";
-import { identityFingerprint } from "../auth/lifecycle-hooks.js";
+import { identityFingerprint } from "../auth/identity-fingerprint.js";
 import { createTokenVault } from "../auth/token-vault.js";
 import type { IdentityTransaction } from "./account-repository.js";
 import { account, session, user } from "./auth-schema.js";

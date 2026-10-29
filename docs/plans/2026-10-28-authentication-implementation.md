@@ -1,5 +1,10 @@
 # Authentication Implementation Plan
 
+> Owner review amendment, 29 October: the [Nest boundary/review decomposition](2026-10-29-authentication-review-decomposition.md)
+> supersedes the single-module composition, manual database/worker graph and
+> integrated PR batches below. Accepted product/security contracts remain.
+> Use the current scoped README for moved source paths and Nest-managed lifecycle.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. Repository policy overrides unit-test/TDD examples in either skill: use E2E Army against the real boundaries.
 
 **Goal:** Implement French/English Google, Apple and email/password authentication

@@ -1,6 +1,9 @@
 import { APIError } from "better-auth/api";
 
-import type { AuthEmail, EmailTransport } from "../../application/ports.js";
+import type {
+  AuthEmail,
+  EmailTransport,
+} from "../../application/ports/auth-email.port.js";
 
 export const deliverAuthEmail = async (
   transport: EmailTransport,

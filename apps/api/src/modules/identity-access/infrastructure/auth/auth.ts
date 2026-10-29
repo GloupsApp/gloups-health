@@ -8,18 +8,16 @@ import { z } from "zod";
 
 import type { ApiConfig } from "../../../../config.js";
 import type { AuthorizeSensitiveChange } from "../../application/authorize-sensitive-change.js";
-import type { EmailTransport } from "../../application/ports.js";
+import type { EmailTransport } from "../../application/ports/auth-email.port.js";
 import type { ResolveAccount } from "../../application/resolve-account.js";
 import { deliverAuthEmail } from "../email/email-transport.js";
 import type { Database } from "../persistence/database.js";
 import { schema } from "../persistence/schema.js";
 import { VerificationLedger } from "../persistence/verification-ledger.js";
+import { createDatabaseHooks } from "./auth-database-hooks.js";
+import { createLifecycleHooks } from "./auth-lifecycle-hooks.js";
 import { authSchemaOptions } from "./auth-options.js";
-import {
-  createDatabaseHooks,
-  createLifecycleHooks,
-  queueAuthEmail,
-} from "./lifecycle-hooks.js";
+import { queueAuthEmail } from "./auth-request-scope.js";
 import { createProviderCredentials } from "./provider-credentials.js";
 
 export const AUTH = Symbol("BETTER_AUTH");

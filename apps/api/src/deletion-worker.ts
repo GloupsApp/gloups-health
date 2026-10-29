@@ -1,134 +1,21 @@
-import { setTimeout } from "node:timers/promises";
+import "reflect-metadata";
+import { NestFactory } from "@nestjs/core";
 
-import { and, isNotNull, lt } from "drizzle-orm";
+import { IdentityDeletionWorkerModule } from "./modules/identity-access/composition/identity-deletion-worker.module.js";
+import { DeletionWorkerService } from "./modules/identity-access/infrastructure/deletion/deletion-worker.service.js";
 
-import { readConfig } from "./config.js";
-import { ProcessAccountDeletion } from "./modules/identity-access/application/process-account-deletion.js";
-import { appleChallenge } from "./modules/identity-access/infrastructure/persistence/apple-challenges.js";
-import {
-  createAppleRevocation,
-  createIdentityRemoval,
-} from "./modules/identity-access/infrastructure/persistence/auth-records-repository.js";
-import { verification } from "./modules/identity-access/infrastructure/persistence/auth-schema.js";
-import { createDatabase } from "./modules/identity-access/infrastructure/persistence/database.js";
-import { DrizzleDeletionRepository } from "./modules/identity-access/infrastructure/persistence/deletion-repository.js";
-import {
-  deletionJob,
-  identityTombstone,
-} from "./modules/identity-access/infrastructure/persistence/deletion-schema.js";
-import { reconcileOrphanCredential } from "./modules/identity-access/infrastructure/persistence/orphan-credentials.js";
-import {
-  appleNotification,
-  oauthLinkAttempt,
-} from "./modules/identity-access/infrastructure/persistence/provider-credentials-schema.js";
-import { issuedVerification } from "./modules/identity-access/infrastructure/persistence/verification-ledger.js";
-
-const reportRetry = () => {
-  process.stderr.write("Authentication worker retry pending.\n");
-};
-
-const main = async () => {
-  const config = readConfig();
-  const resource = createDatabase(config);
-  const cancellation = new AbortController();
-  process.once("SIGINT", () => cancellation.abort());
-  process.once("SIGTERM", () => cancellation.abort());
-  const apple = createAppleRevocation(resource.db, config);
-
-  const jobs = {
-    claim: (nowMs: number) =>
-      resource.db.transaction((transaction) =>
-        new DrizzleDeletionRepository(transaction, config).claim(nowMs)
-      ),
-    save: (claim: Parameters<DrizzleDeletionRepository["save"]>[0]) =>
-      resource.db.transaction((transaction) =>
-        new DrizzleDeletionRepository(transaction, config).save(claim)
-      ),
-  };
-
-  const processor = new ProcessAccountDeletion(
-    jobs,
-    createIdentityRemoval(resource.db, resource.proofDb),
-    apple,
-    Date.now
+const main = async (): Promise<void> => {
+  const app = await NestFactory.createApplicationContext(
+    IdentityDeletionWorkerModule,
+    { abortOnError: false, logger: false }
   );
 
-  const once = process.argv.includes("--once");
-
-  const processNext = async () => {
-    const claim = await jobs.claim(Date.now());
-
-    if (claim) {
-      await processor.execute(claim);
-    }
-  };
-
-  const tick = async () => {
-    await processNext().catch(reportRetry);
-    await reconcileOrphanCredential(resource.db, apple, new Date()).catch(
-      reportRetry
-    );
-    const now = new Date();
-    await resource.db.transaction(async (transaction) => {
-      await transaction
-        .delete(identityTombstone)
-        .where(lt(identityTombstone.expiresAt, now));
-      await transaction
-        .delete(deletionJob)
-        .where(
-          and(
-            isNotNull(deletionJob.completedAt),
-            lt(deletionJob.completedAt, new Date(now.getTime() - 86_400_000))
-          )
-        );
-      await transaction
-        .delete(appleChallenge)
-        .where(lt(appleChallenge.expiresAt, now));
-      await transaction
-        .delete(oauthLinkAttempt)
-        .where(lt(oauthLinkAttempt.expiresAt, now));
-      await transaction
-        .delete(issuedVerification)
-        .where(lt(issuedVerification.expiresAt, now));
-      await transaction
-        .delete(verification)
-        .where(lt(verification.expiresAt, now));
-      await transaction
-        .delete(appleNotification)
-        .where(
-          lt(
-            appleNotification.processedAt,
-            new Date(now.getTime() - 172_800_000)
-          )
-        );
-    });
-  };
+  app.enableShutdownHooks();
 
   try {
-    while (!cancellation.signal.aborted) {
-      try {
-        // Each tick finishes its durable handoff before the next claim.
-        // oxlint-disable-next-line no-await-in-loop
-        await tick();
-      } catch {
-        process.stderr.write("Authentication worker retry pending.\n");
-      }
-
-      if (once) {
-        break;
-      }
-
-      if (!cancellation.signal.aborted) {
-        // oxlint-disable-next-line no-await-in-loop
-        await setTimeout(1000, undefined, {
-          signal: cancellation.signal,
-        }).catch(() => {
-          // An aborted delay ends the worker after the current handoff.
-        });
-      }
-    }
+    await app.get(DeletionWorkerService).run(process.argv.includes("--once"));
   } finally {
-    await resource.close();
+    await app.close();
   }
 };
 

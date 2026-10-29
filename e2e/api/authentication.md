@@ -132,3 +132,20 @@ Final fix-pass run `01a18562-bd71-7301-92e4-afe51ee347b9` passed **29/29** in
 21.12 seconds with `GLOUPS_AUTH003_FAULTS=1 bunx e2e run --target api`. The
 default script selects 28 ordinary cases and skips the opt-in relay case. Source
 was compiled successfully and the owned API restarted before this run.
+
+## Nest refactor and focused suites
+
+The accepted API cases are now separated into platform, account/session,
+email-verification, password-lifecycle, social-boundary and deletion suites.
+Shared real-HTTP/Postgres fixture setup lives in `helpers/auth-api.ts`; each suite
+installs its own hooks. No unit tests or TDD were introduced. Earlier run IDs
+above refer to the prior integrated file layout.
+
+Refactored module/DI/lifecycle run `01a18721-087a-71d1-9763-1fbc1eb77d42` passed
+29/29 in 25.56s. After the domain save path and suite extraction, run
+`01a18728-8a38-77c9-8049-1863ed8b9de3` passed 31/31 in 27.82s, including two real
+platform health/CORS cases. DEL-04 then passed 1/1 in 3.43s at run
+`01a1872c-8701-7fba-add1-1acf052a0c49`: it pauses this suite's user erasure in
+Postgres, signals only the spawned Nest worker, and verifies that the current
+handoff commits before orderly shutdown. Its temporary trigger/function are
+removed. This is service/database lifecycle evidence, not native/provider proof.

@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import type { AccountRepository } from "../../domain/account-repository.js";
 import { GloupsAccount } from "../../domain/gloups-account.js";
@@ -41,10 +41,20 @@ export class DrizzleAccountRepository implements AccountRepository {
       })
       .onConflictDoNothing({ target: gloupsAccount.authUserId });
   }
-  async markDeleting(accountId: string, deletionId: string): Promise<void> {
-    await this.db
+  async save(account: GloupsAccount): Promise<void> {
+    const [stored] = await this.db
       .update(gloupsAccount)
-      .set({ deletionId })
-      .where(eq(gloupsAccount.id, accountId));
+      .set({ deletionId: account.deletionId })
+      .where(
+        and(
+          eq(gloupsAccount.id, account.id),
+          eq(gloupsAccount.authUserId, account.authUserId)
+        )
+      )
+      .returning({ id: gloupsAccount.id });
+
+    if (!stored) {
+      throw new Error("Account lifecycle persistence failed.");
+    }
   }
 }

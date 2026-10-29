@@ -84,12 +84,41 @@ cases define transaction and retry intent through a unit-of-work port; Drizzle
 transactions and row types stay in infrastructure. An ORM row is not a domain
 entity, and Better Auth's provider-account model is not a Gloups account.
 
-The proposed first context lives under `apps/api/src/modules/identity-access/`
-with `domain/`, `application/`, `infrastructure/`, `presentation/` and an outer
-`identity-access.module.ts`. These are planned paths, not existing code or
-scaffolding authorization. Health contexts consume approved application contracts
-rather than reaching into identity tables or concrete repositories. Keep only
-the abstractions required by real use cases; no generic base framework is implied.
+The first context lives under `apps/api/src/modules/identity-access/`, with
+`domain/`, `application/`, `infrastructure/`, `presentation/` and private
+`composition/` modules. Its root `IdentityAccessModule` exports no SDK/database
+resource. Internal modules separate identity application/persistence, the Better
+Auth adapter, credential HTTP, social HTTP and deletion. Feature composition
+binds plain use cases to their actual adapters; it does not decorate the core.
+
+Platform configuration, named main/proof database connections and health live in
+`apps/api/src/platform/`. Nest's ConfigModule validates the namespaced config;
+the official DrizzleModule owns both connection lifecycles. Bootstrap selects
+the Fastify adapter, CORS and prefix; it does not retrieve feature SDK/database
+internals. The deletion worker has a separate Nest application-context graph
+without HTTP controllers or listeners. Shutdown drains the current durable
+handoff before the database lifecycle closes its connections.
+
+HTTP controllers use schema-backed Nest pipes, typed current-identity/account
+decorators and origin/budget guards. APP_GUARD and APP_FILTER are DI providers.
+SDK-owned auth endpoints retain one scoped Fastify bridge for raw payloads,
+redirects and individual cookies; the Better Auth gateway owns SDK invocation.
+Those protocol adapters stay outside the core. Native provider input interfaces
+are plain values; presentation owns their validation schemas. Presentation may
+consume these protocol gateways but cannot import persistence implementations.
+
+Account and deletion transactions have separate unit-of-work ports. Deletion
+uses the account aggregate's lifecycle transition before repository persistence;
+the repository checks the immutable account/identity pair. Proof admission
+precedes a main transaction. No HTTP request, SDK result or transaction client
+enters a domain/application signature. Health contexts consume approved
+application contracts rather than identity tables or repositories.
+
+Oxlint enforces the inward imports: domain cannot depend on application/outer
+layers, core cannot import Nest/Fastify/SDK/ORM packages, infrastructure cannot
+import presentation/composition, and presentation cannot reach persistence.
+The [review decomposition](plans/2026-10-29-authentication-review-decomposition.md)
+records the owner-requested staged delivery. A folder name alone is insufficient.
 
 Fastify transport/parsing/CORS and the Better Auth protocol live at the outer
 edge. Persistence uses the official Better Auth Drizzle adapter and Drizzle

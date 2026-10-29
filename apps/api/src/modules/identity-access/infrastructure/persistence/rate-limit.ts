@@ -2,10 +2,11 @@ import { createHmac } from "node:crypto";
 
 import { sql } from "drizzle-orm";
 
+import type { AccessRateLimit } from "../../application/ports/rate-limit.port.js";
 import type { Database } from "./database.js";
 import { httpRateLimit } from "./rate-limit-schema.js";
 
-export class DrizzleHttpRateLimit {
+export class DrizzleHttpRateLimit implements AccessRateLimit {
   private readonly db: Database;
   private readonly secret: string;
   constructor(db: Database, secret: string) {

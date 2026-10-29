@@ -1,5 +1,5 @@
 import { GloupsAccount } from "../domain/gloups-account.js";
-import type { AccountUnitOfWork } from "./ports.js";
+import type { AccountUnitOfWork } from "./ports/account-unit-of-work.port.js";
 import { AccessFailureError } from "./types.js";
 import type { AccountView, VerifiedIdentity } from "./types.js";
 

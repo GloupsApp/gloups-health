@@ -1,16 +1,16 @@
 import { deletionReceipt } from "../domain/deletion-job.js";
 import type { DeletionReceipt } from "../domain/deletion-job.js";
 import { GloupsAccount } from "../domain/gloups-account.js";
-import type { AccountUnitOfWork } from "./ports.js";
+import type { DeletionUnitOfWork } from "./ports/deletion-unit-of-work.port.js";
 import { AccessFailureError } from "./types.js";
 import type { VerifiedIdentity } from "./types.js";
 
 export class RequestAccountDeletion {
-  private readonly work: AccountUnitOfWork;
+  private readonly work: DeletionUnitOfWork;
   private readonly nowMs: () => number;
   private readonly nextId: () => string;
   constructor(
-    work: AccountUnitOfWork,
+    work: DeletionUnitOfWork,
     nowMs: () => number,
     nextId: () => string
   ) {
@@ -59,7 +59,7 @@ export class RequestAccountDeletion {
         }
 
         const id = this.nextId();
-        await accounts.markDeleting(account.id, id);
+        await accounts.save(account.beginDeletion(id));
 
         const reservation = await deletions.reserveIdentity(
           actor.authUserId,

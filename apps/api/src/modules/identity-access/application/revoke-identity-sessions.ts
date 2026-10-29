@@ -1,4 +1,4 @@
-import type { IdentitySessions } from "./ports.js";
+import type { IdentitySessions } from "./ports/identity-sessions.port.js";
 
 export class RevokeIdentitySessions {
   private readonly sessions: IdentitySessions;

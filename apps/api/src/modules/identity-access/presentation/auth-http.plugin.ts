@@ -2,12 +2,7 @@ import { fromNodeHeaders } from "better-auth/node";
 import type { FastifyInstance, FastifyReply } from "fastify";
 
 import type { ApiConfig } from "../../../config.js";
-import type { Auth } from "../infrastructure/auth/auth.js";
-import {
-  withIssuedProofLock,
-  runAuthRequest,
-} from "../infrastructure/auth/lifecycle-hooks.js";
-import type { DatabaseResource } from "../infrastructure/persistence/database.js";
+import type { BetterAuthGateway } from "../infrastructure/auth/better-auth.gateway.js";
 import { sendHttpError } from "./http-errors.js";
 
 export const forwardAuthResponse = async (
@@ -52,9 +47,8 @@ export const forwardAuthResponse = async (
 
 export const registerAuthHttp = async (
   instance: FastifyInstance,
-  auth: Auth,
-  config: ApiConfig,
-  database: DatabaseResource
+  gateway: BetterAuthGateway,
+  config: ApiConfig
 ): Promise<void> => {
   await instance.register((scope, _options, done) => {
     scope.removeAllContentTypeParsers();
@@ -93,17 +87,7 @@ export const registerAuthHttp = async (
             init
           );
 
-          const response = await withIssuedProofLock(
-            database.db,
-            database.proofDb,
-            webRequest,
-            auth,
-            () =>
-              runAuthRequest(
-                new URL(`${config.baseURL}${request.url}`).pathname,
-                () => auth.handler(webRequest)
-              )
-          );
+          const response = await gateway.handle(webRequest);
 
           return forwardAuthResponse(response, reply);
         } catch {
