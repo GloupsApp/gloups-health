@@ -27,10 +27,12 @@ import { AppleNotificationsController } from "../presentation/apple-notification
 import { AuthenticationModule } from "./authentication.module.js";
 import { IdentityApplicationModule } from "./identity-application.module.js";
 import { IdentityHttpPoliciesModule } from "./identity-http-policies.module.js";
+import { IdentityPersistenceModule } from "./identity-persistence.module.js";
 
 @Module({
   controllers: [AppleNativeController, AppleNotificationsController],
   imports: [
+    IdentityPersistenceModule,
     ApiConfigurationModule,
     IdentityApplicationModule,
     AuthenticationModule,

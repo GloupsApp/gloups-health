@@ -29,3 +29,5 @@ Records:
 - [28 October authentication execution](2026-10-28-authentication-execution.md).
 
 - [29 October authentication architecture and focused review stack](2026-10-29-authentication-review-stack.md).
+
+- [29 October authentication architecture enforcement and Nest CLI](2026-10-29-authentication-enforcement.md).
