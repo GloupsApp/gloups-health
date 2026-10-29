@@ -18,6 +18,7 @@ import { createDatabaseHooks } from "./auth-database-hooks.js";
 import { createLifecycleHooks } from "./auth-lifecycle-hooks.js";
 import { authSchemaOptions } from "./auth-options.js";
 import { queueAuthEmail } from "./auth-request-scope.js";
+import { createProviderCredentials } from "./provider-credentials.js";
 
 export const AUTH = Symbol("BETTER_AUTH");
 
@@ -42,6 +43,13 @@ export const createAuth = ({
   resolve: ResolveAccount;
 }) => {
   const ledger = new VerificationLedger(db);
+
+  const credentials = createProviderCredentials({
+    config,
+    db,
+    resolve,
+    sensitive,
+  });
 
   return betterAuth({
     ...authSchemaOptions,
@@ -93,7 +101,7 @@ export const createAuth = ({
     hooks: createLifecycleHooks({ config, db, ledger, resolve, sensitive }),
     logger: { disabled: true },
     secret: config.secret,
-    socialProviders: {},
+    socialProviders: credentials.socialProviders,
     trustedOrigins: [
       ...config.trustedOrigins,
       ...(config.apple ? ["https://appleid.apple.com"] : []),

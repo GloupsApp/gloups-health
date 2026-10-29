@@ -2,12 +2,13 @@
 import { Module } from "@nestjs/common";
 
 import { ApiConfigurationModule } from "../../../platform/configuration/api-configuration.module.js";
+import { RequestBudgetGuard } from "../presentation/request-budget.guard.js";
 import { TrustedOriginGuard } from "../presentation/trusted-origin.guard.js";
 import { IdentityApplicationModule } from "./identity-application.module.js";
 
 @Module({
-  exports: [TrustedOriginGuard],
+  exports: [TrustedOriginGuard, RequestBudgetGuard],
   imports: [ApiConfigurationModule, IdentityApplicationModule],
-  providers: [TrustedOriginGuard],
+  providers: [TrustedOriginGuard, RequestBudgetGuard],
 })
 export class IdentityHttpPoliciesModule {}
