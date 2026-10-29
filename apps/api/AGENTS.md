@@ -2,10 +2,9 @@
 
 Read root [AGENTS](../../AGENTS.md), [ARCHITECTURE](../../docs/ARCHITECTURE.md),
 [CONTRACTS](../../docs/CONTRACTS.md), [I18N](../../docs/I18N.md) and the assigned packet.
-This checkpoint provides the AUTH-003 NestJS/Fastify platform and managed
-Drizzle connections. Later review slices add core identity, schema, auth HTTP,
-the sink and worker. See the packet/review map for current available behavior.
-Health domains and production deployment remain unimplemented.
+This directory contains the AUTH-003 NestJS/Fastify authentication service,
+Drizzle migrations and local-only synthetic email sink. Root API tasks exist;
+health domains and production deployment remain unimplemented.
 
 NestJS's official Fastify adapter, Drizzle ORM and DDD with Onion architecture
 are selected under D016. PostgreSQL is selected under D017. AUTH-003 records Node/Postgres/driver pins and the approved local composition;

@@ -9,6 +9,7 @@
     "start": "node --env-file=.env.local dist/main.js",
     "watch": "tsc --project tsconfig.build.json --watch",
     "mail-sink": "node --env-file=.env.local dist/local-only/email-sink.js",
+    "worker": "node --env-file=.env.local dist/deletion-worker.js",
     "auth:generate": "auth generate --config ./src/modules/identity-access/infrastructure/auth/auth-schema.config.ts --adapter drizzle --dialect postgresql --output ./src/modules/identity-access/infrastructure/persistence/auth-schema.ts --yes",
     "db:generate": "drizzle-kit generate --config drizzle.config.ts",
     "db:migrate": "drizzle-kit migrate --config drizzle.config.ts"

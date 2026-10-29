@@ -31,6 +31,7 @@
     "api:start": "bun run --filter @gloups/api start",
     "api:watch": "bun run --filter @gloups/api watch",
     "api:mail-sink": "bun run --filter @gloups/api mail-sink",
+    "api:worker": "bun run --filter @gloups/api worker",
     "api:auth:generate": "bun run --filter @gloups/api auth:generate",
     "api:db:generate": "bun run --filter @gloups/api db:generate",
     "api:db:migrate": "bun run --filter @gloups/api db:migrate",
