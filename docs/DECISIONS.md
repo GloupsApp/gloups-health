@@ -23,6 +23,7 @@ A merged draft document is not approval of all its proposals.
 | D016 | NestJS official Fastify adapter, Drizzle ORM and DDD with Onion architecture                                                                            | Confirmed by owner, 28 October 2026; supersedes AUTH-001's initial Express/direct-pool proposal and the Prisma candidate for new persistence; implementation remains unapproved |
 | D017 | Authentication design at PR #22 approved for planning; PostgreSQL selected with NestJS/Fastify, Drizzle and DDD/Onion                                   | Confirmed by owner, 28 October 2026; AUTH-002 writes the implementation plan; execution assignment and external setup remain separate                                           |
 | D018 | Native authentication execution; owner reviews PRs before merge; no agent merges or auto-merge                                                          | Confirmed by owner, 28 October 2026; AUTH-003 executes the approved plan after the main-assignment gate; supersedes automatic Git integration for this work                     |
+| D019 | No Mobbin prerequisite; API-local dependency-declaration exception; install E2E Army for Expo testing                                                   | Confirmed by owner, 29 October 2026; authored-code strictness/root declaration checking remain; no source-PR merge authorization                                                |
 | P001 | Database hosting/version and detailed modular-service composition                                                                                       | PostgreSQL selected under D017; exact runtime/driver/module bindings are implementation-plan choices, hosting remains separate                                                  |
 | P002 | Adults only; phone strength execution with imported/manual other activities                                                                             | Proposed                                                                                                                                                                        |
 | P003 | Exact locale, temporal, sync and action wire schemas                                                                                                    | Requires domain contract review                                                                                                                                                 |
@@ -114,3 +115,19 @@ AGENT-WORKFLOW remains in effect: owner review/merge precedes source work unless
 the owner explicitly changes that prerequisite. No new design/stack approval is
 needed. No provider setup, deployment, distribution or external messages are
 authorized by this execution choice. No agent-written unit tests or TDD.
+
+## D019: Authentication implementation prerequisites
+
+The owner removes Mobbin as a prerequisite entirely and authorizes installing
+E2E Army for testing the Expo app. Native platform, canonical brand and real
+device acceptance requirements remain. The official TesterArmy `e2e` CLI and
+mobile engine are installed for local testing; this does not authorize paid
+hosted devices, cloud builds or external messages. No unit tests or TDD.
+
+After reviewing the 99 published-declaration errors and a clean diagnostic
+authored-source compile, the owner approves `skipLibCheck: true` only for the API
+with evidence/removal conditions in CODE-STANDARDS. The shared baseline remains
+false and all strict authored-code checks remain enabled. These instructions
+also permit the corresponding E2E configuration/dependencies and policy records
+in AUTH-003. The owner separately authorized merging assignment PR #25; every
+source PR must remain open without auto-merge.

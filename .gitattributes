@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# Collapse generated migration metadata during review. SQL stays visible.
+apps/api/drizzle/meta/*.json linguist-generated=true
+bun.lock linguist-generated=true

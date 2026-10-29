@@ -7,9 +7,13 @@ files when entering their application or package.
 
 ## Current stage and authority
 
-- This repository contains documentation, workspace tooling, a local Blume
-  documentation site and a minimal Expo SDK 58 mobile shell. API and product web
-  folders remain reservations. Product flows and provider connections are absent.
+- This repository contains documentation, Bun/Turborepo tooling, a local Blume
+  site and AUTH-003 NestJS/Fastify/Drizzle/Postgres plus Expo SDK 58 authentication
+  source under review. A review checkpoint contains only its assigned slice;
+  the task packet records the integrated reference. Credential/lifecycle API
+  journeys have local E2E evidence; complete
+  native/provider acceptance remains pending. Health/product web flows and live
+  provider connections remain absent.
 - Worldwide iOS/Android launch, French/English first, nutrition/fitness/sleep/
   optional cycle, explainable daily coaching and full workout recording are
   confirmed. NestJS is the selected backend direction; Expo/React Native is
@@ -82,9 +86,9 @@ this work; the main-assignment prerequisite still applies.
   `bunx ultracite check`. Run `bunx ultracite doctor` when changing the setup.
   Husky runs lint-staged before commits and commitlint on the commit message;
   use Conventional Commits, for example `chore: update workspace tooling`.
-- Before every new UI flow, inspect actual screens through connected Mobbin and
-  record selected flow links with neutral labels in [DESIGN](docs/DESIGN.md).
-  Follow native conventions on each platform. Keep one canonical brand palette.
+- Follow native conventions on each platform and keep one canonical brand
+  palette. The owner removed the Mobbin prerequisite on 29 October 2026 (D019);
+  external reference inspection is not a gate before UI implementation.
 
 ## Verification and delivery
 

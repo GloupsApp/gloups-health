@@ -55,3 +55,6 @@ Thumbs.db
 credentials.json
 google-service-account*.json
 apps/api/data/
+
+# Local E2E Army reports, traces and replay cache
+.e2e/

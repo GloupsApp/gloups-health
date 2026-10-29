@@ -51,6 +51,16 @@ Recheck with `bun run tsc --project apps/mobile/tsconfig.json --skipLibCheck fal
 after a compatible SDK update. The [Expo evidence](verification/2026-10-28-expo-foundation.md)
 records the actual diagnostics and removal condition.
 
+The API has an owner-approved `skipLibCheck: true` exception under AUTH-003
+(29 October 2026). Better Auth core, Better Call, Drizzle ORM and thread-stream
+publish declarations with missing optional types and incompatible members: the
+first API compile reported 99 dependency errors and no authored-source errors.
+All strict authored-code checks remain inherited; the shared baseline stays
+`skipLibCheck: false`. Recheck with
+`bun run --filter @gloups/api typecheck --skipLibCheck false` after compatible
+dependency releases and remove this exception once their declarations pass. See
+the [recorded diagnostic](https://github.com/GloupsApp/gloups-health/blob/ada0ca072384bec24557af2d43cb853165b65fce/docs/verification/2026-10-28-authentication-execution.md#declaration-checking-prerequisite).
+
 ## API architecture
 
 D016 confirms the official NestJS Fastify adapter, Drizzle ORM and DDD with
@@ -68,7 +78,9 @@ Map Drizzle rows and Better Auth sessions into explicit core values rather than
 casting or exporting their external types. A use case owns transaction/retry
 intent; its Drizzle adapter owns the concrete transaction/client. Cross-context
 code consumes approved contracts rather than another context's tables or
-repositories. Review real import direction and wiring alongside E2E acceptance;
+repositories. Review real import direction and wiring alongside E2E acceptance. The root Oxlint
+overrides enforce the domain/application, infrastructure and presentation import
+boundaries from ARCHITECTURE;
 this rule does not authorize scaffolding, a new lint dependency or unit tests.
 
 ## Implementation rules

@@ -147,3 +147,25 @@ Husky staged formatting and Conventional Commit hooks passed. The PR contains
 documentation only. Source remains unstarted pending the owner-merged assignment
 or an explicit owner change to the main-assignment prerequisite. Native execution
 and the approved stack are already settled.
+
+## Owner-requested review decomposition
+
+On 29 October the owner requested stronger use of NestJS and proper DDD/Onion
+boundaries for the first module, and smaller concern-focused PRs replacing the
+review surface of PR #26. The existing coordinator and merged AUTH-003 assignment
+continue; approved behavior, official-only integrations, no unit tests/TDD and
+no source PR merges/auto-merge are unchanged.
+
+The coordinator serializes `codex/auth-003-review-*` checkpoints in the same
+015e worktree. Private source is preserved on `codex/auth-003-nest-boundaries`;
+no force push or source-history discard is authorized. Allowed coordinator paths
+include API platform/composition and the documented feature layers, root review/
+lint/manifest metadata, the assigned API/mobile source, focused E2E suites and
+current-state documentation. No additional product or provider work is inferred.
+
+The [execution amendment](../plans/2026-10-29-authentication-review-decomposition.md)
+records dependencies and review order. The
+[verified integration reference](../verification/2026-10-29-authentication-review-stack.md)
+records source checks separately from each checkpoint's local evidence. This
+first checkpoint contains architecture/policy only; source arrives in subsequent
+PRs. Every PR stays open for owner review; the final PR map will be recorded here.
