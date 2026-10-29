@@ -33,7 +33,6 @@ export interface ClaimedDeletionJob {
 }
 
 export interface DeletionRepository {
-  lockActor: (authUserId: string) => Promise<void>;
   findByKey: (accountId: string, key: string) => Promise<DeletionJob | null>;
   findForActorKey: (
     authUserId: string,

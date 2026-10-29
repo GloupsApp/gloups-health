@@ -36,6 +36,13 @@
       "when": 1793230318751,
       "tag": "0004_identity_write_guards",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793239061714,
+      "tag": "0005_nervous_chimera",
+      "breakpoints": true
     }
   ]
 }

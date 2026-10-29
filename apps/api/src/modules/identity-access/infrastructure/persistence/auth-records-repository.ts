@@ -11,45 +11,48 @@ import { gloupsAccount } from "./account-schema.js";
 import { appleChallenge } from "./apple-challenges.js";
 import { user, verification } from "./auth-schema.js";
 import type { Database } from "./database.js";
+import { withIdentityProofLock } from "./identity-proof-lock.js";
 import {
   oauthLinkAttempt,
   providerCredential,
 } from "./provider-credentials-schema.js";
 
-export const createIdentityRemoval = (db: Database): IdentityRemoval => ({
+export const createIdentityRemoval = (
+  db: Database,
+  proofDb: Database
+): IdentityRemoval => ({
   async erase(authUserId: string): Promise<void> {
-    await db.transaction(async (transaction) => {
-      await transaction.execute(
-        sql`select pg_advisory_xact_lock(hashtextextended(${`proof:${authUserId}`}, 0))`
-      );
+    await withIdentityProofLock(proofDb, authUserId, () =>
+      db.transaction(async (transaction) => {
+        const attempts = await transaction
+          .select({ id: oauthLinkAttempt.id })
+          .from(oauthLinkAttempt)
+          .where(eq(oauthLinkAttempt.authUserId, authUserId));
 
-      const attempts = await transaction
-        .select({ id: oauthLinkAttempt.id })
-        .from(oauthLinkAttempt)
-        .where(eq(oauthLinkAttempt.authUserId, authUserId));
-
-      await transaction
-        .delete(verification)
-        .where(
-          or(
-            eq(verification.value, authUserId),
-            ...attempts.map(
-              (attempt) => sql`${verification.value} like ${`%${attempt.id}%`}`
+        await transaction
+          .delete(verification)
+          .where(
+            or(
+              eq(verification.value, authUserId),
+              ...attempts.map(
+                (attempt) =>
+                  sql`${verification.value} like ${`%${attempt.id}%`}`
+              )
             )
-          )
-        );
-      await transaction
-        .delete(appleChallenge)
-        .where(eq(appleChallenge.actorAuthUserId, authUserId));
-      await transaction
-        .delete(oauthLinkAttempt)
-        .where(eq(oauthLinkAttempt.authUserId, authUserId));
-      await transaction
-        .delete(gloupsAccount)
-        .where(eq(gloupsAccount.authUserId, authUserId));
-      // Generated schema FKs erase accounts, sessions and issuing-user ledgers.
-      await transaction.delete(user).where(eq(user.id, authUserId));
-    });
+          );
+        await transaction
+          .delete(appleChallenge)
+          .where(eq(appleChallenge.actorAuthUserId, authUserId));
+        await transaction
+          .delete(oauthLinkAttempt)
+          .where(eq(oauthLinkAttempt.authUserId, authUserId));
+        await transaction
+          .delete(gloupsAccount)
+          .where(eq(gloupsAccount.authUserId, authUserId));
+        // Generated schema FKs erase accounts, sessions and issuing-user ledgers.
+        await transaction.delete(user).where(eq(user.id, authUserId));
+      })
+    );
   },
 });
 

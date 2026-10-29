@@ -57,12 +57,14 @@ export const CallbackScreen = () => {
   return (
     <Panel testID="callback-screen">
       <Stack.Screen options={{ title: strings.signIn }} />
-      {pending || flow || cookie || incomingError ? (
-        <Loading />
-      ) : (
+      {pending || flow || cookie || incomingError ? <Loading /> : null}
+      {pending || flow || cookie || incomingError || error ? null : (
         <Copy>{strings.invalidLink}</Copy>
       )}
       <Failure code={error} />
+      {error === "invalid-link" ? (
+        <TextLink href="/verify-email">{strings.resend}</TextLink>
+      ) : null}
       <TextLink href="/sign-in">{strings.backToSignIn}</TextLink>
     </Panel>
   );

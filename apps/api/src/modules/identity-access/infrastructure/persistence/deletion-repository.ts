@@ -57,11 +57,6 @@ export class DrizzleDeletionRepository implements DeletionRepository {
     this.db = db;
     this.config = config;
   }
-  async lockActor(authUserId: string): Promise<void> {
-    await this.db.execute(
-      sql`select pg_advisory_xact_lock(hashtextextended(${`proof:${authUserId}`}, 0))`
-    );
-  }
   async findByKey(accountId: string, key: string): Promise<DeletionJob | null> {
     const [row] = await this.db
       .select()

@@ -292,3 +292,97 @@ handoff. They do not mark missing acceptance complete.
 - Commit Tasks5/6 source as an integrated checkpoint — generation/storage, social and account lifecycle screens share one client/controller contract — the larger review diff is the cost; native/provider acceptance remains incomplete and no task is marked complete.
 
 - Correct authentication current-state paragraphs in the coordinator-owned root README/ROADMAP/AGENTS and VERIFICATION/CONTRACTS guides — leaving empty-shell/API-reservation and pending-design-approval claims would contradict this implementation — expands documentation review scope only, without changing product authority or accepting a shared health contract.
+
+### Final review decisions and costs
+
+- Acquire every identity proof admission on the separate proof pool before opening the main transaction — deletion waiters must leave connections available to SDK proof holders and unrelated accounts — the two-connection admission queue still requires bounded-load and contention checks.
+- Preserve commands authenticated before concurrent session revocation — the accepted contract allows those already authorized deletion commands to finish and share their receipt — a narrowly concurrent authenticated command can finish after revocation; later requests still fail authentication.
+- Apply the existing synthetic 24-hour orphan bound only after attempting to bind a valid active owner — failed orphan revocation persists attempts/backoff, tagged sessions are removed, and expired unowned material is purged with the initial manual-removal guidance — unrecoverable Apple authorization can require manual removal; no production retention policy is approved.
+- Return expired/replayed verification errors only to an independently trusted approved callback, with a fixed error and all incoming query data removed — emailed native links need a recoverable localized screen while tokens/cookies and untrusted origins must never become identity — native screen acceptance remains pending the host unlock.
+- Live Google/Apple success, signed notifications and actual Apple revocation remain unaccepted — the reviewer had no configured credentials or authorized HTTPS callback evidence — shipping before those gates would expose unproven provider paths.
+- Full regular iPhone/Duo/Android, accessibility and delayed-storage acceptance remains open — locked-host launch failures and compilation are not device evidence — source review cannot establish native runtime usability.
+- Physical iPhone Apple credential-state acceptance remains required — no assigned physical-device evidence exists — client revocation observations remain unverified on actual hardware.
+- Live sender and production retention/audit/backup are release prerequisites — only explicit local synthetic policy exists; the orphan retry defect is fixed within that policy — live release remains blocked until owner decisions and real sender evidence.
+- Do not deploy, distribute, register providers or migrate source data — those actions are outside AUTH-003 authorization — acceptance still needs an authorized live environment.
+- Keep health domains, operator tooling and alternate sign-in methods outside this packet — no approved implementation scope covers them — these product capabilities remain absent.
+- Honor the owner Mobbin waiver and API-only declaration exception — the reviewer correctly treated these as approved exceptions; authored code and root strict checks remain — upstream dependency declarations are not fully checked in the API project.
+- Retain cold OAuth restart and query-cookie non-authority — only an owned official browser exchange can import credentials; a cold callback revalidates stored proof — process death can require repeating social sign-in.
+
+## Whole-branch review and fix pass
+
+Source checkpoints published to draft [PR #26](https://github.com/GloupsApp/gloups-health/pull/26):
+`f698a8d5b4a6dcfcebbcad0488def163b118a4f3`,
+`aa1e4e0cc90d9118652177785dbb9f5d7b4d0f36`,
+`1d5b6d055bef3ec9046e242a204b4f2c429fd250`.
+One fresh independent reviewer assessed `fbe808e..1d5b6d0`, the approved plan/spec,
+implementation and acceptance gaps. Four Important findings were accepted in one
+coordinated fix pass; no Critical or Minor findings were raised. No second review
+was dispatched. Repository no-unit-test/no-TDD instructions take precedence over
+the skill's red/green examples.
+
+1. Native callbacks: the installed Expo SDK emits the triple-slash custom-scheme
+   form. Correct route normalization accepts it while independently checking the
+   official trusted-origin policy, exact routes and URL credentials/fragments.
+2. Proof admission: deletion and worker identity removal acquire the same
+   separate-pool advisory lock before opening a main-pool transaction. The five
+   second lock wait is bounded. Already authenticated commands retain the agreed
+   concurrent-revocation policy.
+3. Orphan credentials: reviewed/generated migration 0005 adds retry attempts.
+   Failed revocation commits tagged-session removal with exponential backoff;
+   active owners bind before the synthetic 24-hour unowned-material fallback.
+   Ordinary expiry cleanup runs independently of job/reconciliation failure.
+4. Verification recovery: expired, replayed and old-user proofs redirect only to
+   independently trusted approved callbacks with a fixed error/flow and all
+   incoming query data removed. No callback retains JSON 400. The mobile callback
+   offers the localized resend route; native rendering remains unaccepted.
+
+Army run `01a18562-bd71-7301-92e4-afe51ee347b9`,
+`GLOUPS_AUTH003_FAULTS=1 bunx e2e run --target api`: **29/29 passed in 21.12s**
+after successful uncached API compilation and restart. The sixteen-deletion/reset
+case proves unrelated-account progress while exceeding the main-pool capacity.
+The orphan case proves durable retry/expiry and independent routine cleanup,
+using deliberately unusable synthetic material; it does not prove live Apple
+HTTP 5xx or revocation. Exact cases/limits are in the
+[API record](../../e2e/api/authentication.md).
+
+The first focused run passed 4/5 and found a test expectation mismatch: the
+SDK rejects untrusted POST callbacks with 403 before the application hook. The
+corrected native-URL case passed 1/1, followed by the full 29/29 suite. These are
+real post-implementation E2E checks, not a claimed red/green sequence. All four
+source findings have focused HTTP/Postgres evidence; full native/provider,
+physical-device, sender and release-policy acceptance remains open.
+
+### Final local checks and resource handoff
+
+The review source passed uncached API build/typecheck in 2.75s, root tooling and
+API/mobile compiler checks, then the 29-case suite above. The root build passed
+6/6 with 4 cache hits in 7.338s; iOS/Android exports executed for the callback UI.
+The final unchanged-source root build passed 6/6 with 6 cache hits (root TypeScript
+still executed). Cached tasks are not additional runtime evidence. Ultracite
+fix/check passed 207 files; doctor 8/8, zero warnings/failures. Graph dry-run
+contains the six API/docs/mobile build/typecheck tasks; Changesets still reports
+only the existing docs patch. Frozen install and SDK dependency checks from the
+integrated checkpoint remain valid: this fix pass adds no dependencies.
+
+Actual diff verification checked 21 changed Markdown files, 141 local links and 5
+anchors; domain/application imports stay inward. No generated native output,
+private environment/state, unit tests or new workflow entered the branch.
+The owner Mobbin/declaration exceptions remain scoped as recorded above.
+
+After capturing evidence, the coordinator stopped only cwd-verified AUTH-003
+listeners 4340/API,4341/sink, 4342/fault relay and 8085/Metro. The owned driver daemon
+was identified by its plan-local stdout log and stopped. Both owned iOS simulators
+are Shutdown; the owned Android emulator had already stopped. PostgreSQL's owned
+Compose container exited 0; its volume `gloups-auth-auth003_postgres` is preserved.
+A subsequent port inventory found no listener on 4340/4341/4342/8085/25440.
+Ignored mode 0600 environments, reports, local debug builds, simulator data and
+worktree are preserved. OrbStack and unrelated devices/processes remain untouched.
+
+Resume with the documented local Compose/API/sink commands and the owned native
+launcher on port 8085; the optional fault relay additionally needs its private
+ignored configuration. The Mac must be manually unlocked before native UI work.
+Provider configuration locations/HTTPS callbacks and an assigned physical iPhone
+remain requested. No deployment/distribution/provider registration occurred.
+PR #26 remains draft/open; its mergeability is MERGEABLE and autoMergeRequest is
+null. Only PR #25 was authorized and merged. No Task 0–7 completion or release
+readiness is claimed.

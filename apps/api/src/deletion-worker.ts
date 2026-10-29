@@ -1,32 +1,31 @@
 import { setTimeout } from "node:timers/promises";
 
-import { and, eq, isNotNull, lt, or } from "drizzle-orm";
+import { and, isNotNull, lt } from "drizzle-orm";
 
 import { readConfig } from "./config.js";
 import { ProcessAccountDeletion } from "./modules/identity-access/application/process-account-deletion.js";
-import { gloupsAccount } from "./modules/identity-access/infrastructure/persistence/account-schema.js";
 import { appleChallenge } from "./modules/identity-access/infrastructure/persistence/apple-challenges.js";
 import {
   createAppleRevocation,
   createIdentityRemoval,
 } from "./modules/identity-access/infrastructure/persistence/auth-records-repository.js";
-import {
-  account,
-  session,
-  verification,
-} from "./modules/identity-access/infrastructure/persistence/auth-schema.js";
+import { verification } from "./modules/identity-access/infrastructure/persistence/auth-schema.js";
 import { createDatabase } from "./modules/identity-access/infrastructure/persistence/database.js";
 import { DrizzleDeletionRepository } from "./modules/identity-access/infrastructure/persistence/deletion-repository.js";
 import {
   deletionJob,
   identityTombstone,
 } from "./modules/identity-access/infrastructure/persistence/deletion-schema.js";
+import { reconcileOrphanCredential } from "./modules/identity-access/infrastructure/persistence/orphan-credentials.js";
 import {
   appleNotification,
   oauthLinkAttempt,
-  providerCredential,
 } from "./modules/identity-access/infrastructure/persistence/provider-credentials-schema.js";
 import { issuedVerification } from "./modules/identity-access/infrastructure/persistence/verification-ledger.js";
+
+const reportRetry = () => {
+  process.stderr.write("Authentication worker retry pending.\n");
+};
 
 const main = async () => {
   const config = readConfig();
@@ -49,79 +48,26 @@ const main = async () => {
 
   const processor = new ProcessAccountDeletion(
     jobs,
-    createIdentityRemoval(resource.db),
+    createIdentityRemoval(resource.db, resource.proofDb),
     apple,
     Date.now
   );
 
   const once = process.argv.includes("--once");
 
-  const tick = async () => {
+  const processNext = async () => {
     const claim = await jobs.claim(Date.now());
 
     if (claim) {
       await processor.execute(claim);
     }
+  };
 
-    await resource.db.transaction(async (transaction) => {
-      const [intent] = await transaction
-        .select()
-        .from(providerCredential)
-        .where(
-          and(
-            or(
-              eq(providerCredential.phase, "prepared"),
-              eq(providerCredential.phase, "reconcile")
-            ),
-            lt(providerCredential.retryAt, new Date())
-          )
-        )
-        .for("update", { skipLocked: true })
-        .limit(1);
-
-      if (!intent) {
-        return;
-      }
-
-      await transaction
-        .delete(session)
-        .where(eq(session.nativeSetupId, intent.id));
-
-      const [owner] = await transaction
-        .select({
-          deletionId: gloupsAccount.deletionId,
-          userId: account.userId,
-        })
-        .from(account)
-        .leftJoin(gloupsAccount, eq(gloupsAccount.authUserId, account.userId))
-        .where(
-          and(
-            eq(account.providerId, "apple"),
-            eq(account.accountId, intent.appleSubject)
-          )
-        )
-        .limit(1);
-
-      if (
-        owner &&
-        !owner.deletionId &&
-        (!intent.expectedActorId || intent.expectedActorId === owner.userId)
-      ) {
-        await transaction
-          .update(providerCredential)
-          .set({
-            authUserId: owner.userId,
-            expectedActorId: null,
-            phase: "bound",
-          })
-          .where(eq(providerCredential.id, intent.id));
-      } else {
-        await apple.revoke(intent.id);
-        await transaction
-          .delete(providerCredential)
-          .where(eq(providerCredential.id, intent.id));
-      }
-    });
+  const tick = async () => {
+    await processNext().catch(reportRetry);
+    await reconcileOrphanCredential(resource.db, apple, new Date()).catch(
+      reportRetry
+    );
     const now = new Date();
     await resource.db.transaction(async (transaction) => {
       await transaction

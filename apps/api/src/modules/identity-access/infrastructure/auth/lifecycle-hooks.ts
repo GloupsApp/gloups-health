@@ -7,7 +7,7 @@ import {
   createAuthMiddleware,
   getSessionFromCtx,
 } from "better-auth/api";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { jwtVerify } from "jose";
 import { z } from "zod";
 
@@ -18,6 +18,7 @@ import { AccessFailureError } from "../../application/types.js";
 import { gloupsAccount } from "../persistence/account-schema.js";
 import { user, verification } from "../persistence/auth-schema.js";
 import type { Database } from "../persistence/database.js";
+import { withIdentityProofLock } from "../persistence/identity-proof-lock.js";
 import { oauthLinkAttempt } from "../persistence/provider-credentials-schema.js";
 import { VerificationLedger } from "../persistence/verification-ledger.js";
 import { nativeAppleProof } from "./apple-proof-context.js";
@@ -60,13 +61,24 @@ const returnURLsSchema = z.object({
   redirectTo: z.string().optional(),
 });
 
+const emailVerificationQuerySchema = returnURLsSchema.extend({
+  token: z.string().max(4096).optional(),
+});
+
+type EmailVerificationQuery = z.infer<typeof emailVerificationQuerySchema>;
+
 const approvedReturn = (value: string, config: ApiConfig): boolean => {
   try {
     const url = new URL(value, config.baseURL);
+
+    if (url.username || url.password || url.hash) {
+      return false;
+    }
+
     let route = url.pathname.replace(/^\/--/u, "");
 
     if (url.protocol === "gloups-health:") {
-      route = `/${url.hostname}${url.pathname}`;
+      route = url.hostname ? `/${url.hostname}${url.pathname}` : url.pathname;
     }
 
     return ["/auth/callback", "/reset-password"].includes(route);
@@ -77,7 +89,8 @@ const approvedReturn = (value: string, config: ApiConfig): boolean => {
 
 const checkReturnURLs = (
   body: z.input<typeof returnURLsSchema> | undefined,
-  config: ApiConfig
+  config: ApiConfig,
+  trusted: (value: string) => boolean
 ): void => {
   const parsed = returnURLsSchema.safeParse(body);
 
@@ -86,7 +99,7 @@ const checkReturnURLs = (
   }
 
   for (const value of Object.values(parsed.data)) {
-    if (value && !approvedReturn(value, config)) {
+    if (value && (!approvedReturn(value, config) || !trusted(value))) {
       throw new APIError("BAD_REQUEST", {
         code: "INVALID_CALLBACK_URL",
         message: "Invalid return route.",
@@ -153,6 +166,73 @@ const captureAuthLanguage = async (
   }
 };
 
+const verifyEmailIssuer = async (
+  db: Database,
+  ledger: VerificationLedger,
+  config: ApiConfig,
+  queryInput: EmailVerificationQuery | null,
+  trusted: (value: string) => boolean
+): Promise<string | null> => {
+  try {
+    const query = verificationQuerySchema.safeParse(queryInput);
+
+    if (!query.success) {
+      throw new APIError("BAD_REQUEST", {
+        code: "INVALID_TOKEN",
+        message: "Invalid verification link.",
+      });
+    }
+
+    const { token } = query.data;
+    const payload = await verifyIssuedToken(token, config.secret);
+
+    const [issuer] = await db
+      .select({ email: user.email })
+      .from(user)
+      .where(eq(user.id, payload.gloupsUserId))
+      .limit(1);
+
+    if (
+      !issuer ||
+      issuer.email.toLowerCase() !== payload.email ||
+      !(await ledger.consume(token, payload.gloupsUserId))
+    ) {
+      throw new APIError("BAD_REQUEST", {
+        code: "INVALID_TOKEN",
+        message: "Invalid or expired verification link.",
+      });
+    }
+  } catch (error) {
+    if (error instanceof APIError) {
+      const query = returnURLsSchema.safeParse(queryInput);
+      const callback = query.success ? query.data.callbackURL : undefined;
+
+      if (
+        error.body?.code === "INVALID_TOKEN" &&
+        callback &&
+        approvedReturn(callback, config) &&
+        trusted(callback)
+      ) {
+        const destination = new URL(callback, config.baseURL);
+        destination.search = "";
+        destination.searchParams.set("flow", "verification");
+        destination.searchParams.set("error", "INVALID_TOKEN");
+
+        return destination.toString();
+      }
+
+      throw error;
+    }
+
+    throw new APIError("SERVICE_UNAVAILABLE", {
+      code: "VERIFICATION_UNAVAILABLE",
+      message: "Verification unavailable. Please retry.",
+    });
+  }
+
+  return null;
+};
+
 export const createLifecycleHooks = ({
   db,
   config,
@@ -167,8 +247,11 @@ export const createLifecycleHooks = ({
   resolve: ResolveAccount;
 }) => ({
   before: createAuthMiddleware(async (context) => {
-    checkReturnURLs(context.body, config);
-    checkReturnURLs(context.query, config);
+    const trusted = (value: string) =>
+      context.context.isTrustedOrigin(value, { allowRelativePaths: true });
+
+    checkReturnURLs(context.body, config, trusted);
+    checkReturnURLs(context.query, config, trusted);
 
     await captureAuthLanguage(context.path, context.headers);
 
@@ -197,44 +280,18 @@ export const createLifecycleHooks = ({
     }
 
     if (context.path === "/verify-email") {
-      const query = verificationQuerySchema.safeParse(context.query);
+      const query = emailVerificationQuerySchema.safeParse(context.query);
 
-      if (!query.success) {
-        throw new APIError("BAD_REQUEST", {
-          code: "INVALID_TOKEN",
-          message: "Invalid verification link.",
-        });
-      }
+      const redirect = await verifyEmailIssuer(
+        db,
+        ledger,
+        config,
+        query.success ? query.data : null,
+        trusted
+      );
 
-      const { token } = query.data;
-      const payload = await verifyIssuedToken(token, config.secret);
-
-      try {
-        const [issuer] = await db
-          .select({ email: user.email })
-          .from(user)
-          .where(eq(user.id, payload.gloupsUserId))
-          .limit(1);
-
-        if (
-          !issuer ||
-          issuer.email.toLowerCase() !== payload.email ||
-          !(await ledger.consume(token, payload.gloupsUserId))
-        ) {
-          throw new APIError("BAD_REQUEST", {
-            code: "INVALID_TOKEN",
-            message: "Invalid or expired verification link.",
-          });
-        }
-      } catch (error) {
-        if (error instanceof APIError) {
-          throw error;
-        }
-
-        throw new APIError("SERVICE_UNAVAILABLE", {
-          code: "VERIFICATION_UNAVAILABLE",
-          message: "Verification unavailable. Please retry.",
-        });
+      if (redirect) {
+        throw context.redirect(redirect);
       }
     }
 
@@ -488,12 +545,5 @@ export const withIssuedProofLock = async (
     return work();
   }
 
-  // A separate two-connection pool holds proof locks while the SDK uses its own transaction.
-  return proofDb.transaction(async (transaction) => {
-    await transaction.execute(
-      sql`select pg_advisory_xact_lock(hashtextextended(${`proof:${issuer}`}, 0))`
-    );
-
-    return work();
-  });
+  return withIdentityProofLock(proofDb, issuer, work);
 };

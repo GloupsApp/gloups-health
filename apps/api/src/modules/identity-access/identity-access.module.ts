@@ -73,7 +73,7 @@ export class IdentityAccessModule {
           inject: [DATABASE],
           provide: ACCOUNT_UNIT_OF_WORK,
           useFactory: (resource: DatabaseResource) =>
-            new DrizzleAccountUnitOfWork(resource.db, config),
+            new DrizzleAccountUnitOfWork(resource.db, resource.proofDb, config),
         },
         {
           inject: [ACCOUNT_UNIT_OF_WORK],

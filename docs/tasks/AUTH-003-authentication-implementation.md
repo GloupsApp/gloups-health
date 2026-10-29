@@ -223,3 +223,15 @@ root `README.md`, `ROADMAP.md`, `AGENTS.md`, `docs/VERIFICATION.md` and
 `docs/CONTRACTS.md`. These replace the obsolete empty-shell/API-reservation notes
 with the implemented source and incomplete acceptance state; they do not approve
 another domain, public availability or a new shared package.
+
+### Review fix checkpoint
+
+One fresh whole-branch review raised four Important findings; the coordinator
+fixed native callback normalization, proof-lock admission order, orphan retry/
+expiry cleanup and invalid verification recovery in one pass. Army run
+`01a18562-bd71-7301-92e4-afe51ee347b9` passed 29/29 actual HTTP/Postgres cases
+in 21.12s. Generated migration 0005 was reviewed/applied to the isolated database.
+The [execution record](../verification/2026-10-28-authentication-execution.md)
+contains all review decisions, costs and remaining acceptance. No complete task,
+native/provider acceptance or release readiness is claimed; PR26 stays draft,
+open and unmerged for owner review.

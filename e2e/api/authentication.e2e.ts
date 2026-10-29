@@ -119,11 +119,20 @@ const post = (
     headers,
     method: "POST",
     redirect: "manual",
+    signal: AbortSignal.timeout(15_000),
   });
 };
 
+const rejectedVerification = (response: Response): void => {
+  expect(response.status).toBe(302);
+  expect(response.headers.get("location")).toBe(
+    "gloups-health:///auth/callback?flow=verification&error=INVALID_TOKEN"
+  );
+  expect(response.headers.getSetCookie().length).toBe(0);
+};
+
 const identity = (language: "en" | "fr" = "en", name = "") => ({
-  callbackURL: "gloups-health://auth/callback",
+  callbackURL: "gloups-health:///auth/callback?flow=verification",
   email: `auth003-${randomUUID()}@example.test`,
   name,
   password: randomBytes(24).toString("base64url"),
@@ -368,9 +377,7 @@ test(
     expect(await responseStatus(fetch(link.url, { redirect: "manual" }))).toBe(
       302
     );
-    expect(await responseStatus(fetch(link.url, { redirect: "manual" }))).toBe(
-      400
-    );
+    rejectedVerification(await fetch(link.url, { redirect: "manual" }));
   }
 );
 
@@ -414,7 +421,7 @@ test(
       "/api/auth/request-password-reset",
       JSON.stringify({
         email: `auth003-${randomUUID()}@example.test`,
-        redirectTo: "gloups-health://auth/callback",
+        redirectTo: "gloups-health:///reset-password",
       })
     );
 
@@ -422,7 +429,7 @@ test(
       "/api/auth/request-password-reset",
       JSON.stringify({
         email: current.user.email,
-        redirectTo: "gloups-health://auth/callback",
+        redirectTo: "gloups-health:///reset-password",
       })
     );
 
@@ -494,9 +501,7 @@ test(
     sql(
       "update issued_verification set expires_at = now() - interval '1 second'"
     );
-    expect(await responseStatus(fetch(link.url, { redirect: "manual" }))).toBe(
-      400
-    );
+    rejectedVerification(await fetch(link.url, { redirect: "manual" }));
     expect(
       await responseStatus(
         post(
@@ -704,7 +709,7 @@ test(
       "/api/auth/request-password-reset",
       JSON.stringify({
         email: current.user.email,
-        redirectTo: "gloups-health://auth/callback",
+        redirectTo: "gloups-health:///reset-password",
       })
     );
     const reset = await deliveredLink(current.user.email, "reset-password");
@@ -809,9 +814,7 @@ test(
     );
 
     expect(next.account.id !== account.account.id).toBe(true);
-    expect(
-      await responseStatus(fetch(current.link.url, { redirect: "manual" }))
-    ).toBe(400);
+    rejectedVerification(await fetch(current.link.url, { redirect: "manual" }));
     expect(
       await responseStatus(
         post(
@@ -1225,6 +1228,10 @@ test(
     );
 
     expect(rejected.status).toBe(400);
+    const emailedExpired = new URL(`${origin}/api/auth/verify-email`);
+    emailedExpired.searchParams.set("token", expired);
+    emailedExpired.searchParams.set("callbackURL", user.callbackURL);
+    rejectedVerification(await fetch(emailedExpired, { redirect: "manual" }));
     expect(
       sql(`select count(*) from issued_verification where token_hash='${hash}'`)
     ).toBe("1");
@@ -1238,9 +1245,20 @@ test(
       fetch(link.url, { redirect: "manual" }),
     ]);
 
-    expect(responses.map((response) => response.status).toSorted()).toEqual([
-      302, 400,
-    ]);
+    expect(responses.map((response) => response.status)).toEqual([302, 302]);
+
+    const failedVerification = responses.filter((response) =>
+      new URL(response.headers.get("location") ?? "").searchParams.has("error")
+    );
+
+    expect(failedVerification.length).toBe(1);
+    const [failure] = failedVerification;
+
+    if (!failure) {
+      throw new Error("Expected one rejected verification response.");
+    }
+
+    rejectedVerification(failure);
     expect(
       sql(`select email_verified from "user" where id='${authUserId}'`)
     ).toBe("t");
@@ -1267,7 +1285,7 @@ test(
       "/api/auth/request-password-reset",
       JSON.stringify({
         email: first.user.email,
-        redirectTo: "gloups-health://reset-password",
+        redirectTo: "gloups-health:///reset-password",
       })
     );
 
@@ -1346,5 +1364,263 @@ test(
 
     expect(denied.status).toBe(401);
     expect(denied.headers.get("cache-control")).toBe("no-store");
+  }
+);
+
+test(
+  "MAIL-03: Expo native return URLs are accepted and invalid verification redirects remain trusted and proof-free",
+  { platforms: ["api"] },
+  async () => {
+    const user = identity("fr");
+
+    const badSignup = await post(
+      "/api/auth/sign-up/email",
+      JSON.stringify({
+        ...user,
+        callbackURL: "https://untrusted.test/auth/callback",
+      })
+    );
+
+    expect(badSignup.status).toBe(403);
+    expect(badSignup.headers.get("location")).toBe(null);
+    expect(sql(`select count(*) from "user" where email='${user.email}'`)).toBe(
+      "0"
+    );
+    expect(
+      await responseStatus(
+        post("/api/auth/sign-up/email", JSON.stringify(user))
+      )
+    ).toBe(200);
+    const first = await deliveredLink(user.email, "verify-email");
+    const untrusted = new URL(first.url);
+    untrusted.searchParams.set(
+      "callbackURL",
+      "https://untrusted.test/auth/callback"
+    );
+    const rejected = await fetch(untrusted, { redirect: "manual" });
+    expect(rejected.status).toBe(400);
+    expect(rejected.headers.get("location")).toBe(null);
+    expect(
+      sql(`select email_verified from "user" where email='${user.email}'`)
+    ).toBe("f");
+    const success = await fetch(first.url, { redirect: "manual" });
+    expect(success.status).toBe(302);
+    expect(success.headers.get("location")).toBe(user.callbackURL);
+    untrusted.searchParams.set(
+      "callbackURL",
+      "gloups-health:///auth/callback?cookie=untrusted&token=untrusted"
+    );
+    rejectedVerification(await fetch(untrusted, { redirect: "manual" }));
+
+    await fetch(`${sink}/messages`, { headers: sinkHeaders, method: "DELETE" });
+    const pending = identity();
+    expect(
+      await responseStatus(
+        post("/api/auth/sign-up/email", JSON.stringify(pending))
+      )
+    ).toBe(200);
+    await fetch(`${sink}/messages`, { headers: sinkHeaders, method: "DELETE" });
+    expect(
+      await responseStatus(
+        post(
+          "/api/auth/send-verification-email",
+          JSON.stringify({
+            callbackURL: pending.callbackURL,
+            email: pending.email,
+          })
+        )
+      )
+    ).toBe(200);
+    const resent = await deliveredLink(pending.email, "verify-email");
+    expect(
+      await responseStatus(fetch(resent.url, { redirect: "manual" }))
+    ).toBe(302);
+
+    for (const provider of ["google", "apple"]) {
+      // These local providers are disabled. This proves URL validation, not OAuth success.
+      // oxlint-disable-next-line no-await-in-loop
+      const social = await post(
+        "/api/auth/sign-in/social",
+        JSON.stringify({ callbackURL: pending.callbackURL, provider })
+      );
+
+      expect(social.status >= 400).toBe(true);
+      // oxlint-disable-next-line no-await-in-loop
+      const body = z.object({ code: z.string() }).parse(await social.json());
+      expect(body.code === "INVALID_CALLBACK_URL").toBe(false);
+    }
+  }
+);
+
+test(
+  "DEL-01/MAIL-04: reset and sixteen deletion admissions preserve unrelated account progress beyond the main pool capacity",
+  { platforms: ["api"], timeout: 30_000 },
+  async () => {
+    const current = await verifiedIdentity();
+    const other = await verifiedIdentity();
+
+    const userId = sql(
+      `select id from "user" where email='${current.user.email}'`
+    );
+
+    expect(
+      await responseStatus(
+        post(
+          "/api/auth/request-password-reset",
+          JSON.stringify({
+            email: current.user.email,
+            redirectTo: "gloups-health:///reset-password",
+          })
+        )
+      )
+    ).toBe(200);
+    const delivered = await deliveredLink(current.user.email, "reset-password");
+    const redirected = await fetch(delivered.url, { redirect: "manual" });
+
+    const token = new URL(
+      redirected.headers.get("location") ?? ""
+    ).searchParams.get("token");
+
+    expect(Boolean(token)).toBe(true);
+    sql(
+      `create function auth003_pause_reset() returns trigger language plpgsql as $$ begin if new.user_id='${userId}' and new.provider_id='credential' and new.password is distinct from old.password then perform pg_sleep(3); end if; return new; end $$; create trigger auth003_pause_reset before update on account for each row execute function auth003_pause_reset();`
+    );
+    const commands: Promise<Response>[] = [];
+
+    try {
+      const resetting = post(
+        "/api/auth/reset-password",
+        JSON.stringify({
+          newPassword: randomBytes(24).toString("base64url"),
+          token,
+        })
+      );
+
+      commands.push(resetting);
+      await expect
+        .poll(
+          () =>
+            sql(
+              "select count(*) from pg_stat_activity where application_name='gloups-auth003-main' and wait_event='PgSleep'"
+            ),
+          { timeout: 5000 }
+        )
+        .toBe("1");
+      const key = randomUUID();
+
+      const deleting = Array.from({ length: 16 }, () =>
+        fetch(`${origin}/api/account`, {
+          body: JSON.stringify({ confirm: true }),
+          headers: {
+            "content-type": "application/json",
+            cookie: current.cookie,
+            "idempotency-key": key,
+            origin,
+          },
+          method: "DELETE",
+          signal: AbortSignal.timeout(15_000),
+        })
+      );
+
+      commands.push(...deleting);
+      await expect
+        .poll(
+          () =>
+            sql(
+              "select count(*) from pg_stat_activity where application_name='gloups-auth003-proof' and wait_event_type='Lock'"
+            ),
+          { timeout: 2000 }
+        )
+        .toBe("1");
+
+      const progress = await fetch(`${origin}/api/me`, {
+        headers: { cookie: other.cookie },
+        signal: AbortSignal.timeout(1500),
+      });
+
+      expect(progress.status).toBe(200);
+      expect(
+        sql(
+          "select count(*) from pg_stat_activity where application_name='gloups-auth003-main' and wait_event_type='Lock' and query like '%pg_advisory_xact_lock%'"
+        )
+      ).toBe("0");
+      const resetResponse = await resetting;
+      expect(resetResponse.status).toBe(200);
+      const results = await Promise.all(deleting);
+      expect(
+        results.every((response) => [202, 401].includes(response.status))
+      ).toBe(true);
+      const accepted = results.filter((response) => response.status === 202);
+      expect(accepted.length > 0).toBe(true);
+
+      const receipts = await Promise.all(
+        accepted.map(async (response) =>
+          deletionReceiptSchema.parse(await response.json())
+        )
+      );
+
+      expect(new Set(receipts.map((receipt) => receipt.deletionId)).size).toBe(
+        1
+      );
+      const id = z.uuid().parse(receipts[0]?.deletionId);
+      ownedDeletions.add(id);
+      runWorker();
+    } finally {
+      await Promise.allSettled(commands);
+      sql(
+        "drop trigger auth003_pause_reset on account; drop function auth003_pause_reset();"
+      );
+    }
+  }
+);
+
+test(
+  "DEL-02: failed orphan revocation persists backoff, removes tagged sessions, runs expiry cleanup and expires at the local bound",
+  { platforms: ["api"] },
+  async () => {
+    const current = await verifiedIdentity();
+    const id = randomUUID();
+    const challengeId = randomUUID();
+    const marker = randomUUID();
+    const expiredProof = randomUUID();
+    sql(
+      `insert into provider_credential(id,apple_subject,ciphertext,client_id,created_at,phase,retry_at) values('${id}','orphan-${id}','synthetic-unreadable-credential','app.gloups.health',now(),'prepared',now()-interval '1 second'); update session set native_setup_id='${id}' where user_id=(select id from "user" where email='${current.user.email}'); insert into apple_challenge(id,nonce_hash,purpose,expires_at) values('${challengeId}','synthetic','sign-in',now()-interval '1 second'); insert into apple_notification(id,processed_at) values('${marker}',now()-interval '3 days'); insert into verification(id,identifier,value,expires_at) values('${expiredProof}','auth003-expired','synthetic',now()-interval '1 second');`
+    );
+
+    try {
+      runWorker();
+      expect(
+        sql(
+          `select phase || ':' || attempts::text || ':' || (retry_at > now())::text from provider_credential where id='${id}'`
+        )
+      ).toBe("reconcile:1:true");
+      expect(
+        sql(`select count(*) from session where native_setup_id='${id}'`)
+      ).toBe("0");
+      expect(
+        sql(
+          `select (select count(*) from apple_challenge where id='${challengeId}') + (select count(*) from apple_notification where id='${marker}') + (select count(*) from verification where id='${expiredProof}')`
+        )
+      ).toBe("0");
+      // A future schedule prevents an immediate retry even after a worker restart.
+      sql(
+        `update provider_credential set retry_at=now()+interval '1 hour' where id='${id}'`
+      );
+      runWorker();
+      expect(
+        sql(`select attempts from provider_credential where id='${id}'`)
+      ).toBe("1");
+      sql(
+        `update provider_credential set created_at=now()-interval '2 days',retry_at=now()-interval '1 second' where id='${id}'`
+      );
+      runWorker();
+      expect(
+        sql(`select count(*) from provider_credential where id='${id}'`)
+      ).toBe("0");
+    } finally {
+      sql(
+        `delete from provider_credential where id='${id}'; delete from apple_challenge where id='${challengeId}'; delete from apple_notification where id='${marker}'; delete from verification where id='${expiredProof}';`
+      );
+    }
   }
 );

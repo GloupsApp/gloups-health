@@ -135,8 +135,10 @@ expiring leases, purges this slice's records, and retries the official Apple
 revocation endpoint with bounded backoff. The independent key ring must retain
 old keys until pending credentials have been handled; credentials never go to the
 app. API transactions and SDK writes share reviewed fingerprint guards; issued
-proof/deletion operations also serialize on an identity lock in a separate pool. Unlink/password/session-revocation mutations share that
+proof/deletion operations also serialize on an identity lock in a separate pool. Actor admission acquires that lock before opening a main-pool transaction; the lock wait is bounded to five seconds. Unlink/password/session-revocation mutations share that
 identity lock, preserving the last method under concurrent unlink commands.
+
+Orphan native credentials persist attempts and exponential backoff after failed revocation. Tagged-session removal commits with the schedule. Reconciliation first binds a valid active owner; unowned material expires at the local 24-hour bound, retaining the initial failed-setup manual-removal guidance. Ordinary expiry cleanup runs independently of deletion/reconciliation failure.
 
 Only synthetic local retention is implemented: a 24-hour retry/orphan fallback,
 61-minute completed-identity reservation, 24-hour completed-job expiry and 48-hour
@@ -172,3 +174,11 @@ model calls. Its cases reset only the lane's rate counters and synthetic
 no unit tests or TDD. See [the case record](../../e2e/api/authentication.md) and
 [execution evidence](../../docs/verification/2026-10-28-authentication-execution.md)
 for actual coverage and limits.
+
+Native return routes accept both `gloups-health:///auth/callback` (the installed
+Expo SDK's output) and the equivalent hostname form, subject to the official
+trusted-origin check and approved route allowlist. Invalid/expired/replayed
+emailed verification links redirect only to a validated trusted callback with
+fixed `flow=verification&error=INVALID_TOKEN`; incoming query data is removed.
+Without a callback the API retains its JSON400 error. Callback query values do
+not authenticate the app.

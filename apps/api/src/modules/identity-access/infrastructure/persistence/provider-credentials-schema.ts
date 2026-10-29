@@ -1,4 +1,11 @@
-import { index, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  index,
+  integer,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 import { user } from "./auth-schema.js";
 
@@ -6,6 +13,7 @@ export const providerCredential = pgTable(
   "provider_credential",
   {
     appleSubject: text("apple_subject").notNull(),
+    attempts: integer("attempts").notNull().default(0),
     authUserId: text("auth_user_id"),
     ciphertext: text("ciphertext"),
     clientId: text("client_id").notNull(),

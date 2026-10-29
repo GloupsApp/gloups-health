@@ -108,3 +108,13 @@ Relay infrastructure acceptance passed as part of API run
 `01a1853d-dc2c-7aec-8be6-a0d94528d3ff` (26/26 combined). Native fault journeys
 remain unrun while manual unlock is pending. Current MOBILE-01 also adds dark
 appearance; the earlier Go checkpoint does not establish this added check.
+
+## Review handoff resources
+
+After the backend review fix pass, the owned API/sink/relay/Metro and dedicated
+agent-device daemon were stopped. The owned regular iPhone and Duo are Shutdown;
+the owned Android emulator was already stopped. The local Postgres container is
+stopped with its volume preserved. Private environments, reports, native debug
+builds and simulator state remain ignored and intact. Restart the documented
+lane services and manually unlock the Mac before continuing native acceptance.
+The 29/29 API run is independent of the still-incomplete native/provider matrix.

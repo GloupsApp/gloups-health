@@ -33,51 +33,56 @@ export class RequestAccountDeletion {
       throw new AccessFailureError("FRESH_AUTH_REQUIRED");
     }
 
-    return this.work.run(async ({ accounts, deletions }) => {
-      await deletions.lockActor(actor.authUserId);
-
-      const prior = await deletions.findForActorKey(
-        actor.authUserId,
-        input.idempotencyKey
-      );
-
-      if (prior) {
-        return deletionReceipt(prior);
-      }
-
-      let account = await accounts.findByIdentity(actor.authUserId);
-
-      if (!account) {
-        await accounts.insert(
-          GloupsAccount.create(this.nextId(), actor.authUserId, now)
+    return this.work.runForActor(
+      actor.authUserId,
+      async ({ accounts, deletions }) => {
+        const prior = await deletions.findForActorKey(
+          actor.authUserId,
+          input.idempotencyKey
         );
-        account = await accounts.findByIdentity(actor.authUserId);
+
+        if (prior) {
+          return deletionReceipt(prior);
+        }
+
+        let account = await accounts.findByIdentity(actor.authUserId);
+
+        if (!account) {
+          await accounts.insert(
+            GloupsAccount.create(this.nextId(), actor.authUserId, now)
+          );
+          account = await accounts.findByIdentity(actor.authUserId);
+        }
+
+        if (!account || account.isDeleting) {
+          throw new AccessFailureError("ACCOUNT_DELETING");
+        }
+
+        const id = this.nextId();
+        await accounts.markDeleting(account.id, id);
+
+        const reservation = await deletions.reserveIdentity(
+          actor.authUserId,
+          id
+        );
+
+        const job = {
+          ...reservation,
+          accountId: account.id,
+          attempts: 0,
+          authUserId: actor.authUserId,
+          completedAtMs: null,
+          createdAtMs: now,
+          gloups: "pending" as const,
+          id,
+          idempotencyKey: input.idempotencyKey,
+          retryAtMs: now,
+        };
+
+        await deletions.enqueue(job);
+
+        return deletionReceipt(job);
       }
-
-      if (!account || account.isDeleting) {
-        throw new AccessFailureError("ACCOUNT_DELETING");
-      }
-
-      const id = this.nextId();
-      await accounts.markDeleting(account.id, id);
-      const reservation = await deletions.reserveIdentity(actor.authUserId, id);
-
-      const job = {
-        ...reservation,
-        accountId: account.id,
-        attempts: 0,
-        authUserId: actor.authUserId,
-        completedAtMs: null,
-        createdAtMs: now,
-        gloups: "pending" as const,
-        id,
-        idempotencyKey: input.idempotencyKey,
-        retryAtMs: now,
-      };
-
-      await deletions.enqueue(job);
-
-      return deletionReceipt(job);
-    });
+    );
   }
 }

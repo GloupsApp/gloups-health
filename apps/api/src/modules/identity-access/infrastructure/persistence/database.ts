@@ -9,6 +9,7 @@ export const DATABASE = Symbol("IDENTITY_DATABASE");
 export const createDatabase = (config: ApiConfig) => {
   const connection = postgres(config.databaseURL, {
     connect_timeout: 10,
+    connection: { application_name: "gloups-auth003-main" },
     idle_timeout: 20,
     max: 10,
     onnotice: () => {
@@ -20,6 +21,7 @@ export const createDatabase = (config: ApiConfig) => {
 
   const proofConnection = postgres(config.databaseURL, {
     connect_timeout: 10,
+    connection: { application_name: "gloups-auth003-proof" },
     idle_timeout: 20,
     max: 2,
     onnotice: () => {

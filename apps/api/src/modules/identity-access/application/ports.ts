@@ -5,12 +5,16 @@ import type { VerifiedIdentity } from "./types.js";
 export const IDENTITY_SESSIONS = Symbol("IDENTITY_SESSIONS");
 export const ACCOUNT_UNIT_OF_WORK = Symbol("ACCOUNT_UNIT_OF_WORK");
 
+export interface AccountWorkScope {
+  accounts: AccountRepository;
+  deletions: DeletionRepository;
+}
+
 export interface AccountUnitOfWork {
-  run: <T>(
-    work: (scope: {
-      accounts: AccountRepository;
-      deletions: DeletionRepository;
-    }) => Promise<T>
+  run: <T>(work: (scope: AccountWorkScope) => Promise<T>) => Promise<T>;
+  runForActor: <T>(
+    authUserId: string,
+    work: (scope: AccountWorkScope) => Promise<T>
   ) => Promise<T>;
 }
 

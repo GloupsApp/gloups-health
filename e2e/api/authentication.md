@@ -51,7 +51,7 @@ passed 12/12 in 5.12 seconds after boundary/style changes and service restart.
 
 ## Remaining acceptance
 
-API-02's browser/form callbacks and cookie chunks, full token clock expiry/races, live Google/Apple OAuth, native nonce/code/
+API-02's browser/form callbacks and cookie chunks, live Google/Apple OAuth, native nonce/code/
 audience behavior, encrypted credential handoff failure, explicit method linking,
 verified notifications and actual Apple 5xx/revocation/restart remain unaccepted.
 The mobile/device matrix is independent. No complete authentication or release
@@ -101,3 +101,34 @@ RELAY-01 runs only with the owned relay available. It verifies actual upstream
 sign-in cookies/account identity, hold/release, transport cut and recovery. The
 default API script runs 25 ordinary cases and explicitly skips this opt-in case.
 It is not native delayed-write or real-provider acceptance.
+
+## Whole-branch review fix checks
+
+One independent whole-branch review of `fbe808e..1d5b6d0` raised four Important
+findings. The coordinated fix pass adds actual HTTP/Postgres checks for:
+
+- MAIL-03: the installed Expo native triple-slash callback shape throughout
+  signup/resend/reset; invalid signed-expiry, ledger-expiry, replay and prior-user
+  proofs return to a trusted callback with no cookies or copied query data.
+  Untrusted signup is rejected by the official SDK (403); untrusted GET callbacks
+  are rejected before proof consumption (400). Disabled-provider social initiation
+  accepts the native route shape but does not establish OAuth success.
+- DEL-01/MAIL-04: a controlled password-update trigger pauses a real reset while
+  sixteen same-actor deletion commands queue, exceeding the ten-connection main
+  pool. An unrelated authenticated account progresses during the pause; main
+  connections do not wait on proof admission, and reset/deletion finish with one
+  durable receipt. The temporary trigger/function are removed in `finally`.
+- DEL-02: unusable synthetic orphan material persists a retry schedule and
+  attempt count, removes tagged sessions, permits ordinary expired challenge/
+  verification/notification cleanup, respects a future retry across worker
+  restart and expires at the explicitly local 24-hour bound. This is neither
+  live Apple HTTP failure nor real revocation evidence.
+
+The first focused run passed four cases and found an overly strict E2E status
+expectation for SDK rejection (expected 400, observed 403). After correcting that
+expectation, the native URL case passed. No TDD or unit tests were used.
+
+Final fix-pass run `01a18562-bd71-7301-92e4-afe51ee347b9` passed **29/29** in
+21.12 seconds with `GLOUPS_AUTH003_FAULTS=1 bunx e2e run --target api`. The
+default script selects 28 ordinary cases and skips the opt-in relay case. Source
+was compiled successfully and the owned API restarted before this run.
