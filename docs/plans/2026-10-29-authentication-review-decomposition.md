@@ -1,15 +1,15 @@
 # Authentication review decomposition
 
-Date: 29 October 2026. Owner: AUTH-003 integration owner in the existing015e worktree.
+Date: 29 October 2026. Owner: AUTH-003 integration owner in the existing 015e worktree.
 This is an execution amendment to the approved authentication design/plan after
-owner review of PR26. It preserves D015/D016/D018/D019, official Better Auth/Expo,
+owner review of PR #26. It preserves D015/D016/D018/D019, official Better Auth/Expo,
 Fastify, Drizzle/Postgres, framework-free domain/application, no unit tests/TDD,
 and the existing immutable account/session/deletion contracts. No new product
 flow, provider registration, deployment or release policy is approved here.
 
 ## Concrete problems
 
-PR26 combines platform setup, core identity, credentials, social integrations,
+PR #26 combines platform setup, core identity, credentials, social integrations,
 deletion, mobile state, UI and acceptance infrastructure. Its diff is too large
 for owner review. The first module also has a single large composition factory,
 bootstrap access to feature internals, repeated HTTP validation and SDK calls in
@@ -36,7 +36,7 @@ official DrizzleModule with named main/proof databases and managed shutdown,
 async readiness/lifecycle hooks, APP_FILTER/APP_GUARD providers, typed current
 identity/account decorators and schema-backed Nest pipes. The backend remains
 Better Auth; Nest's separate authentication engine is outside this request.
-The database driver remains postgres.js and Drizzle0.45.4; no pg migration or
+The database driver remains postgres.js and Drizzle 0.45.4; no pg migration or
 RC ORM upgrade is intended. Both new Nest packages must be exact, official,
 registry-verified compatible stable releases.
 
@@ -73,7 +73,7 @@ narrowed while extracting the verified source, without changing behavior.
    sign-out/deletion and device acceptance infrastructure.
 10. Final acceptance/handoff where it cannot be co-located with its owning slice.
 
-Prefer preserving PR26's branch/history while turning its review into the final
+Prefer preserving PR #26's branch/history while turning its review into the final
 small slice, or explicitly mark it superseded if preserving history cannot give
 a small diff. Never force-push or merge a source PR. All replacement PRs stay
 open for owner review, auto-merge disabled. Attach every created PR to this chat.
@@ -84,7 +84,7 @@ No unit tests, TDD or fabricated red/green. Run authored strict TypeScript,
 Ultracite and the actual Turbo graph at each checkpoint; build the owning
 workspace before claiming it runnable. Verify platform/credentials/lifecycle
 through E2E Army against the isolated database and actual service. After module
-changes repeat the integrated29-case HTTP/Postgres suite and exercise worker
+changes repeat the integrated 29-case HTTP/Postgres suite and exercise worker
 startup/shutdown. Keep existing native/provider gaps explicit; exports cannot
 replace device journeys. Preserve ignored environments, generated native data
 and the stopped owned database volume. Start/stop only this lane's resources.
@@ -101,3 +101,14 @@ and the stopped owned database volume. Start/stop only this lane's resources.
 - [Standalone apps](https://docs.nestjs.com/standalone-applications)
 - [Approved design](../specs/2026-10-28-authentication-design.md)
 - [Original plan](2026-10-28-authentication-implementation.md)
+
+## Published execution amendment
+
+Extraction narrowed the sequence into fifteen concern-focused PRs #27–41 plus
+retained PR #26 for the final fault harness/handoff. In particular the pure
+identity domain is independent from persistence; private SDK registration is
+separate from email policy and HTTP; mobile transport, providers and session state
+are separate from screens. The [review map](../verification/2026-10-29-authentication-review-stack.md#review-order-and-exact-revisions)
+contains each base, revision, scope and actual checkpoint evidence. These are
+sequential review branches of the same assigned coordinator, not new workers or
+packets. No source PR was merged and main is unchanged.

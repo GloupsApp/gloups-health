@@ -1,6 +1,7 @@
 # AUTH-003: Native execution of the approved authentication plan
 
-Status: Review; source PR #26 open, complete native/provider acceptance pending.
+Status: Review; focused PRs #27–41 and final #26 open; complete native/provider
+acceptance pending. Start with the [review map](../verification/2026-10-29-authentication-review-stack.md#review-order-and-exact-revisions).
 Assignment PR #25 merged and read back at
 `fbe808edcf8c8ce18b2083b0fab5c5af8ee7eac6` on 29 October 2026. Owner and integration coordinator: Codex, current
 authentication chat `01a1842f-75ee-7d31-a619-daeedf78f882`.
@@ -255,3 +256,29 @@ refactor branch is `codex/auth-003-nest-boundaries`, starting at
 until the replacement stack has evidence. All PRs stay unmerged with auto-merge
 disabled. API/native resource ownership and missing provider/device prerequisites
 are unchanged.
+
+### Focused review handoff
+
+The owner-requested Nest boundary refactor and sequential extraction are
+published as PRs #27–41. PR #29 reviews only the plain identity core; #30 reviews
+its persistence adapters. Each later PR targets the preceding review branch.
+PR #26 retains its history and becomes the final fault-harness/handoff slice,
+based on #41, with no API/mobile application code in its Files changed view.
+The [review map](../verification/2026-10-29-authentication-review-stack.md)
+records exact revisions, scopes and actual local evidence. No PR/main merge or
+auto-merge is authorized or performed. Continue owner review from #27.
+
+The existing assignment also owns the refactored `apps/api/src/platform/`
+configuration/persistence/health modules, identity `composition/` modules and
+split ports/adapters in its existing layers, plus `.gitattributes` generated-file
+review metadata and the dated decomposition/review record. The current API
+README is the source-placement guide; the decomposition supersedes the old
+single-module/manual-lifecycle plan paths. No other bounded context is assigned.
+Tasks 0–7 remain incomplete where native/provider/release evidence is missing.
+
+Final recomposition evidence: Army run `01a1877b-a7c7-72df-9207-9683db912086`
+passed 32/32 actual HTTP/Postgres checks in 25.93s after an uncached API compile
+and restart. Root build/static checks passed with cache details in the review
+record. Owned API/sink/relay/Postgres services are stopped again; their synthetic
+volume and all ignored state are preserved. This does not complete native,
+provider or release acceptance. Every source PR remains draft/open for review.

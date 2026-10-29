@@ -392,3 +392,16 @@ Husky staged formatting and commitlint passed. The 23 staged fix/handoff paths
 were checked against private environment material without exposing values; no
 secret/signing block or generated/private path was staged. The subsequent
 handoff-only commit records this revision without changing the tested source.
+
+## 29 October owner architecture review amendment
+
+The owner rejected the combined review size and requested proper NestJS and
+DDD/Onion boundaries using the full official Nest documentation. The resulting
+[source correction and review map](2026-10-29-authentication-review-stack.md)
+supersede the monolithic PR #26 review described above. They preserve historical
+checkpoints, fixes and missing native/provider evidence. Start review with #27;
+#26 is now the final fault-harness/handoff slice after #41. The refactor introduces
+managed Nest configuration/database lifecycle, small composition modules, a
+standard HTTP pipeline, actual aggregate persistence and a standalone worker
+graph. No product contract, live provider resource or release policy changed.
+Only the assignment PR #25 was merged; all source PRs remain open for the owner.

@@ -21,7 +21,7 @@ worker does not need the founders' chat history.
 The [authentication implementation plan](plans/2026-10-28-authentication-implementation.md)
 follows the owner-approved design under D017. AUTH-003 is executing natively
 after assignment PR #25. The Fastify/Drizzle credential and lifecycle API has local E2E evidence. Expo
-authentication source is in draft PR #26; native/provider acceptance remains in
+authentication source is split into [focused draft PRs #27–41 and #26](verification/2026-10-29-authentication-review-stack.md#review-order-and-exact-revisions). Native/provider acceptance remains in
 progress. No source PR merge or auto-merge is authorized.
 
 | Document                                | Covers                                                                             |

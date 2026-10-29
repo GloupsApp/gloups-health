@@ -40,7 +40,7 @@ framework versions in each future implementation packet.
 
 | Planned path       | Responsibility                                                                                    | Current state                                                        |
 | ------------------ | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| apps/api           | NestJS composition, HTTP, application use cases, domain rules and persistence adapters by feature | Local auth service; credential E2E, social/lifecycle pending         |
+| apps/api           | NestJS composition, HTTP, application use cases, domain rules and persistence adapters by feature | Local auth service; credential/lifecycle E2E, live providers pending |
 | apps/mobile        | Expo routes, feature screens, native adapters and account-scoped offline state                    | Authentication routes/features under review; native evidence pending |
 | apps/web           | Possible product web app                                                                          | Empty reserved folders; framework undecided                          |
 | apps/docs          | Blume documentation site                                                                          | Runnable local workspace; static build; no deployment                |
