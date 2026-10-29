@@ -74,6 +74,18 @@ shell with `bun run mobile:dev`, `bun run mobile:ios` or `bun run mobile:android
 these commands share Metro port `8083`. See [mobile setup](apps/mobile/README.md).
 No API or E2E task exists yet. Tooling checks do not establish product behavior.
 
+## API boundary checks and Nest CLI
+
+Run `bun run architecture:check` from the root. It checks resolved context
+imports, source/type and Nest-module cycles, and explicit provider exports. Root
+check, lint, typecheck/build and the pre-commit hook also run it. Read the
+[checker guide](tools/architecture/README.md) before adding a new context contract.
+
+The repository pins the official Nest CLI. Run `bun run nest --version` and
+`bun run nest generate --help` for its installed interface. Use `--no-spec` when
+generating within an approved packet; no unit tests or new project were generated
+by this installation. Nest source generation must preserve the documented layers.
+
 ## Future application work
 
 Use Bun workspaces, a single root `bun.lock`, Turborepo and
