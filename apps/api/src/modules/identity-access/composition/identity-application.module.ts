@@ -10,11 +10,7 @@ import { ResolveAccount } from "../application/resolve-account.js";
 import { IdentityPersistenceModule } from "./identity-persistence.module.js";
 
 @Module({
-  exports: [
-    ResolveAccount,
-    AuthorizeSensitiveChange,
-    IdentityPersistenceModule,
-  ],
+  exports: [ResolveAccount, AuthorizeSensitiveChange],
   imports: [IdentityPersistenceModule],
   providers: [
     {

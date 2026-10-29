@@ -3,10 +3,10 @@ import { Module } from "@nestjs/common";
 
 import { DeletionWorkerService } from "../infrastructure/deletion/deletion-worker.service.js";
 import { DeletionApplicationModule } from "./deletion-application.module.js";
-import { IdentityApplicationModule } from "./identity-application.module.js";
+import { IdentityPersistenceModule } from "./identity-persistence.module.js";
 
 @Module({
-  imports: [IdentityApplicationModule, DeletionApplicationModule],
+  imports: [IdentityPersistenceModule, DeletionApplicationModule],
   providers: [DeletionWorkerService],
 })
 export class IdentityDeletionWorkerModule {}
