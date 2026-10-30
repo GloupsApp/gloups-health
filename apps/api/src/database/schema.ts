@@ -1,13 +1,13 @@
 import {
-  bigint,
   boolean,
   index,
-  integer,
   pgTable,
   text,
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
+
+export { rateLimit } from "./auth-rate-limit.schema.js";
 
 export const user = pgTable("auth_user", {
   createdAt: timestamp("created_at", { withTimezone: true })
@@ -90,13 +90,6 @@ export const verification = pgTable(
   },
   (table) => [index("verification_identifier_idx").on(table.identifier)]
 );
-
-export const rateLimit = pgTable("auth_rate_limit", {
-  count: integer().notNull(),
-  id: text().primaryKey(),
-  key: text().notNull().unique(),
-  lastRequest: bigint("last_request", { mode: "number" }).notNull(),
-});
 
 export const gloupsAccount = pgTable("gloups_account", {
   createdAt: timestamp("created_at", { withTimezone: true })

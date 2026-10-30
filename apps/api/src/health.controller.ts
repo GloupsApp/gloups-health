@@ -10,6 +10,7 @@ export class HealthController {
     this.ready = ready;
   }
 
+  // nestjs-doctor-ignore-next-line security/require-guards-on-endpoints -- Public readiness probe for infrastructure; returns only database readiness, never account data.
   @Get()
   async get() {
     await this.ready();

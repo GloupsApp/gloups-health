@@ -64,6 +64,9 @@ test(
       await suite.test(
         "rejects anonymous and invalid requests with runtime-validated contracts",
         async () => {
+          const readiness = await fetch(`${url}/healthz`);
+          assert.equal(readiness.status, 200);
+          assert.deepEqual(await readiness.json(), { status: "ok" });
           assert.equal((await fetch(`${url}/api/auth/ok`)).status, 200);
           const anonymous = await fetch(`${url}/api/me`);
           assert.equal(anonymous.status, 401);

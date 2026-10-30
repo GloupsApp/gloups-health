@@ -6,6 +6,7 @@ import type { DynamicModule } from "@nestjs/common";
 import type { Database } from "../../../database/public.js";
 import { IDENTITY_SESSIONS } from "../authentication/public.js";
 import type { IdentitySessions } from "../authentication/public.js";
+import { AccountAdmissionGuard } from "./account-admission.guard.js";
 import type { AccountReader } from "./account-reader.port.js";
 import type { AccountRepository } from "./account-repository.port.js";
 import { AccountController } from "./accounts.controller.js";
@@ -18,6 +19,7 @@ import { GetCurrentAccountService } from "./queries/get-current-account.service.
 const ACCOUNT_REPOSITORY = Symbol("ACCOUNT_REPOSITORY");
 const ACCOUNT_READER = Symbol("ACCOUNT_READER");
 
+// nestjs-doctor-ignore-next-line performance/no-orphan-modules -- createIdentityAccess() imports AccountsModule.register(authentication, database) as a DynamicModule.
 @Module({})
 export class AccountsModule {
   static register(
@@ -30,6 +32,7 @@ export class AccountsModule {
       imports: [authentication],
       module: AccountsModule,
       providers: [
+        AccountAdmissionGuard,
         ResolveAccountHandler,
         GetCurrentAccountHandler,
         {

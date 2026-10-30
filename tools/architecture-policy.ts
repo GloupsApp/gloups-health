@@ -40,6 +40,7 @@ export const apiFeatures: readonly FeaturePolicy[] = [
   },
   {
     files: {
+      "auth-rate-limit.schema.ts": "integration",
       "database.ts": "integration",
       "public.ts": "integration",
       "schema.ts": "integration",
@@ -98,6 +99,7 @@ export const apiFeatures: readonly FeaturePolicy[] = [
   {
     files: {
       "account-access-error.ts": "model",
+      "account-admission.guard.ts": "transport",
       "account-reader.port.ts": "read-port",
       "account-repository.port.ts": "port",
       "accounts.controller.ts": "transport",

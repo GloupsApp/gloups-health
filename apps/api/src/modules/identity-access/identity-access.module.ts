@@ -5,6 +5,7 @@ import { createDatabase } from "../../database/public.js";
 import { AccountsModule } from "./accounts/accounts.module.js";
 import { AuthenticationModule } from "./authentication/authentication.module.js";
 
+// nestjs-doctor-ignore-next-line performance/no-orphan-modules -- main.ts imports the DynamicModule returned by createIdentityAccess() as identity.module.
 @Module({})
 class IdentityAccessModule {}
 

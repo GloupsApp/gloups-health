@@ -13,6 +13,7 @@ import { HttpEmailDelivery } from "./integrations/email/http-email.delivery.js";
 
 const AUTH_ENGINE = Symbol("AUTH_ENGINE");
 
+// nestjs-doctor-ignore-next-line performance/no-orphan-modules -- createIdentityAccess() imports AuthenticationModule.register(config, database) and passes it to AccountsModule.
 @Module({})
 export class AuthenticationModule {
   static register(config: ApiConfig, database: Database): DynamicModule {
