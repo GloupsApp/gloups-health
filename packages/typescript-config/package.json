@@ -1,0 +1,23 @@
+{
+  "name": "@gloups/typescript-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./base.json": "./base.json",
+    "./node.json": "./node.json",
+    "./nestjs.json": "./nestjs.json",
+    "./expo.json": "./expo.json",
+    "./library.json": "./library.json",
+    "./react-library.json": "./react-library.json",
+    "./react-native-library.json": "./react-native-library.json"
+  },
+  "peerDependencies": {
+    "expo": "58.0.20"
+  },
+  "peerDependenciesMeta": {
+    "expo": {
+      "optional": true
+    }
+  }
+}

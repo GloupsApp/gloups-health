@@ -1,0 +1,13 @@
+{
+  "extends": "@gloups/typescript-config/library.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@contracts/*": ["./src/*"]
+    },
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": ["src/**/*.ts"]
+}

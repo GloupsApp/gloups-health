@@ -1,8 +1,15 @@
 {
-  "extends": ["expo/tsconfig.base", "../../tsconfig.base.json"],
+  "extends": "@gloups/typescript-config/expo.json",
+  "include": [
+    "index.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "eslint.config.mts",
+    "oxlint.config.mts"
+  ],
   "compilerOptions": {
-    "skipLibCheck": true,
-    "types": ["react"]
-  },
-  "include": ["index.ts", "src/**/*.ts", "src/**/*.tsx"]
+    "paths": {
+      "@mobile/*": ["./src/*"]
+    }
+  }
 }

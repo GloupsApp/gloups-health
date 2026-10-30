@@ -1,0 +1,18 @@
+{
+  "extends": "@gloups/typescript-config/nestjs.json",
+  "compilerOptions": {
+    "paths": {
+      "@api/*": ["./src/*"],
+      "@accounts/*": ["./src/modules/identity-access/accounts/*"],
+      "@authentication/*": ["./src/modules/identity-access/authentication/*"],
+      "@identity-access/*": ["./src/modules/identity-access/*"],
+      "@database/*": ["./src/database/*"]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "drizzle.config.ts",
+    "eslint.config.ts",
+    "oxlint.config.ts"
+  ]
+}

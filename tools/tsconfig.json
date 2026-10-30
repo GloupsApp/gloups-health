@@ -1,0 +1,11 @@
+{
+  "extends": ["@gloups/typescript-config/node.json", "../tsconfig.paths.json"],
+  "include": [
+    "**/*.ts",
+    "../e2e/**/*.ts",
+    "../packages/contracts/tools/**/*.ts"
+  ],
+  "compilerOptions": {
+    "skipLibCheck": true
+  }
+}

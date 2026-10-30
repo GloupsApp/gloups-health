@@ -1,0 +1,11 @@
+{
+  "extends": "@gloups/typescript-config/library.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "exactOptionalPropertyTypes": false,
+    "rootDir": "generated/client",
+    "outDir": "generated/dist"
+  },
+  "include": ["generated/client/**/*.ts"]
+}

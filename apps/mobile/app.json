@@ -2,6 +2,10 @@
   "expo": {
     "name": "Gloups",
     "slug": "gloups-health",
+    "scheme": "gloups-health",
+    "ios": { "bundleIdentifier": "health.gloups.mobile" },
+    "android": { "package": "health.gloups.mobile" },
+    "plugins": ["expo-secure-store"],
     "version": "0.0.0",
     "platforms": ["ios", "android"],
     "userInterfaceStyle": "automatic"

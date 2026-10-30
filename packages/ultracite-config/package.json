@@ -1,0 +1,39 @@
+{
+  "name": "@gloups/ultracite-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./oxlint/base": "./base.ts",
+    "./oxlint/react": "./react.ts",
+    "./oxfmt": "./format.ts",
+    "./eslint/nestjs": {
+      "types": "./eslint-profile.d.ts",
+      "default": "./nestjs.ts"
+    },
+    "./eslint/react-native": {
+      "types": "./eslint-profile.d.ts",
+      "default": "./react-native.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --project tsconfig.json"
+  },
+  "dependencies": {
+    "@darraghor/eslint-plugin-nestjs-typed": "7.5.8",
+    "@eslint/compat": "2.1.1",
+    "@react-native/eslint-plugin": "0.88.0",
+    "@typescript-eslint/parser": "8.72.0",
+    "eslint": "10.13.0",
+    "eslint-plugin-react-native": "5.0.0",
+    "jiti": "2.7.0",
+    "oxfmt": "0.75.0",
+    "oxlint": "1.90.0",
+    "ultracite": "8.1.0"
+  },
+  "devDependencies": {
+    "@gloups/typescript-config": "workspace:*",
+    "@types/node": "24.19.2",
+    "typescript": "6.0.3"
+  }
+}
