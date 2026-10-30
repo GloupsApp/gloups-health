@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc --project tsconfig.build.json",
-    "test:cqrs": "tsc --project tsconfig.test.json && node --test dist/tests/test/account-cqrs.test.js",
+    "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json --resolve-full-paths",
+    "test:cqrs": "tsc --project tsconfig.test.json && tsc-alias -p tsconfig.test.json --resolve-full-paths && node --test dist/tests/test/account-cqrs.test.js",
     "typecheck": "tsc --project tsconfig.json",
     "dev": "node --env-file=.env.local --watch dist/main.js",
     "start": "node dist/main.js",
@@ -19,6 +19,7 @@
     "@nestjs/common": "12.3.0",
     "@nestjs/core": "12.3.0",
     "@nestjs/cqrs": "12.1.2",
+    "@nestjs/drizzle": "0.0.2",
     "@nestjs/platform-node": "12.3.0",
     "better-auth": "1.7.14",
     "drizzle-orm": "0.45.4",

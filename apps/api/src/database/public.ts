@@ -5,13 +5,13 @@ import {
   session,
   user,
   verification,
-} from "./schema.js";
+} from "@database/schema";
 
-export { createDatabase } from "./database.js";
+export { createDatabase, IDENTITY_DATABASE } from "@database/database";
 
-export type { Database } from "./database.js";
+export type { Database } from "@database/database";
 
-export { gloupsAccount } from "./schema.js";
+export { gloupsAccount } from "@database/schema";
 
 export const authSchema = {
   account,

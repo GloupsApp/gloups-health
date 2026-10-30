@@ -1,6 +1,7 @@
-import { createClient } from "../generated/dist/client/index.js";
-import { getCurrentAccount } from "../generated/dist/sdk.gen.js";
-import { apiErrorSchema } from "./index.js";
+import { apiErrorSchema } from "@contracts/index";
+
+import { createClient } from "../generated/dist/client/index";
+import { getCurrentAccount } from "../generated/dist/sdk.gen";
 
 export class AccountApiError extends Error {
   readonly code: string;

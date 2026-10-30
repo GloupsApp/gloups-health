@@ -1,8 +1,9 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "paths": { "@contracts/*": ["./src/*"] },
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
     "noEmit": false,
     "allowImportingTsExtensions": false,

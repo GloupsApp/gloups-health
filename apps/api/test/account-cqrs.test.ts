@@ -2,21 +2,20 @@ import "reflect-metadata";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
+import type { AccountReader } from "@accounts/account-reader.port";
+import type { AccountRepository } from "@accounts/account-repository.port";
+import { ResolveAccountCommand } from "@accounts/commands/resolve-account.command";
+import { ResolveAccountHandler } from "@accounts/commands/resolve-account.handler";
+import { ResolveAccountService } from "@accounts/commands/resolve-account.service";
+import type { CurrentAccount } from "@accounts/current-account";
+import type { GloupsAccount } from "@accounts/gloups-account";
+import { GetCurrentAccountHandler } from "@accounts/queries/get-current-account.handler";
+import { GetCurrentAccountQuery } from "@accounts/queries/get-current-account.query";
+import { GetCurrentAccountService } from "@accounts/queries/get-current-account.service";
+import type { VerifiedIdentity } from "@authentication/public";
 import { Module } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { CommandBus, CqrsModule, QueryBus } from "@nestjs/cqrs";
-
-import type { AccountReader } from "../src/modules/identity-access/accounts/account-reader.port.js";
-import type { AccountRepository } from "../src/modules/identity-access/accounts/account-repository.port.js";
-import { ResolveAccountCommand } from "../src/modules/identity-access/accounts/commands/resolve-account.command.js";
-import { ResolveAccountHandler } from "../src/modules/identity-access/accounts/commands/resolve-account.handler.js";
-import { ResolveAccountService } from "../src/modules/identity-access/accounts/commands/resolve-account.service.js";
-import type { CurrentAccount } from "../src/modules/identity-access/accounts/current-account.js";
-import type { GloupsAccount } from "../src/modules/identity-access/accounts/gloups-account.js";
-import { GetCurrentAccountHandler } from "../src/modules/identity-access/accounts/queries/get-current-account.handler.js";
-import { GetCurrentAccountQuery } from "../src/modules/identity-access/accounts/queries/get-current-account.query.js";
-import { GetCurrentAccountService } from "../src/modules/identity-access/accounts/queries/get-current-account.service.js";
-import type { VerifiedIdentity } from "../src/modules/identity-access/authentication/public.js";
 
 test("CQRS dispatch separates provisioning from read-only account queries", async () => {
   const identity: VerifiedIdentity = {

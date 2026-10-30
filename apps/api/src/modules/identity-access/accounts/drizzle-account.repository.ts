@@ -1,15 +1,17 @@
+import type { AccountReader } from "@accounts/account-reader.port";
+import type { AccountRepository } from "@accounts/account-repository.port";
+import { IDENTITY_DATABASE, gloupsAccount } from "@database/public";
+import type { Database } from "@database/public";
+import { Injectable } from "@nestjs/common";
+import { InjectDrizzle } from "@nestjs/drizzle";
 import { eq } from "drizzle-orm";
 
-import type { Database } from "../../../database/public.js";
-import { gloupsAccount } from "../../../database/public.js";
-import type { AccountReader } from "./account-reader.port.js";
-import type { AccountRepository } from "./account-repository.port.js";
-
+@Injectable()
 export class DrizzleAccountRepository
   implements AccountRepository, AccountReader
 {
   private readonly database: Database;
-  constructor(database: Database) {
+  constructor(@InjectDrizzle(IDENTITY_DATABASE) database: Database) {
     this.database = database;
   }
   async findByIdentity(identityId: string) {

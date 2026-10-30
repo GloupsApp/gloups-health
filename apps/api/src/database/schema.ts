@@ -7,7 +7,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-export { rateLimit } from "./auth-rate-limit.schema.js";
+export { rateLimit } from "@database/auth-rate-limit.schema";
 
 export const user = pgTable("auth_user", {
   createdAt: timestamp("created_at", { withTimezone: true })

@@ -1,9 +1,8 @@
+import type { ApiConfig } from "@api/config";
+import type { Auth } from "@authentication/integrations/better-auth/auth";
 import { authErrorSchema } from "@gloups/contracts";
 import type { NodeRequest, NodeResponse } from "@nestjs/platform-node";
 import { fromNodeHeaders } from "better-auth/node";
-
-import type { ApiConfig } from "../../../../../config.js";
-import type { Auth } from "./auth.js";
 
 const AUTH_ROUTES = new Set([
   "GET /api/auth/ok",

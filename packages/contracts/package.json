@@ -15,7 +15,7 @@
   },
   "scripts": {
     "generate": "node tools/generate.ts",
-    "build": "tsc --project tsconfig.generated.json && tsc --project tsconfig.json",
+    "build": "tsc --project tsconfig.generated.json && tsc --project tsconfig.json && tsc-alias -p tsconfig.json --resolve-full-paths",
     "typecheck": "tsc --project tsconfig.generated.json && tsc --project tsconfig.json --noEmit"
   },
   "dependencies": {

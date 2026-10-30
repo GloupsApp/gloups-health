@@ -1,9 +1,8 @@
 import assert from "node:assert/strict";
 
+import type { EmailMessage } from "@authentication/email-message.contract";
 import { test } from "@e2e-dev/mobile";
 import { credentials, expect } from "e2e";
-
-import type { EmailMessage } from "../../apps/api/src/modules/identity-access/authentication/email-message.contract.ts";
 
 test("adult registers, verifies, signs in, relaunches and signs out", async ({
   app,
@@ -32,6 +31,7 @@ test("adult registers, verifies, signs in, relaunches and signs out", async ({
     screen.getByRole("button", /^Create an account$/iu)
   ).toBeVisible();
   await screen.getByRole("button", /^Create an account$/iu).tap();
+  await expect(screen.getByText("Create your account")).toBeVisible();
   await screen.getByRole("textbox", "Email").fill(adult.username);
 
   if (platform === "ios") {
@@ -44,7 +44,6 @@ test("adult registers, verifies, signs in, relaunches and signs out", async ({
   await (platform === "ios"
     ? screen.getByRole("textbox", "Password").press("Enter")
     : device.dismissKeyboard());
-
   await screen.getByRole("button", /^Create account$/iu).tap();
 
   if (platform === "ios") {
@@ -52,7 +51,6 @@ test("adult registers, verifies, signs in, relaunches and signs out", async ({
   }
 
   await expect(screen.getByText("Check your email")).toBeVisible();
-
   const token = process.env["EMAIL_DELIVERY_TOKEN"];
   assert.ok(token);
 
@@ -69,11 +67,8 @@ test("adult registers, verifies, signs in, relaunches and signs out", async ({
 
   assert.ok(message, "The real API must deliver a verification email");
   const verification = await fetch(message.url, { redirect: "manual" });
-  assert.equal(verification.status, 302);
-  assert.equal(
-    verification.headers.get("location"),
-    "gloups-health://verified"
-  );
+  expect(verification.status).toBe(302);
+  expect(verification.headers.get("location")).toBe("gloups-health://verified");
   await device.openLink("gloups-health://verified");
 
   if (platform === "ios") {
@@ -95,7 +90,6 @@ test("adult registers, verifies, signs in, relaunches and signs out", async ({
   await (platform === "ios"
     ? screen.getByRole("textbox", "Password").press("Enter")
     : device.dismissKeyboard());
-
   await screen.getByRole("button", /^Sign in$/iu).tap();
 
   if (platform === "ios") {
@@ -110,7 +104,6 @@ test("adult registers, verifies, signs in, relaunches and signs out", async ({
 
   await expect(screen.getByText("Your account")).toBeVisible();
   await expect(screen.getByTestId("account-email")).toHaveText(adult.username);
-
   await app.restart();
   await expect(screen.getByText("Your account")).toBeVisible();
   await expect(screen.getByTestId("account-email")).toHaveText(adult.username);

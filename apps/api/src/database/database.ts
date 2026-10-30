@@ -1,8 +1,9 @@
+import * as schema from "@database/schema";
 import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
-import * as schema from "./schema.js";
+export const IDENTITY_DATABASE = "identity-access";
 
 export const createDatabase = (url: string) => {
   const client = postgres(url, {

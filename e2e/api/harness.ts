@@ -3,9 +3,12 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { once } from "node:events";
 import { createServer } from "node:net";
 import { setTimeout as delay } from "node:timers/promises";
+import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 
-import { createMailSink } from "../../tools/mail-sink.ts";
+import { createMailSink } from "@tools/mail-sink";
+
+const repositoryRoot = fileURLToPath(new URL("../../", import.meta.url));
 
 export const execute = promisify(execFile);
 
@@ -59,7 +62,9 @@ export const startHarness = async () => {
   let diagnostics = "";
 
   const stopApi = async () => {
-    if (!child) {
+    if (!child || child.exitCode !== null || child.signalCode !== null) {
+      child = null;
+
       return;
     }
 
@@ -151,11 +156,13 @@ export const startHarness = async () => {
     };
 
     await execute(process.execPath, ["apps/api/dist/migrate.js"], {
+      cwd: repositoryRoot,
       env: environment,
     });
 
     const startApi = async () => {
       child = spawn(process.execPath, ["apps/api/dist/main.js"], {
+        cwd: repositoryRoot,
         env: environment,
         stdio: "pipe",
       });

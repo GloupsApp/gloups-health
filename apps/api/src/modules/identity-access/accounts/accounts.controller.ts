@@ -1,14 +1,13 @@
-import { accountViewSchema } from "@gloups/contracts";
-import { Controller, Get, Inject, Req, UseGuards } from "@nestjs/common";
-import { QueryBus } from "@nestjs/cqrs";
-
 import {
   AccountAdmissionGuard,
   accountIdentity,
-} from "./account-admission.guard.js";
-import type { AccountRequest } from "./account-admission.guard.js";
-import type { CurrentAccount } from "./current-account.js";
-import { GetCurrentAccountQuery } from "./queries/get-current-account.query.js";
+} from "@accounts/account-admission.guard";
+import type { AccountRequest } from "@accounts/account-admission.guard";
+import type { CurrentAccount } from "@accounts/current-account";
+import { GetCurrentAccountQuery } from "@accounts/queries/get-current-account.query";
+import { accountViewSchema } from "@gloups/contracts";
+import { Controller, Get, Inject, Req, UseGuards } from "@nestjs/common";
+import { QueryBus } from "@nestjs/cqrs";
 
 @Controller("api/me")
 @UseGuards(AccountAdmissionGuard)

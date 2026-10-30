@@ -1,9 +1,9 @@
+import { AccountAccessError } from "@accounts/account-access-error";
+import type { AccountRepository } from "@accounts/account-repository.port";
 import type {
   IdentitySessions,
   VerifiedIdentity,
-} from "../../authentication/public.js";
-import { AccountAccessError } from "../account-access-error.js";
-import type { AccountRepository } from "../account-repository.port.js";
+} from "@authentication/public";
 
 export class ResolveAccountService {
   private readonly sessions: IdentitySessions;

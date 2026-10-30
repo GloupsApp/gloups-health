@@ -1,12 +1,11 @@
+import { AccountAccessError } from "@accounts/account-access-error";
+import { ResolveAccountCommand } from "@accounts/commands/resolve-account.command";
+import type { VerifiedIdentity } from "@authentication/public";
 import { accountQuerySchema } from "@gloups/contracts";
 import { Inject, Injectable } from "@nestjs/common";
 import type { CanActivate, ExecutionContext } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 import type { NodeRequest } from "@nestjs/platform-node";
-
-import type { VerifiedIdentity } from "../authentication/public.js";
-import { AccountAccessError } from "./account-access-error.js";
-import { ResolveAccountCommand } from "./commands/resolve-account.command.js";
 
 const ADMITTED_IDENTITY = Symbol("ADMITTED_IDENTITY");
 

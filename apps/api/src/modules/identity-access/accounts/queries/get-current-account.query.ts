@@ -1,4 +1,4 @@
-import type { VerifiedIdentity } from "../../authentication/public.js";
+import type { VerifiedIdentity } from "@authentication/public";
 
 /** The authenticated identity comes from the resolve-account command, never an HTTP owner selector. */
 export class GetCurrentAccountQuery {

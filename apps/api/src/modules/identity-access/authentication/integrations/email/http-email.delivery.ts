@@ -1,8 +1,7 @@
+import type { ApiConfig } from "@api/config";
+import { emailMessageSchema } from "@authentication/email-message.contract";
+import type { EmailMessage } from "@authentication/email-message.contract";
 import { z } from "zod";
-
-import type { ApiConfig } from "../../../../../config.js";
-import { emailMessageSchema } from "../../email-message.contract.js";
-import type { EmailMessage } from "../../email-message.contract.js";
 
 export interface EmailDelivery {
   deliver: (message: EmailMessage) => Promise<void>;

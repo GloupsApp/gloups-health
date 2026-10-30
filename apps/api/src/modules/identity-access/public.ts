@@ -1,1 +1,1 @@
-export { createIdentityAccess } from "./identity-access.module.js";
+export { createIdentityAccess } from "@identity-access/identity-access.module";

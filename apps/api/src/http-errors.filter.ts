@@ -1,13 +1,12 @@
 import { randomUUID } from "node:crypto";
 
+import { AccountAccessError } from "@accounts/public";
 import { apiErrorSchema } from "@gloups/contracts";
 import type { ApiErrorCode } from "@gloups/contracts";
 import { Catch, HttpException } from "@nestjs/common";
 import type { ArgumentsHost, ExceptionFilter } from "@nestjs/common";
 import type { NodeResponse } from "@nestjs/platform-node";
 import { ZodError } from "zod";
-
-import { AccountAccessError } from "./modules/identity-access/accounts/public.js";
 
 export const sendError = (
   response: NodeResponse,

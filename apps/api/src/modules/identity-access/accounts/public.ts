@@ -1,1 +1,1 @@
-export { AccountAccessError } from "./account-access-error.js";
+export { AccountAccessError } from "@accounts/account-access-error";

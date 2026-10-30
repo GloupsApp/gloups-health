@@ -1,10 +1,10 @@
-export { AUTHENTICATION_HTTP } from "./authentication-http.port.js";
+export { AUTHENTICATION_HTTP } from "@authentication/authentication-http.port";
 
-export type { AuthenticationHttpHandler } from "./authentication-http.port.js";
+export type { AuthenticationHttpHandler } from "@authentication/authentication-http.port";
 
-export { IDENTITY_SESSIONS } from "./identity-sessions.port.js";
+export { IDENTITY_SESSIONS } from "@authentication/identity-sessions.port";
 
 export type {
   IdentitySessions,
   VerifiedIdentity,
-} from "./identity-sessions.port.js";
+} from "@authentication/identity-sessions.port";

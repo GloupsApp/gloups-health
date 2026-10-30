@@ -43,9 +43,10 @@ const analyze = (fixture: Readonly<Record<string, FixtureFile>>) => {
 
   const options: ts.CompilerOptions = {
     experimentalDecorators: true,
-    module: ts.ModuleKind.NodeNext,
-    moduleResolution: ts.ModuleResolutionKind.NodeNext,
+    module: ts.ModuleKind.ESNext,
+    moduleResolution: ts.ModuleResolutionKind.Bundler,
     noEmit: true,
+    paths: { "@fixture/*": [nodePath.join(root, "*")] },
     skipLibCheck: true,
     strict: true,
     target: ts.ScriptTarget.ES2022,
@@ -128,6 +129,46 @@ const analyze = (fixture: Readonly<Record<string, FixtureFile>>) => {
 
 test("accepts flat feature services and named public business contracts", () => {
   assert.deepEqual(analyze(base), []);
+});
+
+test("feature aliases preserve public-contract access", () => {
+  assert.deepEqual(
+    analyze({
+      ...base,
+      "accounts/resolve-account.service.ts": {
+        code: "import type { Person } from '@fixture/identity/public'; export const resolveAccount = (person: Person) => person.id;",
+        role: "operation",
+      },
+    }),
+    []
+  );
+});
+
+test("feature aliases cannot bypass private feature boundaries", () => {
+  const violations = analyze({
+    ...base,
+    "accounts/resolve-account.service.ts": {
+      code: "import type { Person } from '@fixture/identity/person'; export const resolveAccount = (person: Person) => person.id;",
+      role: "operation",
+    },
+  });
+
+  assert.ok(
+    violations.some((violation) => violation.rule === "private-import")
+  );
+});
+
+test("Nest Drizzle injection stays out of controllers", () => {
+  const violations = analyze({
+    "accounts/controller.ts": {
+      code: "import { InjectDrizzle } from '@nestjs/drizzle'; export const inject = InjectDrizzle;",
+      role: "transport",
+    },
+  });
+
+  assert.ok(
+    violations.some((violation) => violation.rule === "adapter-access")
+  );
 });
 
 test("accepts a plain query depending only on a read port", () => {

@@ -1,10 +1,9 @@
+import { ResolveAccountCommand } from "@accounts/commands/resolve-account.command";
+import { ResolveAccountService } from "@accounts/commands/resolve-account.service";
+import type { VerifiedIdentity } from "@authentication/public";
 import { Inject } from "@nestjs/common";
 import { CommandHandler } from "@nestjs/cqrs";
 import type { ICommandHandler } from "@nestjs/cqrs";
-
-import type { VerifiedIdentity } from "../../authentication/public.js";
-import { ResolveAccountCommand } from "./resolve-account.command.js";
-import { ResolveAccountService } from "./resolve-account.service.js";
 
 @CommandHandler(ResolveAccountCommand)
 export class ResolveAccountHandler implements ICommandHandler<

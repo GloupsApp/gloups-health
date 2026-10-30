@@ -9,9 +9,10 @@ if (target !== "ios" && target !== "android") {
 }
 
 const runner = spawn(
-  process.execPath,
+  "npx",
   [
-    "node_modules/e2e/dist/cli/bin.js",
+    "--no-install",
+    "e2e",
     "run",
     "--config",
     "e2e/mobile/config.ts",

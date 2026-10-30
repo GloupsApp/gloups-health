@@ -1,10 +1,9 @@
+import type { CurrentAccount } from "@accounts/current-account";
+import { GetCurrentAccountQuery } from "@accounts/queries/get-current-account.query";
+import { GetCurrentAccountService } from "@accounts/queries/get-current-account.service";
 import { Inject } from "@nestjs/common";
 import { QueryHandler } from "@nestjs/cqrs";
 import type { IQueryHandler } from "@nestjs/cqrs";
-
-import type { CurrentAccount } from "../current-account.js";
-import { GetCurrentAccountQuery } from "./get-current-account.query.js";
-import { GetCurrentAccountService } from "./get-current-account.service.js";
 
 @QueryHandler(GetCurrentAccountQuery)
 export class GetCurrentAccountHandler implements IQueryHandler<

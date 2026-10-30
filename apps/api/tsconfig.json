@@ -1,8 +1,15 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@api/*": ["./src/*"],
+      "@accounts/*": ["./src/modules/identity-access/accounts/*"],
+      "@authentication/*": ["./src/modules/identity-access/authentication/*"],
+      "@identity-access/*": ["./src/modules/identity-access/*"],
+      "@database/*": ["./src/database/*"]
+    },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "skipLibCheck": true,

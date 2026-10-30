@@ -1,11 +1,10 @@
+import type { ApiConfig } from "@api/config";
+import type { EmailDelivery } from "@authentication/integrations/email/http-email.delivery";
 import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { expo } from "@better-auth/expo";
+import type { Database } from "@database/public";
+import { authSchema as schema } from "@database/public";
 import { betterAuth } from "better-auth";
-
-import type { ApiConfig } from "../../../../../config.js";
-import type { Database } from "../../../../../database/public.js";
-import { authSchema as schema } from "../../../../../database/public.js";
-import type { EmailDelivery } from "../email/http-email.delivery.js";
 
 export const createAuth = (
   database: Database,

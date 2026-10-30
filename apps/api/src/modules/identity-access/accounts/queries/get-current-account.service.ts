@@ -1,7 +1,7 @@
-import { AccountAccessError } from "../account-access-error.js";
-import type { AccountReader } from "../account-reader.port.js";
-import type { CurrentAccount } from "../current-account.js";
-import type { GetCurrentAccountQuery } from "./get-current-account.query.js";
+import { AccountAccessError } from "@accounts/account-access-error";
+import type { AccountReader } from "@accounts/account-reader.port";
+import type { CurrentAccount } from "@accounts/current-account";
+import type { GetCurrentAccountQuery } from "@accounts/queries/get-current-account.query";
 
 export class GetCurrentAccountService {
   private readonly accounts: AccountReader;

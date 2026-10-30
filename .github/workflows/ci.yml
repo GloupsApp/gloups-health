@@ -27,4 +27,4 @@ jobs:
       - run: bun run api:build
       - run: bun run test:cqrs
       - run: bun run mobile:build
-      - run: bun run test:integration
+      - run: bun run test:api

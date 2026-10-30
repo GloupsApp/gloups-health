@@ -1,6 +1,5 @@
+import { DATABASE_READY } from "@database/database-readiness.port";
 import { Controller, Get, Inject } from "@nestjs/common";
-
-export const DATABASE_READY = Symbol("DATABASE_READY");
 
 @Controller("healthz")
 export class HealthController {

@@ -1,5 +1,5 @@
-import type { IdentitySessions } from "../../identity-sessions.port.js";
-import type { Auth } from "./auth.js";
+import type { IdentitySessions } from "@authentication/identity-sessions.port";
+import type { Auth } from "@authentication/integrations/better-auth/auth";
 
 export class BetterAuthSessions implements IdentitySessions {
   private readonly auth: Auth;

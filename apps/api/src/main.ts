@@ -1,4 +1,11 @@
 import "reflect-metadata";
+import { readConfig } from "@api/config";
+import { HealthController } from "@api/health.controller";
+import { HttpErrors } from "@api/http-errors.filter";
+import { AUTHENTICATION_HTTP } from "@authentication/public";
+import type { AuthenticationHttpHandler } from "@authentication/public";
+import { DatabaseModule } from "@database/database.module";
+import { createIdentityAccess } from "@identity-access/public";
 import { Module } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { CqrsModule } from "@nestjs/cqrs";
@@ -9,30 +16,26 @@ import type {
   NodeResponse,
 } from "@nestjs/platform-node";
 
-import { readConfig } from "./config.js";
-import { DATABASE_READY, HealthController } from "./health.controller.js";
-import { HttpErrors } from "./http-errors.filter.js";
-import { AUTHENTICATION_HTTP } from "./modules/identity-access/authentication/public.js";
-import type { AuthenticationHttpHandler } from "./modules/identity-access/authentication/public.js";
-import { createIdentityAccess } from "./modules/identity-access/public.js";
-
 const config = readConfig(process.env);
 const identity = createIdentityAccess(config);
 
 @Module({
   controllers: [HealthController],
-  imports: [CqrsModule.forRoot(), identity.module],
-  providers: [{ provide: DATABASE_READY, useValue: identity.ready }],
+  imports: [
+    CqrsModule.forRoot(),
+    DatabaseModule.register(config),
+    identity.module,
+  ],
 })
 class AppModule {}
 
-try {
-  await identity.ready();
+let app: NestNodeApplication | undefined;
 
-  const app = await NestFactory.create<NestNodeApplication>(
+try {
+  app = await NestFactory.create<NestNodeApplication>(
     AppModule,
     new NodeAdapter(),
-    { bodyParser: false, logger: false }
+    { abortOnError: false, bodyParser: false, logger: false }
   );
 
   app.enableCors({ credentials: true, origin: config.API_URL });
@@ -47,7 +50,7 @@ try {
   await app.listen(config.PORT, config.API_HOST);
   process.stdout.write(`Gloups API listening on ${config.PORT}\n`);
 } catch {
-  await identity.close();
+  await app?.close();
   process.stderr.write("API startup failed\n");
   process.exitCode = 1;
 }

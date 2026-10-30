@@ -41,15 +41,22 @@ export const apiFeatures: readonly FeaturePolicy[] = [
   {
     files: {
       "auth-rate-limit.schema.ts": "integration",
+      "database-readiness.port.ts": "port",
+      "database.module.ts": "wiring",
       "database.ts": "integration",
+      "drizzle-readiness.ts": "integration",
       "public.ts": "integration",
       "schema.ts": "integration",
     },
+    frameworkModules: { "@nestjs/drizzle": ["DrizzleModule"] },
     name: "database",
-    providerExports: {},
+    providerExports: { DatabaseModule: ["DATABASE_READY"] },
     publicFiles: {
+      "database-readiness.port.ts": ["DATABASE_READY"],
+      "database.module.ts": ["DatabaseModule"],
       "public.ts": [
         "Database",
+        "IDENTITY_DATABASE",
         "authSchema",
         "createDatabase",
         "gloupsAccount",
