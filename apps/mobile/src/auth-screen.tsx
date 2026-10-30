@@ -1,3 +1,4 @@
+import { colors, Heading } from "@gloups/ui";
 import { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 
@@ -7,15 +8,14 @@ import type { AuthMode } from "./auth-actions";
 const styles = StyleSheet.create({
   form: { gap: 12 },
   input: {
-    backgroundColor: "#FFFFFF",
-    borderColor: "#51645E",
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
     borderRadius: 10,
     borderWidth: 1,
-    color: "#142923",
+    color: colors.text,
     fontSize: 17,
     padding: 14,
   },
-  title: { color: "#142923", fontSize: 28, fontWeight: "600" },
 });
 
 export const AuthScreen = ({
@@ -86,9 +86,7 @@ export const AuthScreen = ({
 
   return (
     <View style={styles.form}>
-      <Text accessibilityRole="header" style={styles.title}>
-        {titles[mode]}
-      </Text>
+      <Heading>{titles[mode]}</Heading>
       {mode === "verify" && (
         <Text>
           Open the verification link in your email, then return here to sign in.

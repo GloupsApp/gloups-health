@@ -21,12 +21,9 @@ const ACCOUNT_READER = Symbol("ACCOUNT_READER");
   exports: [],
   imports: [AuthenticationModule],
   providers: [
-    AccountAdmissionGuard,
-    ResolveAccountHandler,
-    GetCurrentAccountHandler,
     {
       provide: ACCOUNT_REPOSITORY,
-      useClass: DrizzleAccountRepository,
+      useExisting: DrizzleAccountRepository,
     },
     { provide: ACCOUNT_READER, useExisting: ACCOUNT_REPOSITORY },
     {
@@ -41,6 +38,10 @@ const ACCOUNT_READER = Symbol("ACCOUNT_READER");
       useFactory: (sessions: IdentitySessions, accounts: AccountRepository) =>
         new ResolveAccountService(sessions, accounts, randomUUID),
     },
+    AccountAdmissionGuard,
+    DrizzleAccountRepository,
+    GetCurrentAccountHandler,
+    ResolveAccountHandler,
   ],
 })
 export class AccountsModule {}

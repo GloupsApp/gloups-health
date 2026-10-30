@@ -10,16 +10,25 @@ import {
 const execute = promisify(execFile);
 
 // Enumerate current files only. No commits, branches, or history are inspected.
-const { stdout: inventory } = await execute("git", [
-  "ls-files",
-  "--cached",
-  "--others",
-  "--exclude-standard",
-  "-z",
+const [{ stdout: inventory }, { stdout: removed }] = await Promise.all([
+  execute("git", [
+    "ls-files",
+    "--cached",
+    "--others",
+    "--exclude-standard",
+    "-z",
+  ]),
+  execute("git", ["ls-files", "--deleted", "-z"]),
 ]);
 
+const currentFiles = new Set(inventory.split("\0"));
+
+for (const file of removed.split("\0")) {
+  currentFiles.delete(file);
+}
+
 await Promise.all(
-  [...new Set(inventory.split("\0").filter(Boolean))].map(async (file) => {
+  [...currentFiles].map(async (file) => {
     assertDoctorPolicy(file, await readFile(file, "utf-8"));
   })
 );

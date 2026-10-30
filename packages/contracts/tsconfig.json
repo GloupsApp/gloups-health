@@ -1,13 +1,11 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "@gloups/typescript-config/library.json",
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "paths": { "@contracts/*": ["./src/*"] },
-    "lib": ["ES2023", "DOM", "DOM.Iterable"],
-    "noEmit": false,
-    "allowImportingTsExtensions": false,
-    "declaration": true,
+    "paths": {
+      "@contracts/*": ["./src/*"]
+    },
     "rootDir": "src",
     "outDir": "dist"
   },

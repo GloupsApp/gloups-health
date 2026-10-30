@@ -20,7 +20,6 @@ const AUTH_ENGINE = Symbol("AUTH_ENGINE");
   exports: [IdentitySessions],
   imports: [ApiConfigModule],
   providers: [
-    AuthenticationMiddleware,
     {
       inject: [getDrizzleToken(IDENTITY_DATABASE), ApiConfig],
       provide: AUTH_ENGINE,
@@ -37,6 +36,7 @@ const AUTH_ENGINE = Symbol("AUTH_ENGINE");
       provide: AUTHENTICATION_HTTP,
       useFactory: (auth: Auth, config: ApiConfig) => authHttp(auth, config),
     },
+    AuthenticationMiddleware,
   ],
 })
 export class AuthenticationModule implements NestModule {

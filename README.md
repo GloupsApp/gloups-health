@@ -2,6 +2,16 @@
 
 The GLO-5 account slice runs one NestJS API and an Expo iOS/Android client. It supports email/password registration, verification, sign-in, password reset, a protected account round trip, persisted sessions, and sign-out.
 
+## Workspace packages
+
+- [`@gloups/typescript-config`](packages/typescript-config/README.md) provides strict base, Node, NestJS, Expo, and library compiler presets. Each consumer declares a `workspace:*` development dependency and extends the appropriate preset by package name. Application aliases and output paths stay local; the presets contain no cross-application aliases.
+- [`@gloups/ultracite-config`](packages/ultracite-config/README.md) provides shared Oxlint/Oxfmt configuration and real ESLint framework checks for NestJS and React Native. React rules apply only to mobile and UI. `bun run check` runs shared checks, framework checks, and the strict full doctor gate. The API uses the supported no-Swagger lint profile because Zod owns its HTTP contract.
+- [`@gloups/ui`](packages/ui/README.md) provides the universal account heading and colour tokens used by Expo. React/React Native are peers; React Native Web is an optional peer for web consumers. Turbo builds UI before mobile, and `bun run ui:test:web` verifies its compiled export through the real web adapter.
+
+Compiler and lint configuration are ordinary workspace dependencies, so Turbo includes them in the package graph. Shared configuration follows the [Turborepo TypeScript example](https://github.com/vercel/turborepo/tree/main/examples/with-nestjs/packages/typescript-config) and [Ultracite's workspace configuration guidance](https://www.ultracite.ai/docs/monorepos.md). `turbo run check` and `turbo run fix` expose the root lint flow without creating redundant per-package lint tasks. Mutating fixes are never cached.
+
+[Changesets](.changeset/README.md) records shared-package changes and updates private package versions and internal dependencies. All workspaces remain private, with no npm publishing workflow. The included Changeset covers the new configuration and UI packages.
+
 ## Run locally
 
 Use Node `26.12.1`, Bun `1.4.4`, and Docker. From the repository root, for a fresh checkout (skip `local:setup` when `.env.local` already exists):
@@ -47,8 +57,10 @@ bun run check
 bun run check:boundaries
 bun run check:nest
 bun run contracts:check
+bun run typecheck
 bun run api:build
 bun run test:cqrs
+bun run ui:test:web
 bun run mobile:build
 bun run test:api
 ```
@@ -65,4 +77,4 @@ The pinned combination is NestJS/common/core/platform-node `12.3.0`, Nest CQRS `
 
 Army's `e2e` runner is pinned at `0.21.3` and its mobile engine at `0.12.4`. `bun run test:mobile:ios` and `bun run test:mobile:android` run the registration/verification/account/relaunch/sign-out journey with generated synthetic credentials. Start the local API, inbox, and Metro on port 8085 first, and install the native debug build with the matching port (`expo run:ios --port 8085 --no-bundler` or `expo run:android --port 8085 --no-bundler`). These builds load Metro from their configured address and have no `expo-dev-client` dependency. Set `GLO5_IOS_DEVICE` or `GLO5_ANDROID_DEVICE` to select an available test device. The default devices are `Gloups GLO-5 iPhone` and `emulator-5560`; the tests never erase a device or reset its keychain. The iOS fixture expects the simulator's default password AutoFill prompts. For Android, reverse port 8081 to Metro 8085 as well as the API port. Army reports and traces are ignored under `e2e/mobile/.e2e`; API reports use `e2e/api/.e2e`.
 
-The Army mobile journey passed on 30 October 2026 on an iPhone 17e simulator (iOS 27.0, 39.94 seconds) and a Pixel 8 emulator (Android API 37, 12.43 seconds). Native debug builds were installed during GLO-5 validation. Native acceptance exercised the dedicated Better Auth Expo client, SecureStore persistence across app restarts, and the generated feature client against the running API. Email acceptance used the synthetic inbox. The journey waits for registration form transitions and handles native permission prompts, iOS password suggestions and save-password dialogs, and the system confirmation when returning from a verification link. HTTP contracts, authentication policy, and readiness responses are preserved by the module refactor; the rate-limit audit columns are an additive schema change.
+The Army mobile journey passed again with the shared UI package on 30 October 2026 on an iPhone 17e simulator (iOS 27.0, 49.13 seconds) and a Pixel 8 emulator (Android API 37, 11.53 seconds). Native debug builds were installed during GLO-5 validation. Native acceptance exercised the dedicated Better Auth Expo client, SecureStore persistence across app restarts, and the generated feature client against the running API. Email acceptance used the synthetic inbox. The journey waits for registration form transitions and handles native permission prompts, iOS password suggestions and save-password dialogs, and the system confirmation when returning from a verification link. HTTP contracts, authentication policy, and readiness responses are preserved by the module refactor; the rate-limit audit columns are an additive schema change.

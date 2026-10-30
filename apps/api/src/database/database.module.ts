@@ -31,12 +31,12 @@ import { drizzle } from "drizzle-orm/postgres-js";
     }),
   ],
   providers: [
-    DrizzleReadiness,
     {
       inject: [DrizzleReadiness],
       provide: DATABASE_READY,
       useFactory: (readiness: DrizzleReadiness) => () => readiness.ready(),
     },
+    DrizzleReadiness,
   ],
 })
 export class DatabaseModule {}

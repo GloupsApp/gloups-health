@@ -24,6 +24,7 @@ jobs:
       - run: bun run check:boundaries
       - run: bun run contracts:check
       - run: bun run typecheck
+      - run: bun run ui:test:web
       - run: bun run api:build
       - run: bun run test:cqrs
       - run: bun run mobile:build

@@ -1,8 +1,4 @@
 {
-  "extends": ["expo/tsconfig.base", "../../tsconfig.base.json"],
-  "compilerOptions": {
-    "skipLibCheck": true,
-    "types": ["react"]
-  },
+  "extends": "@gloups/typescript-config/expo.json",
   "include": ["index.ts", "src/**/*.ts", "src/**/*.tsx"]
 }

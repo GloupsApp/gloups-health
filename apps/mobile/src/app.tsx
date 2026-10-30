@@ -1,3 +1,4 @@
+import { colors, Heading } from "@gloups/ui";
 import * as Linking from "expo-linking";
 import { useEffect, useState } from "react";
 import {
@@ -24,8 +25,7 @@ const styles = StyleSheet.create({
     paddingTop: 72,
   },
   content: { gap: 20 },
-  root: { backgroundColor: "#F4F7F1", flex: 1 },
-  title: { color: "#142923", fontSize: 28, fontWeight: "600" },
+  root: { backgroundColor: colors.background, flex: 1 },
 });
 
 export const App = () => {
@@ -80,9 +80,7 @@ export const App = () => {
   } else if (state.status === "authenticated") {
     content = (
       <View style={styles.content}>
-        <Text accessibilityRole="header" style={styles.title}>
-          Your account
-        </Text>
+        <Heading>Your account</Heading>
         {state.data.user.name !== "" && <Text>{state.data.user.name}</Text>}
         <Text testID="account-email">{state.data.user.email}</Text>
         <Text>Your email is verified.</Text>

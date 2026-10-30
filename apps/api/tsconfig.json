@@ -1,20 +1,13 @@
 {
-  "extends": "../../tsconfig.base.json",
+  "extends": "@gloups/typescript-config/nestjs.json",
   "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "paths": {
       "@api/*": ["./src/*"],
       "@accounts/*": ["./src/modules/identity-access/accounts/*"],
       "@authentication/*": ["./src/modules/identity-access/authentication/*"],
       "@identity-access/*": ["./src/modules/identity-access/*"],
       "@database/*": ["./src/database/*"]
-    },
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "skipLibCheck": true,
-    "types": ["node"],
-    "lib": ["ES2023", "DOM", "DOM.Iterable"]
+    }
   },
   "include": ["src/**/*.ts", "drizzle.config.ts"]
 }

@@ -1,13 +1,11 @@
 {
-  "extends": "../tsconfig.base.json",
-  "compilerOptions": {
-    "types": ["node"],
-    "lib": ["ES2023", "DOM"],
-    "skipLibCheck": true
-  },
+  "extends": ["@gloups/typescript-config/node.json", "../tsconfig.paths.json"],
   "include": [
     "**/*.ts",
     "../e2e/**/*.ts",
     "../packages/contracts/tools/**/*.ts"
-  ]
+  ],
+  "compilerOptions": {
+    "skipLibCheck": true
+  }
 }
