@@ -26,16 +26,21 @@ export interface FeaturePolicy {
 export const apiFeatures: readonly FeaturePolicy[] = [
   {
     files: {
+      "api-config.module.ts": "wiring",
       "config.ts": "configuration",
       "health.controller.ts": "transport",
       "http-errors.filter.ts": "transport",
       "main.ts": "wiring",
       "migrate.ts": "wiring",
+      "public-route.decorator.ts": "transport",
     },
     frameworkModules: { "@nestjs/cqrs": ["CqrsModule"] },
     name: "api",
-    providerExports: { AppModule: [] },
-    publicFiles: { "config.ts": ["ApiConfig", "readConfig"] },
+    providerExports: { ApiConfigModule: ["ApiConfig"], AppModule: [] },
+    publicFiles: {
+      "api-config.module.ts": ["ApiConfigModule"],
+      "config.ts": ["ApiConfig", "readConfig"],
+    },
     root: ".",
   },
   {
@@ -71,12 +76,13 @@ export const apiFeatures: readonly FeaturePolicy[] = [
     },
     name: "identity-access",
     providerExports: { IdentityAccessModule: [] },
-    publicFiles: { "public.ts": ["createIdentityAccess"] },
+    publicFiles: { "public.ts": ["IdentityAccessModule"] },
     root: "modules/identity-access",
   },
   {
     files: {
       "authentication-http.port.ts": "transport",
+      "authentication.middleware.ts": "transport",
       "authentication.module.ts": "wiring",
       "email-message.contract.ts": "transport",
       "identity-sessions.port.ts": "port",
@@ -88,18 +94,12 @@ export const apiFeatures: readonly FeaturePolicy[] = [
     },
     name: "authentication",
     providerExports: {
-      AuthenticationModule: ["AUTHENTICATION_HTTP", "IDENTITY_SESSIONS"],
+      AuthenticationModule: ["IdentitySessions"],
     },
     publicFiles: {
       "authentication.module.ts": ["AuthenticationModule"],
       "email-message.contract.ts": ["EmailMessage", "emailMessageSchema"],
-      "public.ts": [
-        "AUTHENTICATION_HTTP",
-        "AuthenticationHttpHandler",
-        "IDENTITY_SESSIONS",
-        "IdentitySessions",
-        "VerifiedIdentity",
-      ],
+      "public.ts": ["IdentitySessions", "VerifiedIdentity"],
     },
     root: "modules/identity-access/authentication",
   },

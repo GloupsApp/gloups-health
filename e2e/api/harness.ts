@@ -118,7 +118,7 @@ export const startHarness = async () => {
       POSTGRES_IMAGE,
     ]);
 
-    const sql = async (query: string) =>
+    const sql = async (query: string, database = "gloups_glo5") =>
       (
         await execute("docker", [
           "exec",
@@ -127,7 +127,9 @@ export const startHarness = async () => {
           "-U",
           "gloups",
           "-d",
-          "gloups_glo5",
+          database,
+          "--set",
+          "ON_ERROR_STOP=1",
           "-Atc",
           query,
         ])

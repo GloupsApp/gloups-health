@@ -1,1 +1,1 @@
-export { createIdentityAccess } from "@identity-access/identity-access.module";
+export { IdentityAccessModule } from "@identity-access/identity-access.module";

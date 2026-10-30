@@ -5,8 +5,7 @@ export interface VerifiedIdentity {
   readonly emailVerified: boolean;
 }
 
-export interface IdentitySessions {
-  verify: (proof: string) => Promise<VerifiedIdentity | null>;
+/** Framework-independent session contract, also used as the Nest provider token. */
+export abstract class IdentitySessions {
+  abstract verify(proof: string): Promise<VerifiedIdentity | null>;
 }
-
-export const IDENTITY_SESSIONS = Symbol("IDENTITY_SESSIONS");

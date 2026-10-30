@@ -37,6 +37,7 @@
     "contracts:generate": "bun run --filter @gloups/contracts generate",
     "contracts:check": "bun run contracts:generate && git diff --exit-code -- packages/contracts/generated",
     "check:boundaries": "node tools/check-boundaries.ts && node --test tools/architecture-checker.test.ts",
+    "check:nest": "node --test tools/nest-doctor-policy.test.ts && node tools/check-nest-doctor.ts",
     "test:api": "bun run api:build && e2e run --config e2e/api/config.ts",
     "test:integration": "bun run test:api",
     "test:cqrs": "bun run --filter @gloups/api test:cqrs",
@@ -53,12 +54,14 @@
     "e2e": "0.21.3",
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
+    "nestjs-doctor": "0.9.10",
     "oxfmt": "0.75.0",
     "oxlint": "1.90.0",
     "tsc-alias": "1.9.9",
     "turbo": "2.11.10",
     "typescript": "6.0.3",
-    "ultracite": "8.1.0"
+    "ultracite": "8.1.0",
+    "zod": "4.6.7"
   },
   "lint-staged": {
     "*": "ultracite fix"

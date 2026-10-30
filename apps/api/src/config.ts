@@ -46,4 +46,14 @@ export const readConfig = (environment: NodeJS.ProcessEnv) => {
   return config;
 };
 
-export type ApiConfig = ReturnType<typeof readConfig>;
+/** Validated configuration contract and runtime injection token. */
+export abstract class ApiConfig implements z.infer<typeof environmentSchema> {
+  abstract readonly API_HOST: string;
+  abstract readonly API_URL: string;
+  abstract readonly AUTH_SECRET: string;
+  abstract readonly DATABASE_URL: string;
+  abstract readonly EMAIL_DELIVERY_TOKEN: string;
+  abstract readonly EMAIL_DELIVERY_URL: string;
+  abstract readonly NODE_ENV: "development" | "test" | "production";
+  abstract readonly PORT: number;
+}

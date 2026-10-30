@@ -1,1 +1,4 @@
+set -eu
+
 bun run --bun lint-staged
+bun run check:nest

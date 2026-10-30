@@ -1,3 +1,4 @@
+import { Public } from "@api/public-route.decorator";
 import { DATABASE_READY } from "@database/database-readiness.port";
 import { Controller, Get, Inject } from "@nestjs/common";
 
@@ -9,8 +10,8 @@ export class HealthController {
     this.ready = ready;
   }
 
-  // nestjs-doctor-ignore-next-line security/require-guards-on-endpoints -- Public readiness probe for infrastructure; returns only database readiness, never account data.
   @Get()
+  @Public()
   async get() {
     await this.ready();
 

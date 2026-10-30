@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { once } from "node:events";
+import { readFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { promisify } from "node:util";
 
@@ -71,6 +72,61 @@ describe(
     let aliceCookie = "";
     let bobCookie = "";
     let accountId = "";
+    test("upgrades existing rate-limit counters with backfilled audit timestamps", async () => {
+      const database = "gloups_rate_limit_upgrade";
+      await sql(`CREATE DATABASE ${database}`);
+
+      try {
+        await sql(
+          await readFile(
+            new URL(
+              "../../apps/api/drizzle/0000_stiff_morbius.sql",
+              import.meta.url
+            ),
+            "utf-8"
+          ),
+          database
+        );
+        await sql(
+          "INSERT INTO auth_rate_limit (id, key, count, last_request) VALUES ('existing-counter', 'existing-key', 5, 1793311521743)",
+          database
+        );
+        await sql(
+          await readFile(
+            new URL(
+              "../../apps/api/drizzle/0001_rate_limit_audit_timestamps.sql",
+              import.meta.url
+            ),
+            "utf-8"
+          ),
+          database
+        );
+        expect(
+          await sql(
+            "SELECT id || '|' || key || '|' || count || '|' || last_request FROM auth_rate_limit",
+            database
+          )
+        ).toBe("existing-counter|existing-key|5|1793311521743");
+        expect(
+          await sql(
+            "SELECT count(*) FROM auth_rate_limit WHERE created_at IS NOT NULL AND updated_at IS NOT NULL",
+            database
+          )
+        ).toBe("1");
+        await sql(
+          "INSERT INTO auth_rate_limit (id, key, count, last_request) VALUES ('new-counter', 'new-key', 1, 1793311521744)",
+          database
+        );
+        expect(
+          await sql(
+            "SELECT count(*) FROM auth_rate_limit WHERE created_at IS NOT NULL AND updated_at IS NOT NULL",
+            database
+          )
+        ).toBe("2");
+      } finally {
+        await sql(`DROP DATABASE ${database}`);
+      }
+    });
     test("rejects anonymous and invalid requests with runtime-validated contracts", async () => {
       const readiness = await fetch(`${url}/healthz`);
       expect(readiness.status).toBe(200);
@@ -320,6 +376,11 @@ describe(
       expect(limited.status).toBe(429);
       assert.ok(Number(limited.headers.get("retry-after")) > 0);
       expect(await limited.json()).toMatchSchema(authErrorSchema);
+      expect(
+        await sql(
+          "SELECT count(*) FROM auth_rate_limit WHERE count = 5 AND updated_at > created_at"
+        )
+      ).toBe("1");
     });
   }
 );
