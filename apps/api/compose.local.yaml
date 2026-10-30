@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:18.6-bookworm@sha256:5c4783a8cc3f0074912164f94dfa1be4e043438f0f707cf968d7af9a0d31a2c8
+    environment:
+      POSTGRES_USER: gloups
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+      POSTGRES_DB: gloups_glo5
+    ports:
+      - "127.0.0.1:25445:5432"
+    volumes:
+      - glo5-postgres:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gloups -d gloups_glo5"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+volumes:
+  glo5-postgres:

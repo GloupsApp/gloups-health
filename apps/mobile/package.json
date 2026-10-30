@@ -5,12 +5,20 @@
   "main": "index.ts",
   "scripts": {
     "build": "expo export --platform all",
-    "dev": "expo start --port 8083",
+    "dev": "expo start --port 8085",
     "typecheck": "tsc --project tsconfig.json"
   },
   "dependencies": {
+    "@better-auth/expo": "1.7.14",
+    "@gloups/contracts": "workspace:*",
+    "better-auth": "1.7.14",
     "expo": "58.0.20",
+    "expo-constants": "58.0.14",
+    "expo-linking": "58.0.15",
+    "expo-network": "58.0.4",
+    "expo-secure-store": "58.0.2",
     "expo-system-ui": "58.0.6",
+    "expo-web-browser": "58.0.7",
     "react": "19.3.0",
     "react-native": "0.88.0"
   },

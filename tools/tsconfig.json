@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "lib": ["ES2023", "DOM"],
+    "skipLibCheck": true
+  },
+  "include": [
+    "**/*.ts",
+    "../e2e/**/*.ts",
+    "../packages/contracts/tools/**/*.ts"
+  ]
+}

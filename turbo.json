@@ -5,15 +5,17 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build", "typecheck"],
-      "outputs": ["dist/**"]
+      "outputs": ["dist/**", "generated/dist/**"],
+      "env": ["EXPO_PUBLIC_API_URL"]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"],
+      "dependsOn": ["^build"],
       "outputs": []
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "env": ["EXPO_PUBLIC_API_URL"]
     },
     "preview": {
       "cache": false,

@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "declaration": true,
+    "exactOptionalPropertyTypes": false,
+    "rootDir": "generated/client",
+    "outDir": "generated/dist"
+  },
+  "include": ["generated/client/**/*.ts"]
+}
