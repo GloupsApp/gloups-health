@@ -1,4 +1,9 @@
-import { authErrorSchema, registrationSchema } from "@gloups/contracts";
+import {
+  authErrorSchema,
+  passwordPolicy,
+  passwordSchema,
+  registrationSchema,
+} from "@gloups/contracts";
 
 import { authClient } from "./auth-client";
 
@@ -68,7 +73,7 @@ export const performAuthAction = async (input: AuthInput) => {
       if (!parsed.success) {
         return result(
           mode,
-          "Enter a valid email and a password of 15 to 128 characters. Your name can be up to 100 characters.",
+          `Enter a valid email and a password of ${passwordPolicy.minimumLength} to ${passwordPolicy.maximumLength} characters. Your name can be up to 100 characters.`,
           false,
           false
         );
@@ -125,10 +130,10 @@ export const performAuthAction = async (input: AuthInput) => {
       );
     }
 
-    if (!resetToken || password.length < 15 || password.length > 128) {
+    if (!resetToken || !passwordSchema.safeParse(password).success) {
       return result(
         mode,
-        "Use a valid reset link and a password of 15 to 128 characters.",
+        `Use a valid reset link and a password of ${passwordPolicy.minimumLength} to ${passwordPolicy.maximumLength} characters.`,
         false,
         false
       );

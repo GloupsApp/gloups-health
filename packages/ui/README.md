@@ -18,4 +18,6 @@ Web consumers install compatible React, React DOM, and React Native Web versions
 
 `bun run ui:test:web` builds the package through Turbo and renders its compiled export through the real React Native Web adapter. The check verifies the heading role, text, and forwarded test identifier. CI runs it alongside the API and mobile checks.
 
+The web check is TypeScript. The package typecheck verifies production source separately from its test project, including the web check and local lint configuration. Test-only source resolution allows checking a fresh checkout before build artifacts exist; the runtime check still imports the compiled package export.
+
 Use the React Native library compiler preset and the React/React Native lint profiles. Keep platform APIs out of shared primitives; introduce platform-specific files when a real component needs them.

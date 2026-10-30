@@ -1,7 +1,8 @@
 import parser from "@typescript-eslint/parser";
+import type { Linter } from "eslint";
 import reactNative from "ultracite/eslint/react-native";
 
-export default [
+const profile: readonly Linter.Config[] = [
   {
     languageOptions: { parser, parserOptions: { ecmaFeatures: { jsx: true } } },
   },
@@ -12,3 +13,5 @@ export default [
     },
   },
 ];
+
+export default profile;

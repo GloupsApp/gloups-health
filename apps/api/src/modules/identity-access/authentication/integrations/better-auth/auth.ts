@@ -4,6 +4,7 @@ import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { expo } from "@better-auth/expo";
 import type { Database } from "@database/public";
 import { authSchema as schema } from "@database/public";
+import { passwordPolicy } from "@gloups/contracts";
 import { betterAuth } from "better-auth";
 
 export const createAuth = (
@@ -29,8 +30,8 @@ export const createAuth = (
     emailAndPassword: {
       autoSignIn: false,
       enabled: true,
-      maxPasswordLength: 128,
-      minPasswordLength: 15,
+      maxPasswordLength: passwordPolicy.maximumLength,
+      minPasswordLength: passwordPolicy.minimumLength,
       requireEmailVerification: true,
       resetPasswordTokenExpiresIn: 3600,
       revokeSessionsOnPasswordReset: true,

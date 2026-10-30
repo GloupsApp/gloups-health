@@ -44,7 +44,8 @@
     "test:mobile:ios": "node tools/run-mobile.ts ios",
     "test:mobile:android": "node tools/run-mobile.ts android",
     "lint:frameworks": "eslint apps/api/src apps/mobile/src packages/ui/src --max-warnings 0",
-    "ui:test:web": "turbo run test:web --filter=@gloups/ui"
+    "ui:test:web": "turbo run test:web --filter=@gloups/ui",
+    "test:mobile:unit": "turbo run test:unit --filter=@gloups/mobile"
   },
   "devDependencies": {
     "@changesets/cli": "3.0.3",
@@ -58,6 +59,7 @@
     "e2e": "0.21.3",
     "eslint": "10.13.0",
     "husky": "9.1.7",
+    "jiti": "2.7.0",
     "lint-staged": "17.6.0",
     "nestjs-doctor": "0.9.10",
     "oxfmt": "0.75.0",

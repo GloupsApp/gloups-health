@@ -25,9 +25,19 @@ export const apiErrorSchema = z.strictObject({
   }),
 });
 
+export const passwordPolicy = {
+  maximumLength: 128,
+  minimumLength: 15,
+} as const;
+
+export const passwordSchema = z
+  .string()
+  .min(passwordPolicy.minimumLength)
+  .max(passwordPolicy.maximumLength);
+
 export const credentialsSchema = z.strictObject({
   email: z.email().max(254),
-  password: z.string().min(15).max(128),
+  password: passwordSchema,
 });
 
 export const registrationSchema = credentialsSchema.extend({

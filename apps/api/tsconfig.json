@@ -9,5 +9,10 @@
       "@database/*": ["./src/database/*"]
     }
   },
-  "include": ["src/**/*.ts", "drizzle.config.ts"]
+  "include": [
+    "src/**/*.ts",
+    "drizzle.config.ts",
+    "eslint.config.ts",
+    "oxlint.config.ts"
+  ]
 }

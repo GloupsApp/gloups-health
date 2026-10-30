@@ -30,6 +30,10 @@
     "test:web": {
       "dependsOn": ["build"],
       "outputs": []
+    },
+    "test:unit": {
+      "dependsOn": ["^build", "typecheck"],
+      "outputs": []
     }
   }
 }

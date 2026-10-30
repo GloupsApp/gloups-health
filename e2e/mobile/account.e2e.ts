@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 
-import type { EmailMessage } from "@authentication/email-message.contract";
+import { emailMessageSchema } from "@authentication/email-message.contract";
 import { test } from "@e2e-dev/mobile";
 import { credentials, expect } from "e2e";
 
@@ -11,6 +11,23 @@ test("adult registers, verifies, signs in, relaunches and signs out", async ({
   screen,
 }) => {
   const adult = credentials.user("adult");
+
+  const openAuthLink = async (url: string, heading: string) => {
+    await device.openLink(url);
+
+    if (platform === "ios") {
+      await expect(
+        screen.getByText(heading).or(screen.getByRole("button", "Open"))
+      ).toBeVisible();
+
+      if (await screen.getByRole("button", "Open").isVisible()) {
+        await screen.getByRole("button", "Open").tap();
+      }
+    }
+
+    await expect(screen.getByText(heading)).toBeVisible();
+  };
+
   await app.open();
 
   if (
@@ -58,7 +75,7 @@ test("adult registers, verifies, signs in, relaunches and signs out", async ({
     headers: { authorization: `Bearer ${token}` },
   });
 
-  const emails: EmailMessage[] = await messages.json();
+  const emails = emailMessageSchema.array().parse(await messages.json());
 
   const message = emails.find(
     (email) =>
@@ -111,4 +128,37 @@ test("adult registers, verifies, signs in, relaunches and signs out", async ({
   await expect(screen.getByRole("button", /^Sign in$/iu)).toBeVisible();
   await app.restart();
   await expect(screen.getByRole("button", /^Sign in$/iu)).toBeVisible();
+
+  await screen.getByRole("button", /^Forgot password\?$/iu).tap();
+  await screen.getByRole("textbox", "Email").fill(adult.username);
+  await screen.getByRole("button", /^Send reset link$/iu).tap();
+  await expect(
+    screen.getByText(
+      "If this email has an account, a reset link is on its way."
+    )
+  ).toBeVisible();
+
+  const resetMessages = await fetch("http://127.0.0.1:4346/messages", {
+    headers: { authorization: `Bearer ${token}` },
+  });
+
+  const resetEmail = emailMessageSchema
+    .array()
+    .parse(await resetMessages.json())
+    .find(
+      (email) =>
+        email.recipient === adult.username && email.kind === "password-reset"
+    );
+
+  assert.ok(resetEmail);
+  const reset = await fetch(resetEmail.url, { redirect: "manual" });
+  expect(reset.status).toBe(302);
+  const resetUrl = reset.headers.get("location");
+  assert.ok(resetUrl);
+
+  await openAuthLink(resetUrl, "Choose a new password");
+  await screen.getByRole("button", /^Back to sign in$/iu).tap();
+  await expect(screen.getByRole("button", /^Sign in$/iu)).toBeVisible();
+  await openAuthLink(resetUrl, "Choose a new password");
+  await openAuthLink("gloups-health://verified", "Welcome to Gloups");
 });

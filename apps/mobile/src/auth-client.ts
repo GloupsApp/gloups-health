@@ -19,6 +19,7 @@ export const apiUrl = parsedUrl.origin;
 const storagePrefix = __DEV__ ? "gloups.development" : "gloups.production";
 const storage = storageAdapter(SecureStore);
 let sessionEpoch = 0;
+const responseEpochs = new WeakMap<Response, number>();
 
 // A response from a retired account must not write cookies through the SDK's success hook.
 const sessionFetch = async (
@@ -27,6 +28,7 @@ const sessionFetch = async (
 ) => {
   const epoch = sessionEpoch;
   const response = await fetch(input instanceof URL ? input.href : input, init);
+  responseEpochs.set(response, epoch);
 
   if (epoch !== sessionEpoch) {
     return new Response(
@@ -47,7 +49,20 @@ const sessionFetch = async (
 
 export const authClient = createAuthClient({
   baseURL: apiUrl,
-  fetchOptions: { credentials: "omit", customFetchImpl: sessionFetch },
+  fetchOptions: {
+    credentials: "omit",
+    customFetchImpl: sessionFetch,
+    onSuccess: ({ request, response }) => {
+      // Native body parsing can outlive XHR cancellation. Better Auth runs this
+      // lifecycle hook after parsing and before Expo persists response cookies.
+      if (
+        responseEpochs.get(response) !== sessionEpoch ||
+        request.signal?.aborted
+      ) {
+        throw new Error("Session response retired");
+      }
+    },
+  },
   plugins: [
     expoClient({
       cookiePrefix: "gloups",
@@ -65,15 +80,23 @@ export const accountClient = createAccountClient(apiUrl, () =>
 
 export const signOut = async () => {
   sessionEpoch += 1;
+  let confirmed: boolean;
 
   try {
     const result = await authClient.signOut();
-
-    return result.error === null;
+    confirmed = result.error === null;
   } catch {
-    return false;
-  } finally {
-    await storage.setItemAsync(`${storagePrefix}_cookie`, "{}");
-    await storage.setItemAsync(`${storagePrefix}_session_data`, "{}");
+    confirmed = false;
   }
+
+  await storage.setItemAsync(`${storagePrefix}_cookie`, "{}");
+  await storage.setItemAsync(`${storagePrefix}_session_data`, "{}");
+
+  // The SDK adapter logs native write failures instead of rejecting them.
+  // Do not report local sign-out while usable credentials remain persisted.
+  if (await authClient.getCookie()) {
+    throw new Error("Local credentials could not be cleared");
+  }
+
+  return confirmed;
 };

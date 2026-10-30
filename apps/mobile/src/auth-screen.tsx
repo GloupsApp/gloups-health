@@ -1,3 +1,4 @@
+import { passwordPolicy } from "@gloups/contracts";
 import { colors, Heading } from "@gloups/ui";
 import { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
@@ -138,7 +139,9 @@ export const AuthScreen = ({
             style={styles.input}
             value={password}
           />
-          {mode !== "sign-in" && <Text>Use 15 to 128 characters.</Text>}
+          {mode !== "sign-in" && (
+            <Text>{`Use ${passwordPolicy.minimumLength} to ${passwordPolicy.maximumLength} characters.`}</Text>
+          )}
         </>
       )}
       {message !== "" && (

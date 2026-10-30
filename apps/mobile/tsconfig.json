@@ -1,4 +1,15 @@
 {
   "extends": "@gloups/typescript-config/expo.json",
-  "include": ["index.ts", "src/**/*.ts", "src/**/*.tsx"]
+  "include": [
+    "index.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "eslint.config.mts",
+    "oxlint.config.mts"
+  ],
+  "compilerOptions": {
+    "paths": {
+      "@mobile/*": ["./src/*"]
+    }
+  }
 }

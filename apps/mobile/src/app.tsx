@@ -43,6 +43,7 @@ export const App = () => {
 
       if (link.hostname === "reset-password") {
         setResetToken(link.searchParams.get("token"));
+        setAuthRevision((value) => value + 1);
         setLinkMessage(
           link.searchParams.has("error")
             ? "This reset link has expired. Request a new link."

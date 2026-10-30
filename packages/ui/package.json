@@ -13,13 +13,16 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json --resolve-full-paths",
-    "typecheck": "tsc --project tsconfig.json --noEmit",
-    "test:web": "bun test test/web.test.mjs"
+    "typecheck": "tsc --project tsconfig.json --noEmit && tsc --project tsconfig.test.json",
+    "test:web": "bun test test/web.test.ts"
   },
   "devDependencies": {
     "@gloups/typescript-config": "workspace:*",
     "@gloups/ultracite-config": "workspace:*",
+    "@types/bun": "1.4.4",
     "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/react-native-web": "0.19.3",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "react-native": "0.88.0",

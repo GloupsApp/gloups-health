@@ -1,11 +1,12 @@
 import nestjsPlugin from "@darraghor/eslint-plugin-nestjs-typed";
 import parser from "@typescript-eslint/parser";
+import type { Linter } from "eslint";
 import nestjs from "ultracite/eslint/nestjs";
 import nestjsTypeAware from "ultracite/eslint/nestjs/type-aware";
 
 // Oxlint already supplies shared rules. ESLint adds the framework rules that
 // Ultracite's Oxlint NestJS preset does not implement.
-export default [
+const profile: readonly Linter.Config[] = [
   { languageOptions: { parser } },
   ...nestjs,
   ...nestjsTypeAware,
@@ -24,3 +25,5 @@ export default [
     },
   },
 ];
+
+export default profile;

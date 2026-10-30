@@ -1,4 +1,4 @@
-import { apiErrorSchema } from "@contracts/index";
+import { accountViewSchema, apiErrorSchema } from "@contracts/index";
 
 import { createClient } from "../generated/dist/client/index";
 import { getCurrentAccount } from "../generated/dist/sdk.gen";
@@ -37,11 +37,9 @@ export const createAccountClient = (
         );
       }
 
-      if (!result.data) {
-        throw new Error("Invalid account response");
-      }
-
-      return result.data;
+      // Generated clients may skip response validators for empty/204 bodies.
+      // The owned boundary must validate every successful result as well.
+      return accountViewSchema.parse(result.data);
     },
   };
 };

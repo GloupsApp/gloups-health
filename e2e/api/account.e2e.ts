@@ -385,13 +385,25 @@ describe(
   }
 );
 
+interface NetworkReply {
+  status: number;
+  body: string | null;
+}
+
 test("generated client validates success and error payloads at the network boundary", async () => {
-  let status = 200;
+  let reply: NetworkReply = {
+    body: JSON.stringify({ unexpected: true }),
+    status: 200,
+  };
 
   const server = createServer((_request, response) => {
+    if (reply.status === 200 && reply.body === null) {
+      response.setHeader("Content-Length", "0");
+    }
+
     response
-      .writeHead(status, { "content-type": "application/json" })
-      .end(JSON.stringify({ unexpected: true }));
+      .writeHead(reply.status, { "content-type": "application/json" })
+      .end(reply.body);
   });
 
   server.listen(0, "127.0.0.1");
@@ -403,9 +415,28 @@ test("generated client validates success and error payloads at the network bound
       () => Promise.resolve("")
     );
 
-    await assert.rejects(client.current());
-    status = 401;
-    await assert.rejects(client.current());
+    for (const invalid of [
+      { body: JSON.stringify({ unexpected: true }), status: 200 },
+      { body: null, status: 200 },
+      { body: null, status: 204 },
+      { body: "{}", status: 200 },
+      { body: JSON.stringify({ unexpected: true }), status: 401 },
+    ]) {
+      reply = invalid;
+      await assert.rejects(client.current());
+    }
+
+    const account = {
+      account: { id: randomUUID() },
+      user: {
+        email: "network@example.test",
+        emailVerified: true,
+        name: "Network boundary",
+      },
+    };
+
+    reply = { body: JSON.stringify(account), status: 200 };
+    expect(await client.current()).toEqual(account);
   } finally {
     await promisify(server.close.bind(server))();
   }
