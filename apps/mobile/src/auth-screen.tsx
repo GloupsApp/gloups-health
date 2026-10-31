@@ -3,8 +3,10 @@ import { colors, Heading } from "@gloups/ui";
 import { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 
-import { performAuthAction } from "./auth-actions";
+import { performAuthAction, performSocialAction } from "./auth-actions";
 import type { AuthMode } from "./auth-actions";
+import type { SocialProvider } from "./auth-client";
+import { ProviderButtons } from "./provider-buttons";
 
 const styles = StyleSheet.create({
   form: { gap: 12 },
@@ -69,6 +71,23 @@ export const AuthScreen = ({
     }
   };
 
+  const signInWith = async (provider: SocialProvider) => {
+    if (busy) {
+      return;
+    }
+
+    setBusy(true);
+    setPassword("");
+    setMessage("");
+    const outcome = await performSocialAction(provider);
+    setMessage(outcome.message);
+    setBusy(false);
+
+    if (outcome.completed) {
+      await onSignedIn();
+    }
+  };
+
   const titles: Record<AuthMode, string> = {
     recover: "Reset your password",
     reset: "Choose a new password",
@@ -88,6 +107,20 @@ export const AuthScreen = ({
   return (
     <View style={styles.form}>
       <Heading>{titles[mode]}</Heading>
+      {(mode === "sign-in" || mode === "sign-up") && (
+        <ProviderButtons
+          busy={busy}
+          onPress={(provider) => {
+            void signInWith(provider);
+          }}
+        />
+      )}
+      {mode === "recover" && (
+        <Text>
+          If you signed up with Apple or Google, use that linked method. Add
+          your first password from your account after signing in.
+        </Text>
+      )}
       {mode === "verify" && (
         <Text>
           Open the verification link in your email, then return here to sign in.

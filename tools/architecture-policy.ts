@@ -27,6 +27,7 @@ export const apiFeatures: readonly FeaturePolicy[] = [
   {
     files: {
       "api-config.module.ts": "wiring",
+      "app.module.ts": "wiring",
       "config.ts": "configuration",
       "health.controller.ts": "transport",
       "http-errors.filter.ts": "transport",
@@ -88,6 +89,9 @@ export const apiFeatures: readonly FeaturePolicy[] = [
       "identity-sessions.port.ts": "port",
       "integrations/better-auth/auth-http.ts": "integration",
       "integrations/better-auth/auth.ts": "integration",
+      "integrations/better-auth/provider-notifications.ts": "integration",
+      "integrations/better-auth/security-policy.ts": "integration",
+      "integrations/better-auth/security-store.ts": "integration",
       "integrations/better-auth/sessions.ts": "integration",
       "integrations/email/http-email.delivery.ts": "integration",
       "public.ts": "contract",

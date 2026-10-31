@@ -5,7 +5,7 @@
     "scheme": "gloups-health",
     "ios": { "bundleIdentifier": "health.gloups.mobile" },
     "android": { "package": "health.gloups.mobile" },
-    "plugins": ["expo-secure-store"],
+    "plugins": ["expo-secure-store", "./plugins/with-android-dev-support.ts"],
     "version": "0.0.0",
     "platforms": ["ios", "android"],
     "userInterfaceStyle": "automatic"

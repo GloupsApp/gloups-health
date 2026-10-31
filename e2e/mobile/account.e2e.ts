@@ -134,7 +134,7 @@ test("adult registers, verifies, signs in, relaunches and signs out", async ({
   await screen.getByRole("button", /^Send reset link$/iu).tap();
   await expect(
     screen.getByText(
-      "If this email has an account, a reset link is on its way."
+      "If this email has a password, a reset link is on its way."
     )
   ).toBeVisible();
 

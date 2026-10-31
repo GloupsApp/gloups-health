@@ -12,6 +12,7 @@ import {
   View,
 } from "react-native";
 
+import { AccountMethods } from "./account-methods";
 import { AuthScreen } from "./auth-screen";
 import { useAccount } from "./use-account";
 
@@ -32,6 +33,7 @@ export const App = () => {
   const { state, refresh, leave } = useAccount();
   const [resetToken, setResetToken] = useState<string | null>(null);
   const [linkMessage, setLinkMessage] = useState("");
+  const [methodMessage, setMethodMessage] = useState("");
   const [authRevision, setAuthRevision] = useState(0);
   useEffect(() => {
     const handleLink = (url: string) => {
@@ -87,9 +89,15 @@ export const App = () => {
         <Text>Your email is verified.</Text>
         <Button
           onPress={() => {
+            setMethodMessage("");
             void leave();
           }}
           title="Sign out"
+        />
+        <AccountMethods
+          message={methodMessage}
+          onChanged={refresh}
+          onMessage={setMethodMessage}
         />
       </View>
     );
@@ -128,6 +136,7 @@ export const App = () => {
         <AuthScreen
           key={`${resetToken ?? "credentials"}-${authRevision}`}
           onSignedIn={async () => {
+            setMethodMessage("");
             setResetToken(null);
             setLinkMessage("");
             await refresh();

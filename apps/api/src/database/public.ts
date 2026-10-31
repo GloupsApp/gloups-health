@@ -1,6 +1,7 @@
 import {
   account,
   gloupsAccount,
+  providerRevocation,
   rateLimit,
   session,
   user,
@@ -16,6 +17,7 @@ export { gloupsAccount } from "@database/schema";
 export const authSchema = {
   account,
   gloupsAccount,
+  providerRevocation,
   rateLimit,
   session,
   user,

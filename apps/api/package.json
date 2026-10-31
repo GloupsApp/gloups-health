@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc --project tsconfig.build.json && tsc-alias -p tsconfig.build.json --resolve-full-paths",
-    "test:cqrs": "tsc --project tsconfig.test.json && tsc-alias -p tsconfig.test.json --resolve-full-paths && node --test dist/tests/test/account-cqrs.test.js",
+    "build:tests": "tsc --project tsconfig.test.json && tsc-alias -p tsconfig.test.json --resolve-full-paths",
+    "test:cqrs": "bun run build:tests && node --test dist/tests/test/account-cqrs.test.js",
     "typecheck": "tsc --project tsconfig.json",
     "dev": "node --env-file=.env.local --watch dist/main.js",
     "start": "node dist/main.js",
@@ -23,6 +24,7 @@
     "@nestjs/platform-node": "12.3.0",
     "better-auth": "1.7.14",
     "drizzle-orm": "0.45.4",
+    "jose": "6.2.13",
     "postgres": "3.4.9",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2",
@@ -31,6 +33,7 @@
   "devDependencies": {
     "@gloups/typescript-config": "workspace:*",
     "@gloups/ultracite-config": "workspace:*",
+    "@nestjs/testing": "12.3.0",
     "drizzle-kit": "0.31.11"
   },
   "engines": {

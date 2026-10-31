@@ -1,30 +1,14 @@
 import "reflect-metadata";
-import { ApiConfigModule } from "@api/api-config.module";
+import { AppModule } from "@api/app.module";
 import { ApiConfig } from "@api/config";
-import { HealthController } from "@api/health.controller";
 import { HttpErrors } from "@api/http-errors.filter";
-import { DatabaseModule } from "@database/database.module";
-import { IdentityAccessModule } from "@identity-access/public";
-import { Module } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
-import { CqrsModule } from "@nestjs/cqrs";
 import { NodeAdapter } from "@nestjs/platform-node";
 import type {
   NestNodeApplication,
   NodeRequest,
   NodeResponse,
 } from "@nestjs/platform-node";
-
-@Module({
-  controllers: [HealthController],
-  imports: [
-    ApiConfigModule,
-    CqrsModule.forRoot(),
-    DatabaseModule,
-    IdentityAccessModule,
-  ],
-})
-class AppModule {}
 
 let app: NestNodeApplication | undefined;
 

@@ -7,9 +7,20 @@ import { fromNodeHeaders } from "better-auth/node";
 const AUTH_ROUTES = new Set([
   "GET /api/auth/ok",
   "GET /api/auth/get-session",
+  "GET /api/auth/providers",
+  "GET /api/auth/methods",
+  "GET /api/auth/expo-authorization-proxy",
+  "GET /api/auth/error",
   "GET /api/auth/verify-email",
   "POST /api/auth/sign-up/email",
   "POST /api/auth/sign-in/email",
+  "POST /api/auth/sign-in/social",
+  "POST /api/auth/link-social",
+  "POST /api/auth/methods/password",
+  "POST /api/auth/methods/unlink",
+  "POST /api/auth/revoke-sessions",
+  "POST /api/auth/provider-notifications/apple",
+  "POST /api/auth/provider-notifications/google",
   "POST /api/auth/sign-out",
   "POST /api/auth/send-verification-email",
   "POST /api/auth/request-password-reset",
@@ -17,6 +28,18 @@ const AUTH_ROUTES = new Set([
 ]);
 
 const BODY_LIMIT = 65_536;
+
+const isAuthRoute = (method: string, pathname: string) => {
+  const route = `${method} ${pathname}`;
+
+  return (
+    AUTH_ROUTES.has(route) ||
+    (method === "GET" &&
+      /^\/api\/auth\/reset-password\/[^/]+$/u.test(pathname)) ||
+    (["GET", "POST"].includes(method) &&
+      /^\/api\/auth\/callback\/(?:apple|google)$/u.test(pathname))
+  );
+};
 
 export const authHttp =
   (auth: Auth, config: ApiConfig) =>
@@ -29,15 +52,7 @@ export const authHttp =
       return;
     }
 
-    const route = `${request.method} ${url.pathname}`;
-
-    if (
-      !AUTH_ROUTES.has(route) &&
-      !(
-        request.method === "GET" &&
-        /^\/api\/auth\/reset-password\/[^/]+$/u.test(url.pathname)
-      )
-    ) {
+    if (!isAuthRoute(request.method ?? "GET", url.pathname)) {
       response
         .status(404)
         .json({ code: "NOT_FOUND", message: "Unknown authentication route" });
@@ -78,7 +93,16 @@ export const authHttp =
       const options: RequestInit = { headers, method: request.method ?? "GET" };
 
       if (body.length > 0) {
-        options.body = new Uint8Array(body);
+        if (
+          url.pathname === "/api/auth/provider-notifications/google" &&
+          headers.get("content-type")?.split(";")[0] ===
+            "application/secevent+jwt"
+        ) {
+          headers.set("content-type", "application/json");
+          options.body = JSON.stringify({ token: body.toString("utf-8") });
+        } else {
+          options.body = new Uint8Array(body);
+        }
       }
 
       const result = await auth.handler(new Request(url, options));

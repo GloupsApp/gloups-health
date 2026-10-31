@@ -5,7 +5,8 @@ import {
   registrationSchema,
 } from "@gloups/contracts";
 
-import { authClient } from "./auth-client";
+import { authClient, completeProviderAuth } from "./auth-client";
+import type { SocialProvider } from "./auth-client";
 
 export type AuthMode = "sign-in" | "sign-up" | "verify" | "recover" | "reset";
 
@@ -17,17 +18,49 @@ interface AuthInput {
   resetToken: string | null;
 }
 
-const errorMessage = (error: {
+export const errorMessage = (error: {
   code?: string | undefined;
   message?: string | undefined;
 }) => {
-  const result = authErrorSchema.safeParse(error);
+  const result = authErrorSchema.safeParse({ message: "", ...error });
 
   if (!result.success) {
     return "We could not reach Gloups. Please try again.";
   }
 
   switch (result.data.code) {
+    case "PROVIDER_CANCELLED":
+    case "ACCESS_DENIED": {
+      return "Sign-in was cancelled. Try again or use another linked method.";
+    }
+
+    case "ACCOUNT_NOT_LINKED": {
+      return "Sign in with your existing method, then link this provider from your account.";
+    }
+
+    case "SOCIAL_ACCOUNT_ALREADY_LINKED":
+    case "ACCOUNT_ALREADY_LINKED_TO_DIFFERENT_USER": {
+      return "This provider belongs to another Gloups account. Use a different provider account.";
+    }
+
+    case "FAILED_TO_UNLINK_LAST_ACCOUNT": {
+      return "Add another available sign-in method before removing this one.";
+    }
+
+    case "FRESH_SESSION_REQUIRED":
+    case "LINK_SESSION_EXPIRED":
+    case "SESSION_NOT_FRESH": {
+      return "Sign out and sign in again before changing your sign-in methods.";
+    }
+
+    case "PROVIDER_ACCESS_REVOKED": {
+      return "Recover access with Apple or Google, or sign in with another linked method.";
+    }
+
+    case "PROVIDER_NOT_FOUND": {
+      return "This provider is unavailable. Use another method or try again later.";
+    }
+
     case "INVALID_EMAIL_OR_PASSWORD": {
       return "The email or password is incorrect.";
     }
@@ -126,7 +159,7 @@ export const performAuthAction = async (input: AuthInput) => {
         mode,
         response.error
           ? errorMessage(response.error)
-          : "If this email has an account, a reset link is on its way."
+          : "If this email has a password, a reset link is on its way."
       );
     }
 
@@ -157,5 +190,25 @@ export const performAuthAction = async (input: AuthInput) => {
       false,
       false
     );
+  }
+};
+
+export const performSocialAction = async (
+  provider: SocialProvider,
+  linking = false
+) => {
+  try {
+    const outcome = await completeProviderAuth(provider, linking);
+
+    return {
+      completed: outcome.completed,
+      message: outcome.error ? errorMessage(outcome.error) : "",
+    };
+  } catch {
+    return {
+      completed: false,
+      message:
+        "We could not reach the provider. Try again or use another linked method.",
+    };
   }
 };

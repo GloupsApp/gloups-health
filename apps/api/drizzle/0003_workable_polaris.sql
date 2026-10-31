@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "email_verification_token_idx" ON "auth_verification" USING btree ("identifier") WHERE "auth_verification"."identifier" like 'email-verification:%';
