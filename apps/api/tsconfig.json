@@ -3,9 +3,8 @@
   "compilerOptions": {
     "paths": {
       "@api/*": ["./src/*"],
-      "@accounts/*": ["./src/modules/identity-access/accounts/*"],
-      "@authentication/*": ["./src/modules/identity-access/authentication/*"],
-      "@identity-access/*": ["./src/modules/identity-access/*"],
+      "@accounts/*": ["./src/modules/accounts/*"],
+      "@authentication/*": ["./src/modules/authentication/*"],
       "@database/*": ["./src/database/*"]
     }
   },
