@@ -14,13 +14,21 @@ concurrency:
 
 jobs:
   scan:
-    runs-on: ubuntu-latest
+    # The repository's fork approval policy is enforced separately by infra.
+    runs-on: >-
+      ${{ fromJSON(
+        (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+        && '["self-hosted","Linux","ARM64","gloups-health"]'
+        || '["ubuntu-latest"]'
+      ) }}
+    timeout-minutes: 15
     env:
       DO_NOT_TRACK: "1"
     steps:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 1
+          persist-credentials: false
       - uses: actions/setup-node@v5
         with:
           node-version: 26.12.1

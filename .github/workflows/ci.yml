@@ -5,14 +5,33 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    # Forks use GitHub-hosted runners. Infra also requires approval for every
+    # external contributor: a fork can edit this workflow and its runs-on value.
+    runs-on: >-
+      ${{ fromJSON(
+        (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
+        && '["self-hosted","Linux","ARM64","gloups-health"]'
+        || '["ubuntu-latest"]'
+      ) }}
+    timeout-minutes: 30
     env:
       EXPO_PUBLIC_API_URL: https://api.example.test
       DO_NOT_TRACK: "1"
     steps:
       - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Verify Docker runtime
+        run: docker info
       - uses: actions/setup-node@v5
         with:
           node-version: 26.12.1
