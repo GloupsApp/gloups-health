@@ -143,6 +143,7 @@ export const startHarness = async () => {
 
     const dbPort = published.split(":").at(-1);
     const port = await freePort();
+    const metricsPort = await freePort();
     const url = `http://127.0.0.1:${port}`;
 
     const environment = {
@@ -153,6 +154,7 @@ export const startHarness = async () => {
       DATABASE_URL: `postgresql://gloups:${password}@127.0.0.1:${dbPort}/gloups_glo5`,
       EMAIL_DELIVERY_TOKEN: token,
       EMAIL_DELIVERY_URL: sink.url,
+      METRICS_PORT: String(metricsPort),
       NODE_ENV: "test",
       PORT: String(port),
     };
@@ -180,6 +182,7 @@ export const startHarness = async () => {
     return {
       close,
       diagnostics: () => diagnostics,
+      metricsUrl: `http://127.0.0.1:${metricsPort}`,
       restartApi: async () => {
         await stopApi();
         await startApi();
@@ -188,6 +191,14 @@ export const startHarness = async () => {
         await execute("docker", ["restart", name]);
         await waitFor(async () => (await sql("SELECT 1")) === "1");
         await waitFor(async () => (await fetch(`${url}/healthz`)).ok);
+      },
+      setDatabaseAvailable: async (available: boolean) => {
+        await execute("docker", [available ? "start" : "stop", name]);
+
+        if (available) {
+          await waitFor(async () => (await sql("SELECT 1")) === "1");
+          await waitFor(async () => (await fetch(`${url}/healthz`)).ok);
+        }
       },
       sink,
       sql,

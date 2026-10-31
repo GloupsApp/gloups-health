@@ -161,6 +161,83 @@ describe(
 
       expect(oversized.status).toBe(413);
     });
+    test("exposes private request and runtime metrics without secret or unbounded labels", async () => {
+      const secret = `private-${randomUUID()}@example.test`;
+      const unknown = `/unknown-${randomUUID()}`;
+      const resetToken = `reset-${randomUUID()}`;
+
+      await fetch(`${url}/api/me?email=${secret}`);
+      await fetch(`${url}${unknown}?token=${secret}`);
+      await fetch(`${url}/api/auth/reset-password/${resetToken}`, {
+        redirect: "manual",
+      });
+
+      expect((await fetch(`${url}/metrics`)).status).toBe(404);
+      const { metricsUrl } = getHarness();
+      expect((await fetch(`${metricsUrl}/healthz`)).status).toBe(404);
+      expect(
+        (await fetch(`${metricsUrl}/metrics`, { method: "POST" })).status
+      ).toBe(404);
+      const response = await fetch(`${metricsUrl}/metrics`);
+      expect(response.status).toBe(200);
+      expect(
+        response.headers.get("content-type")?.startsWith("text/plain")
+      ).toBe(true);
+      const metrics = await response.text();
+      expect(
+        metrics.includes(
+          'gloups_api_http_requests_total{method="GET",route="/api/me",status_code="401"}'
+        )
+      ).toBe(true);
+      expect(
+        metrics.includes(
+          'gloups_api_http_requests_total{method="GET",route="unmatched",status_code="404"}'
+        )
+      ).toBe(true);
+      expect(metrics.includes('route="/api/auth/reset-password/:token"')).toBe(
+        true
+      );
+      expect(
+        metrics.includes('route="/api/auth/sign-in/email",status_code="400"')
+      ).toBe(true);
+      expect(
+        metrics.includes("gloups_api_http_request_duration_seconds_bucket")
+      ).toBe(true);
+      expect(metrics.includes("gloups_api_process_resident_memory_bytes")).toBe(
+        true
+      );
+      expect(metrics.includes(secret)).toBe(false);
+      expect(metrics.includes(unknown)).toBe(false);
+      expect(metrics.includes(resetToken)).toBe(false);
+    });
+    test("reports database readiness failures while the metrics listener stays available", async () => {
+      const fixture = getHarness();
+
+      const scrape = async () => {
+        const response = await fetch(`${fixture.metricsUrl}/metrics`);
+        expect(response.status).toBe(200);
+
+        return response.text();
+      };
+
+      expect((await scrape()).includes("gloups_api_database_ready 1")).toBe(
+        true
+      );
+      await fixture.setDatabaseAvailable(false);
+
+      try {
+        expect((await scrape()).includes("gloups_api_database_ready 0")).toBe(
+          true
+        );
+        expect((await fetch(`${url}/healthz`)).status).toBe(503);
+      } finally {
+        await fixture.setDatabaseAvailable(true);
+      }
+
+      expect((await scrape()).includes("gloups_api_database_ready 1")).toBe(
+        true
+      );
+    });
     test("persists two identities, requires verification and delivers synthetic mail", async () => {
       for (const input of [alice, bob]) {
         const response = await post("sign-up/email", {

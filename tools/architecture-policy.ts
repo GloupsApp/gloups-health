@@ -45,6 +45,19 @@ export const apiFeatures: readonly FeaturePolicy[] = [
   },
   {
     files: {
+      "api-metrics.middleware.ts": "transport",
+      "api-metrics.ts": "integration",
+      "http-metrics.port.ts": "transport",
+      "observability.module.ts": "wiring",
+      "public.ts": "contract",
+    },
+    name: "observability",
+    providerExports: { ObservabilityModule: [] },
+    publicFiles: { "public.ts": ["ObservabilityModule"] },
+    root: "modules/observability",
+  },
+  {
+    files: {
       "auth-rate-limit.schema.ts": "integration",
       "database-readiness.port.ts": "port",
       "database.module.ts": "wiring",

@@ -14,6 +14,7 @@ import type {
   NodeRequest,
   NodeResponse,
 } from "@nestjs/platform-node";
+import { ObservabilityModule } from "@observability/public";
 
 @Module({
   controllers: [HealthController],
@@ -22,6 +23,7 @@ import type {
     CqrsModule.forRoot(),
     DatabaseModule,
     IdentityAccessModule,
+    ObservabilityModule,
   ],
 })
 class AppModule {}
