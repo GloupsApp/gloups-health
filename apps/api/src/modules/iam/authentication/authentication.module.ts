@@ -6,6 +6,11 @@ import { IdentitySessions } from "@authentication/identity-sessions.port";
 import { createAuth } from "@authentication/integrations/better-auth/auth";
 import type { Auth } from "@authentication/integrations/better-auth/auth";
 import { authHttp } from "@authentication/integrations/better-auth/auth-http";
+import {
+  createProviderKeys,
+  PROVIDER_KEYS,
+  ProviderNotificationVerifier,
+} from "@authentication/integrations/better-auth/provider-notification-verifier";
 import { BetterAuthSessions } from "@authentication/integrations/better-auth/sessions";
 import { HttpEmailDelivery } from "@authentication/integrations/email/http-email.delivery";
 import type { Database } from "@database/public";
@@ -21,10 +26,18 @@ const AUTH_ENGINE = Symbol("AUTH_ENGINE");
   imports: [ApiConfigModule],
   providers: [
     {
-      inject: [getDrizzleToken(IDENTITY_DATABASE), ApiConfig],
+      inject: [
+        getDrizzleToken(IDENTITY_DATABASE),
+        ApiConfig,
+        ProviderNotificationVerifier,
+      ],
       provide: AUTH_ENGINE,
-      useFactory: (database: Database, config: ApiConfig) =>
-        createAuth(database, config, new HttpEmailDelivery(config)),
+      useFactory: (
+        database: Database,
+        config: ApiConfig,
+        verifier: ProviderNotificationVerifier
+      ) =>
+        createAuth(database, config, new HttpEmailDelivery(config), verifier),
     },
     {
       inject: [AUTH_ENGINE],
@@ -36,7 +49,9 @@ const AUTH_ENGINE = Symbol("AUTH_ENGINE");
       provide: AUTHENTICATION_HTTP,
       useFactory: (auth: Auth, config: ApiConfig) => authHttp(auth, config),
     },
+    { provide: PROVIDER_KEYS, useFactory: createProviderKeys },
     AuthenticationMiddleware,
+    ProviderNotificationVerifier,
   ],
 })
 export class AuthenticationModule implements NestModule {

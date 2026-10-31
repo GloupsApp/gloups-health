@@ -24,6 +24,52 @@ const mockNativeModule = <Exports extends object>(
 const values = new Map<string, string>();
 let failWrites = false;
 
+let browserMode:
+  | "success"
+  | "cancel"
+  | "provider-error"
+  | "wrong-callback"
+  | "held" = "success";
+
+let browserRelease = Promise.withResolvers<undefined>();
+let browserOpened = Promise.withResolvers<undefined>();
+let requireSessionCookie = false;
+
+mockNativeModule("expo-crypto", () => ({ randomUUID: () => "synthetic-flow" }));
+
+mockNativeModule("expo-web-browser", () => ({
+  openAuthSessionAsync: async (url: string, callbackURL: string) => {
+    assert.ok(url.includes("/api/auth/expo-authorization-proxy?"));
+    assert.ok(callbackURL.startsWith("gloups-health://auth-complete/"));
+    browserOpened.resolve(undefined);
+
+    if (browserMode === "held") {
+      await browserRelease.promise;
+    }
+
+    if (browserMode === "cancel") {
+      return { type: "cancel" };
+    }
+
+    const returned = new URL(
+      browserMode === "wrong-callback"
+        ? "gloups-health://auth-complete/another-flow"
+        : callbackURL
+    );
+
+    returned.searchParams.set(
+      "cookie",
+      "gloups.session_token=browser-session; Max-Age=604800; Path=/"
+    );
+
+    if (browserMode === "provider-error") {
+      returned.searchParams.set("error", "account_not_linked");
+    }
+
+    return { type: "success", url: returned.toString() };
+  },
+}));
+
 mockNativeModule("react-native", () => ({
   AppState: { addEventListener: () => ({ remove: () => {} }) },
   Platform: { OS: "ios" },
@@ -119,8 +165,36 @@ const NativeFileReader = function NativeFileReader() {
   return reader;
 };
 
+const nativeResponse = (url: string, token: string, cookie: string) => {
+  if (/\/(?:sign-in\/social|link-social)$/u.test(url)) {
+    return {
+      redirect: false,
+      url: "https://provider.example.test/authorize?state=synthetic-state",
+    };
+  }
+
+  if (url.endsWith("/sign-out")) {
+    return { success: true };
+  }
+
+  if (requireSessionCookie && !cookie) {
+    return null;
+  }
+
+  return {
+    session: { expiresAt: "2030-01-01T00:00:00Z", id: "session", token },
+    user: {
+      email: "native@example.test",
+      emailVerified: true,
+      id: "user",
+      name: "Synthetic",
+    },
+  };
+};
+
 const NativeXMLHttpRequest = function NativeXMLHttpRequest() {
   const token = sessionToken;
+  let requestCookie = "";
 
   const xhr: NativeXhr = {
     abort: () => {
@@ -128,7 +202,7 @@ const NativeXMLHttpRequest = function NativeXMLHttpRequest() {
       xhr.onabort?.();
     },
     getAllResponseHeaders: () =>
-      `content-type: application/json\r\nset-cookie: gloups.session_token=${token}; Max-Age=604800; Path=/\r\n`,
+      `content-type: application/json\r\n${/\/(?:sign-in\/social|link-social)$/u.test(xhr.responseURL) || (requireSessionCookie && !requestCookie) ? "" : `set-cookie: gloups.session_token=${token}; Max-Age=604800; Path=/\r\n`}`,
     onabort: null,
     onerror: null,
     onload: null,
@@ -152,30 +226,16 @@ const NativeXMLHttpRequest = function NativeXMLHttpRequest() {
       }
 
       xhr.response = new Blob(
-        [
-          JSON.stringify(
-            signingOut
-              ? { success: true }
-              : {
-                  session: {
-                    expiresAt: "2030-01-01T00:00:00Z",
-                    id: "session",
-                    token,
-                  },
-                  user: {
-                    email: "native@example.test",
-                    emailVerified: true,
-                    id: "user",
-                    name: "Synthetic",
-                  },
-                }
-          ),
-        ],
+        [JSON.stringify(nativeResponse(xhr.responseURL, token, requestCookie))],
         { type: "application/json" }
       );
       xhr.onload?.();
     },
-    setRequestHeader: () => {},
+    setRequestHeader: (name, value) => {
+      if (name.toLowerCase() === "cookie") {
+        requestCookie = value;
+      }
+    },
     status: 200,
     statusText: "OK",
   };
@@ -202,7 +262,8 @@ Object.assign(globalThis, {
   fetch: nativeFetch.fetch,
 });
 
-const { authClient, signOut } = await import("@mobile/auth-client");
+const { authClient, completeProviderAuth, signOut } =
+  await import("@mobile/auth-client");
 
 test.each([true, false])(
   "late native response cannot restore cookies after sign-out (remote confirmed: %s)",
@@ -260,5 +321,49 @@ test("a native storage failure cannot be reported as successful local sign-out",
     await signOut();
   }
 
+  assert.equal(await authClient.getCookie(), "");
+});
+
+test.each(["apple", "google"] as const)(
+  "%s browser completion establishes an API session through managed native storage",
+  async (provider) => {
+    requireSessionCookie = true;
+    failWrites = false;
+    remoteSignOutSucceeds = true;
+    await signOut();
+    browserMode = "success";
+    sessionToken = "browser-session";
+    const result = await completeProviderAuth(provider);
+    assert.equal(result.completed, true);
+    assert.equal(
+      await authClient.getCookie(),
+      "gloups.session_token=browser-session"
+    );
+    await signOut();
+  }
+);
+
+test.each(["cancel", "provider-error", "wrong-callback"] as const)(
+  "native %s keeps the person signed out and offers a retry",
+  async (mode) => {
+    await signOut();
+    browserMode = mode;
+    const result = await completeProviderAuth("google");
+    assert.equal(result.completed, false);
+    assert.equal(await authClient.getCookie(), "");
+  }
+);
+
+test("a browser completion after sign-out cannot restore a retired account", async () => {
+  await signOut();
+  browserMode = "held";
+  browserOpened = Promise.withResolvers<undefined>();
+  browserRelease = Promise.withResolvers<undefined>();
+  const pending = completeProviderAuth("apple");
+  await browserOpened.promise;
+  await signOut();
+  browserRelease.resolve(undefined);
+  const result = await pending;
+  assert.equal(result.completed, false);
   assert.equal(await authClient.getCookie(), "");
 });

@@ -52,12 +52,16 @@ const freePort = async () => {
   return address.port;
 };
 
-export const startHarness = async () => {
+export const startHarness = async ({
+  providers = false,
+  apiPort = 0,
+  mailPort = 0,
+} = {}) => {
   const name = `gloups-glo5-integration-${randomUUID()}`;
   const password = randomBytes(24).toString("hex");
   const databasePort = await freePort();
   const token = randomBytes(32).toString("hex");
-  const sink = await createMailSink(token);
+  const sink = await createMailSink(token, mailPort);
   let child: ReturnType<typeof spawn> | null = null;
   let diagnostics = "";
 
@@ -142,10 +146,10 @@ export const startHarness = async () => {
     ).stdout.trim();
 
     const dbPort = published.split(":").at(-1);
-    const port = await freePort();
+    const port = apiPort || (await freePort());
     const url = `http://127.0.0.1:${port}`;
 
-    const environment = {
+    const environment: NodeJS.ProcessEnv = {
       ...process.env,
       API_HOST: "127.0.0.1",
       API_URL: url,
@@ -157,17 +161,32 @@ export const startHarness = async () => {
       PORT: String(port),
     };
 
+    if (providers) {
+      environment["APPLE_CLIENT_ID"] = "army-apple";
+      environment["APPLE_CLIENT_SECRET"] = "synthetic-apple-secret";
+      environment["GOOGLE_CLIENT_ID"] = "army-google";
+      environment["GOOGLE_CLIENT_SECRET"] = "synthetic-google-secret";
+    }
+
     await execute(process.execPath, ["apps/api/dist/migrate.js"], {
       cwd: repositoryRoot,
       env: environment,
     });
 
     const startApi = async () => {
-      child = spawn(process.execPath, ["apps/api/dist/main.js"], {
-        cwd: repositoryRoot,
-        env: environment,
-        stdio: "pipe",
-      });
+      child = spawn(
+        process.execPath,
+        [
+          providers
+            ? "apps/api/dist/tests/test/provider-server.js"
+            : "apps/api/dist/main.js",
+        ],
+        {
+          cwd: repositoryRoot,
+          env: environment,
+          stdio: "pipe",
+        }
+      );
       child.stdout?.resume();
       child.stderr?.on("data", (chunk: Buffer) => {
         diagnostics += chunk.toString();
@@ -180,6 +199,7 @@ export const startHarness = async () => {
     return {
       close,
       diagnostics: () => diagnostics,
+      mailToken: token,
       restartApi: async () => {
         await stopApi();
         await startApi();

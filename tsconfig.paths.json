@@ -2,11 +2,9 @@
   "compilerOptions": {
     "paths": {
       "@api/*": ["./apps/api/src/*"],
-      "@accounts/*": ["./apps/api/src/modules/identity-access/accounts/*"],
-      "@authentication/*": [
-        "./apps/api/src/modules/identity-access/authentication/*"
-      ],
-      "@identity-access/*": ["./apps/api/src/modules/identity-access/*"],
+      "@accounts/*": ["./apps/api/src/modules/iam/accounts/*"],
+      "@authentication/*": ["./apps/api/src/modules/iam/authentication/*"],
+      "@iam/*": ["./apps/api/src/modules/iam/*"],
       "@database/*": ["./apps/api/src/database/*"],
       "@contracts/*": ["./packages/contracts/src/*"],
       "@tools/*": ["./tools/*"],

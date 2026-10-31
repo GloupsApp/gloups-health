@@ -15,6 +15,20 @@
       "when": 1793353306266,
       "tag": "0001_rate_limit_audit_timestamps",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793369407161,
+      "tag": "0002_futuristic_rattler",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793370255058,
+      "tag": "0003_workable_polaris",
+      "breakpoints": true
     }
   ]
 }

@@ -1,23 +1,21 @@
 import * as schema from "@database/schema";
 import { sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+import { drizzle } from "drizzle-orm/node-postgres";
 
-export const IDENTITY_DATABASE = "identity-access";
+export const IDENTITY_DATABASE = "iam";
 
 export const createDatabase = (url: string) => {
-  const client = postgres(url, {
-    connect_timeout: 5,
-    max: 10,
-    onnotice: () => {
-      // Do not export query contents in PostgreSQL notices.
+  const db = drizzle({
+    connection: {
+      connectionString: url,
+      connectionTimeoutMillis: 5000,
+      max: 10,
     },
+    schema,
   });
 
-  const db = drizzle(client, { schema });
-
   return {
-    close: () => client.end({ timeout: 5 }),
+    close: () => db.$client.end(),
     db,
     ready: async () => {
       await db.execute(sql`select 1`);
