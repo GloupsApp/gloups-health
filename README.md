@@ -2,6 +2,8 @@
 
 The GLO-5 account slice runs one NestJS API and an Expo iOS/Android client. It supports email/password registration, verification, sign-in, password reset, a protected account round trip, persisted sessions, and sign-out.
 
+Agent instructions start in [AGENTS.md](AGENTS.md). The [agent workflow](.codex/README.md) documents project roles, delegation, and validation ownership.
+
 ## Workspace packages
 
 - [`@gloups/typescript-config`](packages/typescript-config/README.md) provides strict base, Node, NestJS, Expo, and library compiler presets. Each consumer declares a `workspace:*` development dependency and extends the appropriate preset by package name. Application aliases and output paths stay local; the presets contain no cross-application aliases.
