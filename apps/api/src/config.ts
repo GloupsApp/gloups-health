@@ -7,6 +7,7 @@ const environmentSchema = z.object({
   DATABASE_URL: z.url().refine((value) => /^postgres(?:ql)?:/u.test(value)),
   EMAIL_DELIVERY_TOKEN: z.string().min(32),
   EMAIL_DELIVERY_URL: z.url(),
+  METRICS_PORT: z.coerce.number().int().min(1).max(65_535).default(9464),
   NODE_ENV: z
     .enum(["development", "test", "production"])
     .default("development"),
@@ -23,6 +24,11 @@ export const readConfig = (environment: NodeJS.ProcessEnv) => {
   }
 
   const config = result.data;
+
+  if (config.METRICS_PORT === config.PORT) {
+    throw new Error("METRICS_PORT must differ from PORT");
+  }
+
   const api = new URL(config.API_URL);
   const delivery = new URL(config.EMAIL_DELIVERY_URL);
 
@@ -54,6 +60,7 @@ export abstract class ApiConfig implements z.infer<typeof environmentSchema> {
   abstract readonly DATABASE_URL: string;
   abstract readonly EMAIL_DELIVERY_TOKEN: string;
   abstract readonly EMAIL_DELIVERY_URL: string;
+  abstract readonly METRICS_PORT: number;
   abstract readonly NODE_ENV: "development" | "test" | "production";
   abstract readonly PORT: number;
 }

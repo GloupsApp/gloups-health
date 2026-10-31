@@ -32,6 +32,40 @@ The local inbox accepts only `@example.test` addresses. Its authenticated `GET /
 
 Production requires HTTPS for the API and email delivery endpoint, a strong `AUTH_SECRET`, and a configured `EMAIL_DELIVERY_TOKEN`. `EMAIL_DELIVERY_URL` is an authenticated server-side delivery boundary: it receives `{ recipient, kind, url }` and must return `{ accepted: true }` only after accepting delivery. Configure a transactional delivery service there. Better Auth deliberately returns a generic password-reset response even when delivery fails; the adapter emits `AUTH_EMAIL_DELIVERY_FAILED` without identifiers or secret URLs. Verification and reset sends are throttled and can be retried.
 
+## Metrics and Grafana
+
+The API starts a separate Prometheus listener at `http://127.0.0.1:9464/metrics`.
+Set `METRICS_PORT` to change its port; the listener always binds to loopback and
+closes with the Nest application. Startup fails if its port cannot be bound.
+The public API port does not serve `/metrics`.
+
+`gloups_api_http_requests_total` and
+`gloups_api_http_request_duration_seconds` record completed responses, including
+Better Auth middleware, with `method`, `route`, and `status_code` labels. Routes
+use a finite allowlist, password-reset tokens become `:token`, and unknown URLs
+share `unmatched`. Query strings, account identifiers, cookies, and request bodies
+never become metric labels. Node process, memory, garbage collection, and event
+loop metrics use the `gloups_api_` prefix. Each application owns its registry.
+`gloups_api_database_ready` runs the same live database query as `/healthz` on
+each scrape and reports `0` during a database outage while metrics remain available.
+
+The [infra repository](https://github.com/GloupsApp/infra) provisions Prometheus,
+Grafana, the host exporter, the Gloups overview dashboard, and alert rules with
+Ansible. Once this API runs on a monitored host, add its listener to that host's
+`monitoring_api_targets` and apply `playbooks/monitoring.yml` in infra:
+
+```yaml
+monitoring_api_targets:
+  - targets: ["127.0.0.1:9464"]
+    labels:
+      environment: production
+```
+
+For a local smoke check, start the API and run
+`curl --fail http://127.0.0.1:9464/metrics`. `bun run test:api` checks the private
+listener, authentication/error instrumentation, secret redaction, and bounded
+URL labels against the compiled API and a disposable database.
+
 ## Boundaries and contracts
 
 `apps/api/src/modules/identity-access` is organized by business capability. `authentication` owns Better Auth integrations and session/HTTP ports; `accounts` owns the Gloups model, separate read/write ports, `commands` and `queries`, controller, and Drizzle repository. Small features stay flat and use familiar Nest component names. A capability module constructs its plain services with factory providers; architectural layers do not require separate folders or modules. No account-deletion scaffold is created before that capability is implemented.
@@ -66,7 +100,7 @@ bun run mobile:build
 bun run test:api
 ```
 
-CI runs these gates with the pinned Node/Bun versions. The existing root build also includes Blume, whose content directory is currently absent; this slice leaves that docs workspace unchanged. `test:api` runs Army's engine-free API target with `fetch`, value matchers, and the application's runtime schemas. A serial group starts its own disposable PostgreSQL 18.6 container, applies reviewed Drizzle migrations, and launches the compiled API using Node. Nine API specs cover verification, two-account isolation, invalid requests, concurrent provisioning, persistence across API/database restarts, recovery, revocation, sign-out, expiry, delivery failure, throttling, database upgrades, and malformed response/error contracts. Fixture process paths are independent of Army's working directory, and cleanup removes only its own container and volume. `test:integration` remains an alias for `test:api`.
+CI runs these gates with the pinned Node/Bun versions. The existing root build also includes Blume, whose content directory is currently absent; this slice leaves that docs workspace unchanged. `test:api` runs Army's engine-free API target with `fetch`, value matchers, and the application's runtime schemas. A serial group starts its own disposable PostgreSQL 18.6 container, applies reviewed Drizzle migrations, and launches the compiled API using Node. Eleven API specs cover verification, two-account isolation, invalid requests, concurrent provisioning, persistence across API/database restarts, recovery, revocation, sign-out, expiry, delivery failure, throttling, database upgrades, malformed response/error contracts, private metrics, and database readiness during outages. Fixture process paths are independent of Army's working directory, and cleanup removes only its own container and volume. `test:integration` remains an alias for `test:api`.
 
 CQRS validation includes 37 architecture fixtures, a compiled Nest application-context test, and the Army API specs. The bus test checks handler discovery, rejection of unauthenticated and unverified commands before writes, identity-scoped reads, and read-only queries even when a binding is missing. HTTP acceptance also checks that invalid input is rejected before provisioning. Alias fixtures verify that public contracts remain accessible and private feature imports remain forbidden. `test:cqrs` runs the compiled bus test in CI.
 

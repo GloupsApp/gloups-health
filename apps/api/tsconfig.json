@@ -6,7 +6,8 @@
       "@accounts/*": ["./src/modules/identity-access/accounts/*"],
       "@authentication/*": ["./src/modules/identity-access/authentication/*"],
       "@identity-access/*": ["./src/modules/identity-access/*"],
-      "@database/*": ["./src/database/*"]
+      "@database/*": ["./src/database/*"],
+      "@observability/*": ["./src/modules/observability/*"]
     }
   },
   "include": [

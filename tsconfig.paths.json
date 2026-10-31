@@ -8,6 +8,7 @@
       ],
       "@identity-access/*": ["./apps/api/src/modules/identity-access/*"],
       "@database/*": ["./apps/api/src/database/*"],
+      "@observability/*": ["./apps/api/src/modules/observability/*"],
       "@contracts/*": ["./packages/contracts/src/*"],
       "@tools/*": ["./tools/*"],
       "@e2e/*": ["./e2e/*"]
