@@ -72,6 +72,16 @@ export const apiFeatures: readonly FeaturePolicy[] = [
   },
   {
     files: {
+      "iam.module.ts": "wiring",
+      "public.ts": "contract",
+    },
+    name: "iam",
+    providerExports: { IamModule: [] },
+    publicFiles: { "public.ts": ["IamModule"] },
+    root: "modules/iam",
+  },
+  {
+    files: {
       "authentication-http.port.ts": "transport",
       "authentication.middleware.ts": "transport",
       "authentication.module.ts": "wiring",
@@ -97,7 +107,7 @@ export const apiFeatures: readonly FeaturePolicy[] = [
       "email-message.contract.ts": ["EmailMessage", "emailMessageSchema"],
       "public.ts": ["IdentitySessions", "VerifiedIdentity"],
     },
-    root: "modules/authentication",
+    root: "modules/iam/authentication",
   },
   {
     files: {
@@ -124,6 +134,6 @@ export const apiFeatures: readonly FeaturePolicy[] = [
       "accounts.module.ts": ["AccountsModule"],
       "public.ts": ["AccountAccessError"],
     },
-    root: "modules/accounts",
+    root: "modules/iam/accounts",
   },
 ];

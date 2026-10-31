@@ -3,8 +3,8 @@ import { createServer } from "node:http";
 import type { Server } from "node:http";
 import { promisify } from "node:util";
 
-import { emailMessageSchema } from "../apps/api/src/modules/authentication/email-message.contract.ts";
-import type { EmailMessage } from "../apps/api/src/modules/authentication/email-message.contract.ts";
+import { emailMessageSchema } from "../apps/api/src/modules/iam/authentication/email-message.contract.ts";
+import type { EmailMessage } from "../apps/api/src/modules/iam/authentication/email-message.contract.ts";
 
 export const serverPort = (server: Server) => {
   const address = server.address();
