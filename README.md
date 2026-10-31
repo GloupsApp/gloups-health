@@ -66,6 +66,8 @@ Authored application imports use extensionless feature aliases, for example `imp
 
 `packages/contracts` owns the runtime schemas and shared password policy. `bun run contracts:generate` exports OpenAPI 3.1 and generates the TypeScript SDK with Hey API and Zod response/request validators. The owned client wrapper validates every success and error payload, including empty/204 results for which generated clients can skip validation. Expo sends cookies from Better Auth's dedicated Expo client using `credentials: "omit"`; SecureStore holds session credentials. Foreground checks revalidate with the server. A lifecycle check after body decoding rejects retired responses before the Expo SDK can persist cookies. Sign-out clears local credentials even if remote revocation cannot be confirmed and checks that clearing succeeded before reporting local sign-out.
 
+`ProviderNotificationVerifier` is a private injectable integration backed by `jose`. It receives validated configuration and per-application Apple/Google JWKS resolvers through Nest. Army overrides only those key resolvers with ephemeral fixture keys, retaining the production signature and claims validation.
+
 Authored code inherits the strict TypeScript baseline. The API skips vendor declaration checking because the pinned Better Auth/Drizzle declarations reference optional database drivers and contain incompatible declaration signatures. Generated Hey API runtime code has a separate compiler project with only `exactOptionalPropertyTypes` disabled; the generated runtime explicitly assigns `undefined` to optional fields. These exceptions do not apply to authored logic. Ultracite ignores generated vendor code through its existing preset.
 
 ## Verify

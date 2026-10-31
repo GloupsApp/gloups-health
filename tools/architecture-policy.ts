@@ -89,6 +89,8 @@ export const apiFeatures: readonly FeaturePolicy[] = [
       "identity-sessions.port.ts": "port",
       "integrations/better-auth/auth-http.ts": "integration",
       "integrations/better-auth/auth.ts": "integration",
+      "integrations/better-auth/provider-notification-verifier.ts":
+        "integration",
       "integrations/better-auth/provider-notifications.ts": "integration",
       "integrations/better-auth/security-policy.ts": "integration",
       "integrations/better-auth/security-store.ts": "integration",

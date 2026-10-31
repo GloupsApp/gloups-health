@@ -11,6 +11,11 @@ import { IdentitySessions } from "@authentication/identity-sessions.port";
 import { createAuth } from "@authentication/integrations/better-auth/auth";
 import type { Auth } from "@authentication/integrations/better-auth/auth";
 import { authHttp } from "@authentication/integrations/better-auth/auth-http";
+import {
+  PROVIDER_KEYS,
+  ProviderNotificationVerifier,
+} from "@authentication/integrations/better-auth/provider-notification-verifier";
+import type { ProviderKeys } from "@authentication/integrations/better-auth/provider-notification-verifier";
 import { BetterAuthSessions } from "@authentication/integrations/better-auth/sessions";
 import { HttpEmailDelivery } from "@authentication/integrations/email/http-email.delivery";
 import { IDENTITY_DATABASE } from "@database/public";
@@ -49,12 +54,18 @@ const audience = (provider: string) => `army-${provider}`;
 const mobileIdentity = randomUUID();
 let engine: Promise<Auth> | undefined;
 
-const getAuth = (database: Database, config: ApiConfig) => {
+const getAuth = (
+  database: Database,
+  config: ApiConfig,
+  verifier: ProviderNotificationVerifier
+) => {
   engine ??= (async () => {
-    const auth = createAuth(database, config, new HttpEmailDelivery(config), {
-      apple: jwks,
-      google: jwks,
-    });
+    const auth = createAuth(
+      database,
+      config,
+      new HttpEmailDelivery(config),
+      verifier
+    );
 
     const context = await auth.$context;
     context.socialProviders = context.socialProviders.map((provider) => ({
@@ -137,10 +148,19 @@ const getAuth = (database: Database, config: ApiConfig) => {
 };
 
 const fixture = await Test.createTestingModule({ imports: [AppModule] })
+  .overrideProvider(PROVIDER_KEYS)
+  .useValue({ apple: jwks, google: jwks } satisfies ProviderKeys)
   .overrideProvider(AUTHENTICATION_HTTP)
   .useFactory({
-    factory: async (database: Database, config: ApiConfig) => {
-      const handler = authHttp(await getAuth(database, config), config);
+    factory: async (
+      database: Database,
+      config: ApiConfig,
+      verifier: ProviderNotificationVerifier
+    ) => {
+      const handler = authHttp(
+        await getAuth(database, config, verifier),
+        config
+      );
 
       return (
         request: NodeRequest,
@@ -178,13 +198,24 @@ const fixture = await Test.createTestingModule({ imports: [AppModule] })
         return handler(request, response, next);
       };
     },
-    inject: [getDrizzleToken(IDENTITY_DATABASE), ApiConfig],
+    inject: [
+      getDrizzleToken(IDENTITY_DATABASE),
+      ApiConfig,
+      ProviderNotificationVerifier,
+    ],
   })
   .overrideProvider(IdentitySessions)
   .useFactory({
-    factory: async (database: Database, config: ApiConfig) =>
-      new BetterAuthSessions(await getAuth(database, config)),
-    inject: [getDrizzleToken(IDENTITY_DATABASE), ApiConfig],
+    factory: async (
+      database: Database,
+      config: ApiConfig,
+      verifier: ProviderNotificationVerifier
+    ) => new BetterAuthSessions(await getAuth(database, config, verifier)),
+    inject: [
+      getDrizzleToken(IDENTITY_DATABASE),
+      ApiConfig,
+      ProviderNotificationVerifier,
+    ],
   })
   .compile();
 

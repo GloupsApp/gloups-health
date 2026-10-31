@@ -1,6 +1,6 @@
 import type { ApiConfig } from "@api/config";
+import type { ProviderNotificationVerifier } from "@authentication/integrations/better-auth/provider-notification-verifier";
 import { providerNotifications } from "@authentication/integrations/better-auth/provider-notifications";
-import type { ProviderKeys } from "@authentication/integrations/better-auth/provider-notifications";
 import {
   securityPolicy,
   validateProviderUser,
@@ -20,7 +20,7 @@ export const createAuth = (
   database: Database,
   config: ApiConfig,
   email: EmailDelivery,
-  providerKeys?: ProviderKeys
+  providerVerifier: ProviderNotificationVerifier
 ) => {
   const security = createSecurityStore(database);
 
@@ -124,7 +124,7 @@ export const createAuth = (
     plugins: [
       expo(),
       securityPolicy(security, providers),
-      providerNotifications(config, security, providerKeys),
+      providerNotifications(security, providerVerifier),
     ],
     rateLimit: {
       customRules: {
